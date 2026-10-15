@@ -1,0 +1,1602 @@
+{
+  "createdAt": "2026-10-15T13:15:47.687634+08:00",
+  "checkpoint": "v9",
+  "releasePublished": false,
+  "files": [
+    {
+      "path": ".gitignore",
+      "bytes": 353,
+      "sha256": "a701b935a3c113eed0785ff0706a7b14ed362b2b3cfd80ce6d3f9e063bcbc3cb"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/AcadBatchPlot.dll",
+      "bytes": 807424,
+      "sha256": "c74ddee39ac74a095011f4a5b04196b8feeb8afd554fa51eccc6ec9f8188d200"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/AcadBatchPlot.pdb",
+      "bytes": 259888,
+      "sha256": "25171b3778c25eab338956f202f4f0847a09419792c0313ef11166a5e03c432f"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/de/PdfSharp.Charting.resources.dll",
+      "bytes": 4608,
+      "sha256": "7301aaef6e13b62d47636c246f08914f0b7c4734d2a8c1ec9489af43ba9c71b8"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/de/PdfSharp.resources.dll",
+      "bytes": 5120,
+      "sha256": "be5a3b3c751c29f6c382654622bb7ea11dfcd85370f2c62bb984009203b0cde0"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/Docnet.Core.dll",
+      "bytes": 81920,
+      "sha256": "a596d9f7a0d71f52593aefe794139c1327e2c7901731e9c2f9d564992d81c8aa"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/ICSharpCode.SharpZipLib.dll",
+      "bytes": 204800,
+      "sha256": "c287e9b07a8251828f35914364c89a37db606b0c1d64457f9eb8fa2258f0dee3"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/Newtonsoft.Json.dll",
+      "bytes": 711952,
+      "sha256": "e1e27af7b07eeedf5ce71a9255f0422816a6fc5849a483c6714e1b472044fa9d"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/pdfium.dll",
+      "bytes": 4968960,
+      "sha256": "bca96944d731dd72877116d3472083c847fe307fc58ca39bce16cbe998c478f1"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/PdfSharp.Charting.dll",
+      "bytes": 80896,
+      "sha256": "899f362ae7c1ed52f8be29183c73a4e1ea4d72e43305ad30a9426d69e23a79c8"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/PdfSharp.dll",
+      "bytes": 535040,
+      "sha256": "2fa0893c6a1a8e64342e65e5464fad417376bd2cc984e53575f5829b07e6a067"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/PianNoCN.dll",
+      "bytes": 17408,
+      "sha256": "7d54a22127c6853a6bba121ba6b9c85657dafc2753f12d7f9435782ead446662"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/PianNoCN.pdb",
+      "bytes": 7132,
+      "sha256": "c3f4efc16af5e03f9d964ee7601cf2d57a8f08dc5397c3207eb31366ba1d710c"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/Plotters/PIA2/LA_dwf.pc3",
+      "bytes": 4404,
+      "sha256": "87f5593ad758595f4e1dd7d869591e80d93ccaed349b5b14c97bf739f4d101b3"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/Plotters/PIA2/LA_jpg.pc3",
+      "bytes": 924,
+      "sha256": "89ef98bee9297a4cd032545370cd2c27451964671a4031edd7bffb9e7fc3013e"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/Plotters/PIA2/LA_pdf.pc3",
+      "bytes": 1118,
+      "sha256": "7b4c0261609df3adc18ea1d90821f9e74dc082fc3466b150d7370dc46f71e9a6"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/Plotters/PIA2/LA_png.pc3",
+      "bytes": 963,
+      "sha256": "d83a7d2074900a154dc1f1b44fb783680187766a9ee4d8383afbd2f519f246c9"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/Plotters/PIA2/PMP Files/LA_dwf.pmp",
+      "bytes": 5366,
+      "sha256": "590d98e0e4d469a6be9a3c42b004a81a49207cb891400aadce87685707dd538d"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/Plotters/PIA2/PMP Files/LA_jpg.pmp",
+      "bytes": 10452,
+      "sha256": "46bc5a6b6b34dbc86af2b2b3430c9ff8406bf71c3cbfe716ab6f06b473f1dd10"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/Plotters/PIA2/PMP Files/LA_pdf.pmp",
+      "bytes": 5257,
+      "sha256": "424f8bba0bc7540c37a0f445d7ba4819ebca9d27ab7c01d2520385df85233feb"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/Plotters/PIA2/PMP Files/LA_png.pmp",
+      "bytes": 10492,
+      "sha256": "f0650e92f9ebfbcbe064a4523323db606c7bfdce5b646222b1d2fd3a4dee2538"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/Plotters/PIA3/LA_pdf.pc3",
+      "bytes": 3436,
+      "sha256": "624855bc7304f8d9431403d5afdda0a32fa739f4aba9f7646212404c4a10ae24"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/Plotters/PIA3/PMP Files/LA_pdf.pmp",
+      "bytes": 66043,
+      "sha256": "73d7e7dcc294d01bc785e6c930ccd60aa1ecf75aeccc51e44d75fc52f2bf1e21"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/Plotters/README.md",
+      "bytes": 943,
+      "sha256": "ebf013d1b5079647d8d1e733d88b8be3df6f88a591046699cdc7322880d528a5"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/System.Buffers.dll",
+      "bytes": 20856,
+      "sha256": "accccfbe45d9f08ffeed9916e37b33e98c65be012cfff6e7fa7b67210ce1fefb"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/System.Memory.dll",
+      "bytes": 142240,
+      "sha256": "bf3fb84664f4097f1a8a9bc71a51dcf8cf1a905d4080a4d290da1730866e856f"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/System.Numerics.Vectors.dll",
+      "bytes": 115856,
+      "sha256": "1d3ef8698281e7cf7371d1554afef5872b39f96c26da772210a33da041ba1183"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/System.Resources.Extensions.dll",
+      "bytes": 61568,
+      "sha256": "fa11c08a622261c28aee318be8157d8a3e90fcd75383ffc3315ae5b9c748281a"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024/System.Runtime.CompilerServices.Unsafe.dll",
+      "bytes": 16768,
+      "sha256": "66409f670315afe8610f17a4d3a1ee52d72b6a46c544cec97544e8385f90ad74"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2015-2024pdfium.dll",
+      "bytes": 4968960,
+      "sha256": "bca96944d731dd72877116d3472083c847fe307fc58ca39bce16cbe998c478f1"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/AcadBatchPlot.Core.deps.json",
+      "bytes": 10089,
+      "sha256": "31cabe3aeebe1422fc119e313830b0ef848f5b79a8ddaa715f0c3d2540c7d323"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/AcadBatchPlot.Core.dll",
+      "bytes": 824320,
+      "sha256": "61592547144e252a60702f0b4a84656ee63338682a963ee02a847236c6e654d4"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/AcadBatchPlot.Core.pdb",
+      "bytes": 273224,
+      "sha256": "04db4264182417458bac5c6e9e5a2789d3a19b518e26ae7f12cd0236e6143fa3"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/AcadBatchPlot.Core.runtimeconfig.json",
+      "bytes": 493,
+      "sha256": "61a42492c92f2dd2e738cdeeb4fb57fe57e349780f1cef21e474c07bf604db58"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/Docnet.Core.dll",
+      "bytes": 81920,
+      "sha256": "a596d9f7a0d71f52593aefe794139c1327e2c7901731e9c2f9d564992d81c8aa"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/ICSharpCode.SharpZipLib.dll",
+      "bytes": 258048,
+      "sha256": "32ea2d0ce3512e74f1c7ad82591fe67e6b8939d76a8a4ff9c93ead030131e71c"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+      "bytes": 63768,
+      "sha256": "67fa4325000db017dc0c35829b416f024f042d24efb868bcf17a895ee6500a93"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/Microsoft.Extensions.Logging.Abstractions.dll",
+      "bytes": 65288,
+      "sha256": "bb853130f5afaf335be7858d661f8212ec653835100f5a4e3aa2c66a4d4f685d"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/Newtonsoft.Json.dll",
+      "bytes": 712464,
+      "sha256": "22c649f75fce5be7c7ccda8880473b634ef69ecf33f5d1ab8ad892caf47d5a07"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/PdfSharp.BarCodes.dll",
+      "bytes": 35840,
+      "sha256": "5416b543494682e49e42fb02130cf6ff21c1509129f74ba94146e6df2fb202b1"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/PdfSharp.Charting.dll",
+      "bytes": 88064,
+      "sha256": "714a27e299bbcb6eac7ae7f9a83bd8a9972a157a8c53581b73c260ead16ae24f"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/PdfSharp.Cryptography.dll",
+      "bytes": 15360,
+      "sha256": "f6579034356bac7aa6589741285bd2c025df5954414280943ea214826461f08b"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/PdfSharp.dll",
+      "bytes": 793088,
+      "sha256": "a30a1c39e942a6c7f33f451257f26e9a8856d389ef98031971711a7c77123d82"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/PdfSharp.Quality.dll",
+      "bytes": 40448,
+      "sha256": "f5fbf9773da5dcb756859145ac5afbd44a5246b57cc33f0c4b69a7f283dee097"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/PdfSharp.Shared.dll",
+      "bytes": 23040,
+      "sha256": "b3ed534cae06d4b2129d1242fa52d57effa4f06883c3b959c18966de7ce8a264"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/PdfSharp.Snippets.dll",
+      "bytes": 154624,
+      "sha256": "7f5c6320bc70e8009f18cb57897b467d0f17d6e44e3dc6332ec9141b2889d4c1"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/PdfSharp.System.dll",
+      "bytes": 8192,
+      "sha256": "6d9accdbf73f4c8f79e60b91764b34e25f0ed207820c62da1112980ad32b6f82"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/PdfSharp.WPFonts.dll",
+      "bytes": 421376,
+      "sha256": "f2cbb72f4345c3abcbded9cc5a71c24e6b1988d2953a083681ddf1adf540aa42"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/PianNoCN.deps.json",
+      "bytes": 1944,
+      "sha256": "9e49dce2979f517b9298fbf3eb0ea3b8b58c0495aac05a1dcee888dc17965a6d"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/PianNoCN.dll",
+      "bytes": 17408,
+      "sha256": "45de61f6e8ff4d58c219b253607bcae1b6d2324808d136c3119dcd75c5029a0d"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/PianNoCN.pdb",
+      "bytes": 13064,
+      "sha256": "709e430a7dccea73120c4197b357c7818010069344d6976b8426de13bf2ed2a5"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/Plotters/PIA2/LA_dwf.pc3",
+      "bytes": 4404,
+      "sha256": "87f5593ad758595f4e1dd7d869591e80d93ccaed349b5b14c97bf739f4d101b3"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/Plotters/PIA2/LA_jpg.pc3",
+      "bytes": 924,
+      "sha256": "89ef98bee9297a4cd032545370cd2c27451964671a4031edd7bffb9e7fc3013e"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/Plotters/PIA2/LA_pdf.pc3",
+      "bytes": 1118,
+      "sha256": "7b4c0261609df3adc18ea1d90821f9e74dc082fc3466b150d7370dc46f71e9a6"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/Plotters/PIA2/LA_png.pc3",
+      "bytes": 963,
+      "sha256": "d83a7d2074900a154dc1f1b44fb783680187766a9ee4d8383afbd2f519f246c9"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/Plotters/PIA2/PMP Files/LA_dwf.pmp",
+      "bytes": 5366,
+      "sha256": "590d98e0e4d469a6be9a3c42b004a81a49207cb891400aadce87685707dd538d"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/Plotters/PIA2/PMP Files/LA_jpg.pmp",
+      "bytes": 10452,
+      "sha256": "46bc5a6b6b34dbc86af2b2b3430c9ff8406bf71c3cbfe716ab6f06b473f1dd10"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/Plotters/PIA2/PMP Files/LA_pdf.pmp",
+      "bytes": 5257,
+      "sha256": "424f8bba0bc7540c37a0f445d7ba4819ebca9d27ab7c01d2520385df85233feb"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/Plotters/PIA2/PMP Files/LA_png.pmp",
+      "bytes": 10492,
+      "sha256": "f0650e92f9ebfbcbe064a4523323db606c7bfdce5b646222b1d2fd3a4dee2538"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/Plotters/PIA3/LA_pdf.pc3",
+      "bytes": 3436,
+      "sha256": "624855bc7304f8d9431403d5afdda0a32fa739f4aba9f7646212404c4a10ae24"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/Plotters/PIA3/PMP Files/LA_pdf.pmp",
+      "bytes": 66043,
+      "sha256": "73d7e7dcc294d01bc785e6c930ccd60aa1ecf75aeccc51e44d75fc52f2bf1e21"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/Plotters/README.md",
+      "bytes": 943,
+      "sha256": "ebf013d1b5079647d8d1e733d88b8be3df6f88a591046699cdc7322880d528a5"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/runtimes/linux/native/LICENSE",
+      "bytes": 61124,
+      "sha256": "9bc7065ccc88b58a798564d82942cba32875b7165a48ec348ea21d26735c2bf7"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/runtimes/linux/native/pdfium.so",
+      "bytes": 5735104,
+      "sha256": "08f5604929b1517dd5b083c3db4ea3d58f9c26b98c0703e8e38bbd475079ea5e"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/runtimes/linux-arm/native/LICENSE",
+      "bytes": 61124,
+      "sha256": "9bc7065ccc88b58a798564d82942cba32875b7165a48ec348ea21d26735c2bf7"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/runtimes/linux-arm/native/pdfium.so",
+      "bytes": 4471764,
+      "sha256": "87f8d6c99f636b646e5347ff0c2352d5aef6dee0cec4ce0722dba251c6e9810e"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/runtimes/linux-arm64/native/LICENSE",
+      "bytes": 61124,
+      "sha256": "9bc7065ccc88b58a798564d82942cba32875b7165a48ec348ea21d26735c2bf7"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/runtimes/linux-arm64/native/pdfium.so",
+      "bytes": 5908456,
+      "sha256": "c32113525d2144d0b5c33b398dfad4defa3aa9ea6f79bd7667eea1c4436133d6"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/runtimes/osx-arm64/native/LICENSE",
+      "bytes": 61202,
+      "sha256": "899a652192c64ade157ad94cce6c63fdd8a3da153d5e7711308e6def2da06ca0"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/runtimes/osx-arm64/native/pdfium.dylib",
+      "bytes": 5621536,
+      "sha256": "750114aff75479fb960a9971969ea0439fcce3e54244c24bc9164d88ad36c4db"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/runtimes/osx-x64/native/LICENSE",
+      "bytes": 61202,
+      "sha256": "899a652192c64ade157ad94cce6c63fdd8a3da153d5e7711308e6def2da06ca0"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/runtimes/osx-x64/native/pdfium.dylib",
+      "bytes": 5939376,
+      "sha256": "944dc06dc7d8e4c492d3fbeaad18d97c2452aaf5268b7d882d4f71a8bc95b030"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/runtimes/win/lib/net8.0/System.Security.Cryptography.Pkcs.dll",
+      "bytes": 319784,
+      "sha256": "d8e4b733fbaec1fe0e808fd6391479f190b170df03e309c5f07dc85445447d22"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/runtimes/win-x64/native/LICENSE",
+      "bytes": 61124,
+      "sha256": "9bc7065ccc88b58a798564d82942cba32875b7165a48ec348ea21d26735c2bf7"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/runtimes/win-x64/native/pdfium.dll",
+      "bytes": 4968960,
+      "sha256": "bca96944d731dd72877116d3472083c847fe307fc58ca39bce16cbe998c478f1"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/runtimes/win-x86/native/LICENSE",
+      "bytes": 61124,
+      "sha256": "9bc7065ccc88b58a798564d82942cba32875b7165a48ec348ea21d26735c2bf7"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/runtimes/win-x86/native/pdfium.dll",
+      "bytes": 4505088,
+      "sha256": "b7851fd6581b8bfe40c485a7c7e2f08fca245a7c2d1d5dcf051807488d346f09"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027/System.Security.Cryptography.Pkcs.dll",
+      "bytes": 264864,
+      "sha256": "e2352938ed4f664f770a5c98ef067cb145304456d014d2c311d725c95c8a21a9"
+    },
+    {
+      "path": "artifacts/current/AutoCAD2025-2027pdfium.dll",
+      "bytes": 4968960,
+      "sha256": "bca96944d731dd72877116d3472083c847fe307fc58ca39bce16cbe998c478f1"
+    },
+    {
+      "path": "artifacts/current/ZWCAD2025/BatchPlotter.dll",
+      "bytes": 776704,
+      "sha256": "baf476a759b7f82775a693e835149bacf93ea8730e016f580a243d27e1d8b3f2"
+    },
+    {
+      "path": "artifacts/current/ZWCAD2025/BatchPlotter.pdb",
+      "bytes": 248672,
+      "sha256": "0364701158153eba492282d1b6c6ad92815158df3f5954a7e6fc805c430e67c6"
+    },
+    {
+      "path": "artifacts/current/ZWCAD2025/de/PdfSharp.Charting.resources.dll",
+      "bytes": 4608,
+      "sha256": "7301aaef6e13b62d47636c246f08914f0b7c4734d2a8c1ec9489af43ba9c71b8"
+    },
+    {
+      "path": "artifacts/current/ZWCAD2025/de/PdfSharp.resources.dll",
+      "bytes": 5120,
+      "sha256": "be5a3b3c751c29f6c382654622bb7ea11dfcd85370f2c62bb984009203b0cde0"
+    },
+    {
+      "path": "artifacts/current/ZWCAD2025/Docnet.Core.dll",
+      "bytes": 81920,
+      "sha256": "a596d9f7a0d71f52593aefe794139c1327e2c7901731e9c2f9d564992d81c8aa"
+    },
+    {
+      "path": "artifacts/current/ZWCAD2025/ICSharpCode.SharpZipLib.dll",
+      "bytes": 204800,
+      "sha256": "c287e9b07a8251828f35914364c89a37db606b0c1d64457f9eb8fa2258f0dee3"
+    },
+    {
+      "path": "artifacts/current/ZWCAD2025/Newtonsoft.Json.dll",
+      "bytes": 711952,
+      "sha256": "e1e27af7b07eeedf5ce71a9255f0422816a6fc5849a483c6714e1b472044fa9d"
+    },
+    {
+      "path": "artifacts/current/ZWCAD2025/pdfium.dll",
+      "bytes": 4968960,
+      "sha256": "bca96944d731dd72877116d3472083c847fe307fc58ca39bce16cbe998c478f1"
+    },
+    {
+      "path": "artifacts/current/ZWCAD2025/PdfSharp.Charting.dll",
+      "bytes": 80896,
+      "sha256": "899f362ae7c1ed52f8be29183c73a4e1ea4d72e43305ad30a9426d69e23a79c8"
+    },
+    {
+      "path": "artifacts/current/ZWCAD2025/PdfSharp.dll",
+      "bytes": 535040,
+      "sha256": "2fa0893c6a1a8e64342e65e5464fad417376bd2cc984e53575f5829b07e6a067"
+    },
+    {
+      "path": "artifacts/current/ZWCAD2025/PianNoCN.dll",
+      "bytes": 17408,
+      "sha256": "7d54a22127c6853a6bba121ba6b9c85657dafc2753f12d7f9435782ead446662"
+    },
+    {
+      "path": "artifacts/current/ZWCAD2025/PianNoCN.pdb",
+      "bytes": 7132,
+      "sha256": "c3f4efc16af5e03f9d964ee7601cf2d57a8f08dc5397c3207eb31366ba1d710c"
+    },
+    {
+      "path": "artifacts/current/ZWCAD2025/Plotters/LA_pdf.pc5",
+      "bytes": 1250,
+      "sha256": "be58e173ef35640eb2b30891885122aee76db67d7966959e5c6d5f35b76ec3b5"
+    },
+    {
+      "path": "artifacts/current/ZWCAD2025/Plotters/PMP Files/LA_pdf.pmp",
+      "bytes": 17879,
+      "sha256": "47b2b86bd97dd937facde6625b939841dc3be773496c3c35d58edd83e8c281e0"
+    },
+    {
+      "path": "artifacts/current/ZWCAD2025/System.Buffers.dll",
+      "bytes": 20856,
+      "sha256": "accccfbe45d9f08ffeed9916e37b33e98c65be012cfff6e7fa7b67210ce1fefb"
+    },
+    {
+      "path": "artifacts/current/ZWCAD2025/System.Memory.dll",
+      "bytes": 142240,
+      "sha256": "bf3fb84664f4097f1a8a9bc71a51dcf8cf1a905d4080a4d290da1730866e856f"
+    },
+    {
+      "path": "artifacts/current/ZWCAD2025/System.Numerics.Vectors.dll",
+      "bytes": 115856,
+      "sha256": "1d3ef8698281e7cf7371d1554afef5872b39f96c26da772210a33da041ba1183"
+    },
+    {
+      "path": "artifacts/current/ZWCAD2025/System.Resources.Extensions.dll",
+      "bytes": 61568,
+      "sha256": "fa11c08a622261c28aee318be8157d8a3e90fcd75383ffc3315ae5b9c748281a"
+    },
+    {
+      "path": "artifacts/current/ZWCAD2025/System.Runtime.CompilerServices.Unsafe.dll",
+      "bytes": 16768,
+      "sha256": "66409f670315afe8610f17a4d3a1ee52d72b6a46c544cec97544e8385f90ad74"
+    },
+    {
+      "path": "artifacts/current/ZWCAD2025pdfium.dll",
+      "bytes": 4968960,
+      "sha256": "bca96944d731dd72877116d3472083c847fe307fc58ca39bce16cbe998c478f1"
+    },
+    {
+      "path": "artifacts/current/更新说明.txt",
+      "bytes": 1233,
+      "sha256": "e5cd0d5d787c806053d8c994fa7397aefa65ab4b9236b2c5862eeeb8cdfc3653"
+    },
+    {
+      "path": "CHECKPOINT.md",
+      "bytes": 2182,
+      "sha256": "38431c557c1500008aa27a8af1227f9acb2e693793ab411369b1f7628844b542"
+    },
+    {
+      "path": "Directory.Build.props",
+      "bytes": 441,
+      "sha256": "efcbd3cae813449128ab27e8b1bb3ae67ed6f67c3b06794aac0ff4a8a2c793b0"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "bytes": 66981,
+      "sha256": "3fa73427a7ff3930b1ab0a3e59b0930f06fd58c85889edfaf9d25f3cd90bc959"
+    },
+    {
+      "path": "docs/LA批量打印 使用方法【使用必读】.docx",
+      "bytes": 186351,
+      "sha256": "057f56d26ac74057361aa287731d12a69270c8b0a4f256121e3a845c2edcbdd7"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.13.md",
+      "bytes": 1895,
+      "sha256": "a091108ebd8ba2c2ae9c99996aedd70a433316522232bc06c797b101f0be3e21"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.14.1.md",
+      "bytes": 1858,
+      "sha256": "f726cd5b2c64c436fdd5558da601017e0e1ec3d4df0209c5dc23dbad9d9caa72"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.14.md",
+      "bytes": 2317,
+      "sha256": "caf60a410c0cfdf82bd626576226a203a7c3b0659617feed4d0d6a509fab6739"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.15.1.md",
+      "bytes": 1495,
+      "sha256": "23318482ae6be42f0ba1f8796c85414b92758a4544988be22601c36b968ccd4e"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.15.2.md",
+      "bytes": 1859,
+      "sha256": "874a8a55c732d28ca6280fc4e8003ba3a2cb20cbe78afab3dfd70933b5289986"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.15.3.md",
+      "bytes": 1366,
+      "sha256": "0ef79daa408d30fc9fe271d275c3021946ec718a3f4ea55bed2a060665146777"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.15.4.md",
+      "bytes": 1317,
+      "sha256": "3a74712975111601ea6af01daff9848aa0732a124e4307cba97accc3f92ac7e8"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.15.5.md",
+      "bytes": 1175,
+      "sha256": "e7ff3a6e374b258714098e30f5e60e533a4591f2c967cd31a70c379543447600"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.15.6.1.md",
+      "bytes": 1398,
+      "sha256": "fbcc99b6842a96e7073951c74771cf09b7f4bb6aca54dac199bc306540f2f831"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.15.6.2.md",
+      "bytes": 1123,
+      "sha256": "72e12de369a34334dff9bf8e078d8605b66dd41c0bad4b407472ed3d515dd1af"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.15.6.3.md",
+      "bytes": 1252,
+      "sha256": "b928b27a2356207c253b1e351b08f5f5a799c722cce814b98bd19fd98f3a1bca"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.15.6.4.md",
+      "bytes": 1280,
+      "sha256": "f7ba14f5bfa6c3e6f6854f8a9de4227594b00f027c550ab5515865a82d3a0021"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.15.6.md",
+      "bytes": 1704,
+      "sha256": "12683e7abc8cea70fadc5fff843a8b790746225024767cbaa8a2e6691c23b6ea"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.15.7.1.md",
+      "bytes": 1205,
+      "sha256": "9dc5f2eb7004904a1befa78dc5bee5d206be38b485e56c924520650d4ab1fc5c"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.15.7.2.md",
+      "bytes": 1228,
+      "sha256": "11f0d8a6f229aaccfbc81c173943df24ee8a542b23f1c5fa63a226116c2dc3ab"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.15.7.3.md",
+      "bytes": 898,
+      "sha256": "2058aa77146c5045dd95fadf6fb966cd902ef94af108aeda490caf9438e9e298"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.15.7.4.md",
+      "bytes": 1407,
+      "sha256": "49d8690041c885639f592f5bee377595450f4d009a16356eae5093a50a9a9c86"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.15.7.5.md",
+      "bytes": 1538,
+      "sha256": "7c8af71ba57f07450ae10c59351f8c790b12951d9849de0027582daaade6a240"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.15.7.6.md",
+      "bytes": 1249,
+      "sha256": "79ad78071114884106f9d99929b1cfeeedac563cd51a67b1d74229298aba4c33"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.15.7.7.md",
+      "bytes": 2309,
+      "sha256": "3509f1c0cfaaf977d125ca6b82e129903e7f2f49a025579ab76b1f03e5aa512a"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.15.7.8.md",
+      "bytes": 3173,
+      "sha256": "ea7fc21512450bd88bbd3408566b4aa65131cb49dd7a1be30d01be51c8eff372"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.15.7.9.md",
+      "bytes": 3199,
+      "sha256": "e61ee74af8f31577cdff1d5571ebf0f53970ca4ce0e05922e01882ff1792ff5e"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.15.7.md",
+      "bytes": 1430,
+      "sha256": "49941e468849b95b9de53becf71b820ace42c22f61a49d0e4a292eb537d2f58f"
+    },
+    {
+      "path": "docs/RELEASE_NOTES_v1.15.8.md",
+      "bytes": 7916,
+      "sha256": "bccdfa6276f7947c62c5e146c24b5cf0ab4c2cc8e7e69086cadb05bdad538c1b"
+    },
+    {
+      "path": "docs/V1.12到V1.13用户功能更新说明.txt",
+      "bytes": 3021,
+      "sha256": "45691844b1536c17b1eb3927171d2f72ec554e810bc22382cb585b04abb9fe41"
+    },
+    {
+      "path": "docs/V1.13到V1.14用户功能更新说明.txt",
+      "bytes": 2396,
+      "sha256": "0bf507aaef41960df42cfc2d93bcb5510c47880ff4941d862cfbac543a153bcb"
+    },
+    {
+      "path": "docs/V1.14.1到V1.15.1用户功能更新说明.txt",
+      "bytes": 8092,
+      "sha256": "56bcc6f0fb3094d9178e9f2d609b6e2abb2d6e45ed639c66d5d34894c2e88cb4"
+    },
+    {
+      "path": "docs/wpf-migration-spec.md",
+      "bytes": 7807,
+      "sha256": "c5dc5ad845acf18aec5eda5ff68557bb7bb0726e0a191848cfbb55b331aa6cbf"
+    },
+    {
+      "path": "docs/图框二次框选修复说明.md",
+      "bytes": 3996,
+      "sha256": "723c710ba57ed939dfe3d556c692259bf5e1d23e1541677a0f0974d7c3593220"
+    },
+    {
+      "path": "docs/图框捕捉_v3日志分析.txt",
+      "bytes": 2768,
+      "sha256": "5b2c04e67292386dc562369fd906b7b628dbdc09255caf689037f2414fc7f6aa"
+    },
+    {
+      "path": "docs/用户使用说明.md",
+      "bytes": 17255,
+      "sha256": "4f0bcb2aeb620792bfb7a58233fa1b831c607097b9b8455e939fe09655d1a6ed"
+    },
+    {
+      "path": "docs/软件说明.txt",
+      "bytes": 1765,
+      "sha256": "490dda3b33cd38ad3829851e870e4ee83c28e8871c3211dd2d55481c5bdddafc"
+    },
+    {
+      "path": "docs/面板交互入口审查_v7.txt",
+      "bytes": 2434,
+      "sha256": "98d53c8f35a8a2a0ac9b0488894183f65a8d260a970b1a906e0b6f9167ead635"
+    },
+    {
+      "path": "global.json",
+      "bytes": 108,
+      "sha256": "7633df5cf3d09fbd5b72875dbd131db743aa47b2e895bfa4afa8610a6c174124"
+    },
+    {
+      "path": "installer/使用说明.txt",
+      "bytes": 794,
+      "sha256": "2d0cc624b0dc2fa272a66cb5e76587ea05bece476f49aebd4d773d65b82bbcde"
+    },
+    {
+      "path": "installer_acad/使用说明.txt",
+      "bytes": 1371,
+      "sha256": "b89f81f554af82df82888959afd966a1c317524e0e59ee23d9e12c0f982133fb"
+    },
+    {
+      "path": "LA.BatchPlot.sln",
+      "bytes": 5576,
+      "sha256": "ef57a454652f130b7bb9e7cab0020b7028248c4c6584ec88f58878d2e3d7a77a"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1062,
+      "sha256": "079affdcdc72cd2e59e8650021b4074b458cb9320610754bffb2f2aecc964553"
+    },
+    {
+      "path": "README.md",
+      "bytes": 15271,
+      "sha256": "7965cde79e361431a89a98780aeac8f8606697b235bdb9dd1c7c3ce31ddecbba"
+    },
+    {
+      "path": "resources/acad/Plotters/PIA2/LA_dwf.pc3",
+      "bytes": 4404,
+      "sha256": "87f5593ad758595f4e1dd7d869591e80d93ccaed349b5b14c97bf739f4d101b3"
+    },
+    {
+      "path": "resources/acad/Plotters/PIA2/LA_jpg.pc3",
+      "bytes": 924,
+      "sha256": "89ef98bee9297a4cd032545370cd2c27451964671a4031edd7bffb9e7fc3013e"
+    },
+    {
+      "path": "resources/acad/Plotters/PIA2/LA_pdf.pc3",
+      "bytes": 1118,
+      "sha256": "7b4c0261609df3adc18ea1d90821f9e74dc082fc3466b150d7370dc46f71e9a6"
+    },
+    {
+      "path": "resources/acad/Plotters/PIA2/LA_png.pc3",
+      "bytes": 963,
+      "sha256": "d83a7d2074900a154dc1f1b44fb783680187766a9ee4d8383afbd2f519f246c9"
+    },
+    {
+      "path": "resources/acad/Plotters/PIA2/PMP Files/LA_dwf.pmp",
+      "bytes": 5366,
+      "sha256": "590d98e0e4d469a6be9a3c42b004a81a49207cb891400aadce87685707dd538d"
+    },
+    {
+      "path": "resources/acad/Plotters/PIA2/PMP Files/LA_jpg.pmp",
+      "bytes": 10452,
+      "sha256": "46bc5a6b6b34dbc86af2b2b3430c9ff8406bf71c3cbfe716ab6f06b473f1dd10"
+    },
+    {
+      "path": "resources/acad/Plotters/PIA2/PMP Files/LA_pdf.pmp",
+      "bytes": 5257,
+      "sha256": "424f8bba0bc7540c37a0f445d7ba4819ebca9d27ab7c01d2520385df85233feb"
+    },
+    {
+      "path": "resources/acad/Plotters/PIA2/PMP Files/LA_png.pmp",
+      "bytes": 10492,
+      "sha256": "f0650e92f9ebfbcbe064a4523323db606c7bfdce5b646222b1d2fd3a4dee2538"
+    },
+    {
+      "path": "resources/acad/Plotters/PIA3/LA_pdf.pc3",
+      "bytes": 3436,
+      "sha256": "624855bc7304f8d9431403d5afdda0a32fa739f4aba9f7646212404c4a10ae24"
+    },
+    {
+      "path": "resources/acad/Plotters/PIA3/PMP Files/LA_pdf.pmp",
+      "bytes": 66043,
+      "sha256": "73d7e7dcc294d01bc785e6c930ccd60aa1ecf75aeccc51e44d75fc52f2bf1e21"
+    },
+    {
+      "path": "resources/acad/Plotters/README.md",
+      "bytes": 943,
+      "sha256": "ebf013d1b5079647d8d1e733d88b8be3df6f88a591046699cdc7322880d528a5"
+    },
+    {
+      "path": "resources/zwcad/Plotters/LA_pdf.pc5",
+      "bytes": 1250,
+      "sha256": "be58e173ef35640eb2b30891885122aee76db67d7966959e5c6d5f35b76ec3b5"
+    },
+    {
+      "path": "resources/zwcad/Plotters/PMP Files/LA_pdf.pmp",
+      "bytes": 17879,
+      "sha256": "47b2b86bd97dd937facde6625b939841dc3be773496c3c35d58edd83e8c281e0"
+    },
+    {
+      "path": "scripts/build-dll.ps1",
+      "bytes": 2308,
+      "sha256": "23193239fa9c9966c19228f4aab0e5e7b6df705903146bb36354eb8049b0a369"
+    },
+    {
+      "path": "scripts/generate-zwcad-plotter.ps1",
+      "bytes": 6361,
+      "sha256": "bf6de8b2e85b75709f5917d235b77c59895a76c21964b4d8611eda8a7bb9671d"
+    },
+    {
+      "path": "scripts/package-release.ps1",
+      "bytes": 7045,
+      "sha256": "283fa5f642235e176f4f96c1890c0389a843a0e542570205331588fff2016d36"
+    },
+    {
+      "path": "scripts/publish-release.ps1",
+      "bytes": 5389,
+      "sha256": "034c6e75e55c96f14e3a0c8b8ebff4d31d98028ad5a2b7feb778fca1176f760e"
+    },
+    {
+      "path": "scripts/push-all.ps1",
+      "bytes": 1051,
+      "sha256": "80e9f66921c21e6d7ac3046742f17c7a2e8512fc53530013058b06a17ff000ce"
+    },
+    {
+      "path": "scripts/remotes.ps1",
+      "bytes": 2260,
+      "sha256": "9705e2487512fdb524491370efd7829f044bfa0ccb2489dab862205a93520715"
+    },
+    {
+      "path": "src/AcadBatchPlot/AcadBatchPlot.csproj",
+      "bytes": 3696,
+      "sha256": "657bce753c0b57080069509a245f44cf79f6e985d15edf3282c69e50fb8168cf"
+    },
+    {
+      "path": "src/AcadBatchPlot.Core/AcadBatchPlot.Core.csproj",
+      "bytes": 3100,
+      "sha256": "ed3e02286be6065a2296047ce135642a1cb2c342b01b577cd9be610a88d121d4"
+    },
+    {
+      "path": "src/AutoCAD/AcadPlotterInstaller.cs",
+      "bytes": 76059,
+      "sha256": "da6013e326c73062466142ead20656c941ca94a4af91e6038d550f3ffc00c982"
+    },
+    {
+      "path": "src/AutoCAD/AutoloadManager.cs",
+      "bytes": 17355,
+      "sha256": "2e6debb4d984eea76d979e2c6d5506617e80d91d7601a7a5b2acb2d6e5f83234"
+    },
+    {
+      "path": "src/AutoCAD/Plotter/PlotterService.cs",
+      "bytes": 11924,
+      "sha256": "4c83f59e9f4a21cf69f0d79cf66893f7a9b74289063df8bca70de9bc2a5d5dc9"
+    },
+    {
+      "path": "src/AutoCAD/Plotter/PlotterService.Documents.cs",
+      "bytes": 10959,
+      "sha256": "7097d30fb65e1abcbbd365fd6fed7f86b7080851d208615eceafed25df638200"
+    },
+    {
+      "path": "src/AutoCAD/Plotter/PlotterService.Media.cs",
+      "bytes": 22506,
+      "sha256": "a59297d5aad9f57c75d06db56f986d73c0c0caae1cd15f63a3f2b935dabb3526"
+    },
+    {
+      "path": "src/AutoCAD/Plotter/PlotterService.MultiFile.cs",
+      "bytes": 13018,
+      "sha256": "cc1702085c3444cdfb38808bd60826fe1f4a59193f80a3502dea935e673bc977"
+    },
+    {
+      "path": "src/AutoCAD/Plotter/PlotterService.Pipeline.cs",
+      "bytes": 18311,
+      "sha256": "9cb8094ce60cd315c1622e57701610758318977d1ee4967e51f3ef6a22171ba2"
+    },
+    {
+      "path": "src/AutoCAD/Plotter/PlotterService.Scale.cs",
+      "bytes": 7812,
+      "sha256": "27c85183c70eb29dbaa67ef50d5f556cc0eba2be155212d9c15a819a1dee9ca8"
+    },
+    {
+      "path": "src/AutoCAD/Plotter/PlotterService.SystemVariables.cs",
+      "bytes": 2910,
+      "sha256": "1fbf041c64bcc46cafcf65e4010f02b6fd418ac736637a4d0abf6b04a5cb4834"
+    },
+    {
+      "path": "src/AutoCAD/Plotter/PlotterService.WarmUp.cs",
+      "bytes": 12121,
+      "sha256": "78f839c3f1afd92dcfea9cf346094e7016c9813b4c8a5781d038304041be8f8e"
+    },
+    {
+      "path": "src/AutoCAD/Plotter/PlotterService.Window.cs",
+      "bytes": 8974,
+      "sha256": "0538666b718c0a3dc1ce3e58a5846697ad438e8060b99a0b8c35f3d87ac29b61"
+    },
+    {
+      "path": "src/AutoCAD/PluginAssemblyResolver.cs",
+      "bytes": 4208,
+      "sha256": "1f7a8d18b12e6143e02f8ec6b28f8144c90b0adddedbda3e5efc562efa4af113"
+    },
+    {
+      "path": "src/BatchPlotter/BatchPlotter.csproj",
+      "bytes": 3402,
+      "sha256": "5a5785375ff04cbbbdaa639ae736458301218f005712ec60883bc82175f8bb12"
+    },
+    {
+      "path": "src/Common/Commands/AddTitleBlockCommands.cs",
+      "bytes": 30773,
+      "sha256": "64b8b31ce9ee20ba7982c16b45c952c10c322f836374197e5f65858ac8a4c124"
+    },
+    {
+      "path": "src/Common/Commands/BatchPlotCommands.cs",
+      "bytes": 23841,
+      "sha256": "c034c5b465fa2db47afde0ac422463fe852148d474655626692c12186c2e5e2e"
+    },
+    {
+      "path": "src/Common/Commands/CoordinateUtils.cs",
+      "bytes": 2936,
+      "sha256": "1fe767b8732332032145fc263e9038ca2f82278a3df3cfa96e520ab4fcd77ac3"
+    },
+    {
+      "path": "src/Common/Commands/EditTitleBlockCommands.cs",
+      "bytes": 23118,
+      "sha256": "2aa75d47bc0e898683a874cc68d857f9a243e59d776ec319435765704a19a29d"
+    },
+    {
+      "path": "src/Common/Commands/PendingLibraryInput.cs",
+      "bytes": 5261,
+      "sha256": "70900c42e45b62062636e1dae11d20c5cfb832393bf20967cdbcae8b5f1ea49b"
+    },
+    {
+      "path": "src/Common/Commands/PendingPlotPreview.cs",
+      "bytes": 3457,
+      "sha256": "7b38089ecf8409a848cb8f3ed390e543089b67bba45048883cb6ca855bbb460e"
+    },
+    {
+      "path": "src/Common/Commands/RectangleBatchVerifyCommands.cs",
+      "bytes": 17392,
+      "sha256": "17d712090dc9ebcf68e96ec61777674da160e2e6bda1d137588a10d77659ec0b"
+    },
+    {
+      "path": "src/Common/Commands/RectangleScanProfileCommands.cs",
+      "bytes": 3985,
+      "sha256": "e4848982e865608215801952a189be3fd7cc479b18efe5a39b2a241e89de7ede"
+    },
+    {
+      "path": "src/Common/Commands/SinglePlotCommands.cs",
+      "bytes": 319,
+      "sha256": "c62764a82e95ba36168260a8530c9ce747448b540f1574a765b9d8b2bfe9a040"
+    },
+    {
+      "path": "src/Common/Geometry/BlockFrameGeometry.cs",
+      "bytes": 10883,
+      "sha256": "c33b71edcb179a9d317320daead06b9cb6043a55429bfbe1c989b0b55c0bf58c"
+    },
+    {
+      "path": "src/Common/Geometry/CadCoordinateSystem.cs",
+      "bytes": 8822,
+      "sha256": "88ba2db0d267f9470712709b42f000fcd9cb89829866fdaaf6e45f475d50fb11"
+    },
+    {
+      "path": "src/Common/Geometry/DwgViewFit.cs",
+      "bytes": 1403,
+      "sha256": "1f35068b5e37b347b130a7a95ec7eabcdf388967be9df15c9fb7145a347255cc"
+    },
+    {
+      "path": "src/Common/Geometry/FourLineRectangleFinder.cs",
+      "bytes": 21021,
+      "sha256": "ad175fe170ea3145f40887259ed34541c7adabafe8485ee603624d67a53ad3d2"
+    },
+    {
+      "path": "src/Common/Geometry/RectangleGeometry.cs",
+      "bytes": 10075,
+      "sha256": "307f29148666f8f75221ae237c6877303941475b1a93a8492565d24c78a63bb8"
+    },
+    {
+      "path": "src/Common/Geometry/RegionTextHitTest.cs",
+      "bytes": 7560,
+      "sha256": "e13dc7f4195ebe83149d726094fcc9ee2d0944af3d69820fc94e96275deff556"
+    },
+    {
+      "path": "src/Common/Geometry/SpatialSorter.cs",
+      "bytes": 6238,
+      "sha256": "ddd41f3d3e6d3a4f5c59c8b475082b01af3d8f69c2d6017cf7942e03dc358bdd"
+    },
+    {
+      "path": "src/Common/Infrastructure/BatchPlotHostProgress.cs",
+      "bytes": 718,
+      "sha256": "3a35fc6aa9dfcb591df410f55d2ac8b7deac9b27b78210d94dd0b83f89580bcc"
+    },
+    {
+      "path": "src/Common/Infrastructure/BatchPrintProgressSession.cs",
+      "bytes": 2007,
+      "sha256": "4dc28eb39662780a6e25fe4853838ebc972468540be22cfd35d8f3f4d0824148"
+    },
+    {
+      "path": "src/Common/Infrastructure/CadDialog.cs",
+      "bytes": 2892,
+      "sha256": "e94b0e4c6bd6864a7430bf1b9ecd7238b9861c27c672fa59788f416efcef9b09"
+    },
+    {
+      "path": "src/Common/Infrastructure/CadInputScope.cs",
+      "bytes": 1749,
+      "sha256": "3c79f8467fdd3dd437b0a735324e97a37935ad79ec72089f4b2062ad4c64eb70"
+    },
+    {
+      "path": "src/Common/Infrastructure/CadMenuInstaller.cs",
+      "bytes": 10841,
+      "sha256": "45dcf764f9bffbfc16410e9b7e25be17bf89310d67233891c4e2b8030c9eee48"
+    },
+    {
+      "path": "src/Common/Infrastructure/CadPickDiagnostics.cs",
+      "bytes": 18510,
+      "sha256": "7377640c1ecf311ada0f48add072cd9f2bbff633c39ec0c30908402c85a9af5a"
+    },
+    {
+      "path": "src/Common/Infrastructure/CadPickTrace.cs",
+      "bytes": 5796,
+      "sha256": "3f29123c0a50552ae5c1afce00e0619bfb41c8b3937c890fd9fd4bd6bbf077ca"
+    },
+    {
+      "path": "src/Common/Infrastructure/CadWindowFocus.cs",
+      "bytes": 7839,
+      "sha256": "3e4f48cb2a4f48fc3b1fa9e37fc051f89f79fdb380542fd32f6d5aa24acf6449"
+    },
+    {
+      "path": "src/Common/Infrastructure/CommandAliasManager.cs",
+      "bytes": 16131,
+      "sha256": "b5208a0094d678381fc4ab18e876ac81fac49861e1d0a91ebc4d291e9c585af3"
+    },
+    {
+      "path": "src/Common/Infrastructure/DirectoryTableGenerator.cs",
+      "bytes": 24955,
+      "sha256": "9f3962d2f685a48ee3ff08758b7e759f4165d3aa977284c34bb466d793a28a39"
+    },
+    {
+      "path": "src/Common/Infrastructure/LoadedAssemblyResolver.cs",
+      "bytes": 1715,
+      "sha256": "fa0030cb8c1c1899a0fbae54267dfe90c8093e90ff3792dce9e4f97aba65a030"
+    },
+    {
+      "path": "src/Common/Infrastructure/OperationLogStore.cs",
+      "bytes": 2108,
+      "sha256": "75afbdb6b3351cf9b9923b59a232412de6045518f3d3787a626283ec539b88f4"
+    },
+    {
+      "path": "src/Common/Infrastructure/RectangleScanProgressSession.cs",
+      "bytes": 2804,
+      "sha256": "a0f51946a2601f95481c54dc693d848d215fa14fe7cf7d25a1c5df26e016cd0b"
+    },
+    {
+      "path": "src/Common/Infrastructure/TemporarySequenceOverlay.cs",
+      "bytes": 20770,
+      "sha256": "4607ebccc69a03f3a9314a245f71ef5852281569f8d68c416b7f5908512212dc"
+    },
+    {
+      "path": "src/Common/Infrastructure/TransientFrameMarkers.cs",
+      "bytes": 13691,
+      "sha256": "099c5ece3e595b997a314fa9b8639d6331950dfe85039e2f2d673b85657dc5c5"
+    },
+    {
+      "path": "src/Common/Models/AppSettingsStore.cs",
+      "bytes": 24808,
+      "sha256": "deebd840c387de4ba7391100c3a2bde4cd52ad707601cdf0e330836cc02da92d"
+    },
+    {
+      "path": "src/Common/Models/Models.cs",
+      "bytes": 8901,
+      "sha256": "5b0651f146378fcd76468386dd2b73d235a7cdb165ce6af10d21f98aa6d0a009"
+    },
+    {
+      "path": "src/Common/Models/RectangleScanProgress.cs",
+      "bytes": 646,
+      "sha256": "ec29978ced01ecc250e0fc26404f94bf3f80247308c9669b9d3366cb3c2ff062"
+    },
+    {
+      "path": "src/Common/Models/TitleBlockLibraryStore.cs",
+      "bytes": 7334,
+      "sha256": "4fe61b74d4786f66382f2fe93c7d8a32d79654f5bf82871dec3b8573bdaf3f0a"
+    },
+    {
+      "path": "src/Common/Services/Paper/ArbitraryPaperPicker.cs",
+      "bytes": 5218,
+      "sha256": "0b902b3c29795b0cf5864faaf8b33f0c46dcfefef01c54a30c32b36bc517b29e"
+    },
+    {
+      "path": "src/Common/Services/Paper/CustomPaperBatchPreparer.cs",
+      "bytes": 8883,
+      "sha256": "67716b9eb3bd511aac1b9668d3be1ef23e30a119ae2aa03b5f47787d5fd6f0ef"
+    },
+    {
+      "path": "src/Common/Services/Paper/OutputPaperNameResolver.cs",
+      "bytes": 2839,
+      "sha256": "c21d2923fd5a7507a71d7cd1974cc82f7ca7c2b409e9a028a0279a5252323b86"
+    },
+    {
+      "path": "src/Common/Services/Paper/PaperSizeDetector.cs",
+      "bytes": 56026,
+      "sha256": "fb859c4027c3d5e2c47269231a6f543948be64c2718ef09e6ef35dc33db9ac71"
+    },
+    {
+      "path": "src/Common/Services/Paper/PmpCustomPaper.cs",
+      "bytes": 25443,
+      "sha256": "959dee0651f6004eff0a40416d26ee527c9ebe79334126fcf5af40cdaab67ccf"
+    },
+    {
+      "path": "src/Common/Services/Paper/PmpPiaConverter.cs",
+      "bytes": 2554,
+      "sha256": "9736f9f6fc9cc37bba7c0839e870cd49c1d95c4a25fa8e9c8c78832242dc2fac"
+    },
+    {
+      "path": "src/Common/Services/Paper/ScaleSettingsPicker.cs",
+      "bytes": 10134,
+      "sha256": "e93bfa6b93cf006495189aab38bb4539e93a3c958c97df73f16a686b13abab7a"
+    },
+    {
+      "path": "src/Common/Services/Plotting/DwgSplit/DwgDatabaseCleanup.cs",
+      "bytes": 11597,
+      "sha256": "e5b82d5ac95c1d3bd94ef139684d459970a6a8933ce7dd19907c561e6234e3a4"
+    },
+    {
+      "path": "src/Common/Services/Plotting/DwgSplit/DwgModelSplitter.cs",
+      "bytes": 8218,
+      "sha256": "78e85378dbe83c152a99248504ae026cc1c0354197f04a5a58844ecfa729d011"
+    },
+    {
+      "path": "src/Common/Services/Plotting/DwgSplit/DwgPaperSplitter.cs",
+      "bytes": 5665,
+      "sha256": "4d615f76cea0bea26c9213868c431b013d7c64b99ed3842776726008cc69b6ad"
+    },
+    {
+      "path": "src/Common/Services/Plotting/DwgSplit/DwgSavedView.cs",
+      "bytes": 3787,
+      "sha256": "ca1b3e173b55e4d07602af4e29de4128b6c1683edff8160b9bda7b380fba97cf"
+    },
+    {
+      "path": "src/Common/Services/Plotting/DwgSplit/DwgSplitGeometry.cs",
+      "bytes": 45228,
+      "sha256": "6802a0090dbae9004db6576968ec3b4652f6d40caaeba44a65086862b7df46f6"
+    },
+    {
+      "path": "src/Common/Services/Plotting/DwgSplit/DwgSplitService.cs",
+      "bytes": 14774,
+      "sha256": "bc8966b5f1ab3c3feacc3af6216837a3b73771deb7871e76f7b6190839f0d133"
+    },
+    {
+      "path": "src/Common/Services/Plotting/ObjectLineweightPlotStyle.cs",
+      "bytes": 16147,
+      "sha256": "a091a05b9b7b816bae89868720ef5e0f40415906583b7e8147374205c50528d2"
+    },
+    {
+      "path": "src/Common/Services/Plotting/PdfDocumentService.cs",
+      "bytes": 12352,
+      "sha256": "e0383a0be076efcf1aa64ec02dc4b3f951f0c9edb4d17d1bca8b9fa25a37ad85"
+    },
+    {
+      "path": "src/Common/Services/Plotting/PdfRasterExport.cs",
+      "bytes": 14822,
+      "sha256": "f6d9e1a9e939e3706c2821df3b3f394709ffdddad2ed3a7fccf720ee9c2db983"
+    },
+    {
+      "path": "src/Common/Services/Plotting/PlotStyleLineweightConverter.cs",
+      "bytes": 16146,
+      "sha256": "479fa4bacfd3233894bd8b7de6dc7d9dfca069fb803bee0768859edddd649e43"
+    },
+    {
+      "path": "src/Common/Services/Plotting/PlotStyleManager.cs",
+      "bytes": 14971,
+      "sha256": "869c040b0c0c4a241b56aed7d51bb8ddf7f3c28161cec427ebd5dd6d16c7df27"
+    },
+    {
+      "path": "src/Common/Services/Plotting/PlotTextGeometryFileUpdater.cs",
+      "bytes": 2722,
+      "sha256": "53834163cb585c3918b1a58aba5825943dd91e085624bf5734b26edaecc604d2"
+    },
+    {
+      "path": "src/Common/Services/Plotting/PlotTextGeometryModeResult.cs",
+      "bytes": 278,
+      "sha256": "d17126cb597e34b693edc09c00ebe11891d9e731cac896a260a25b585e2fcca1"
+    },
+    {
+      "path": "src/Common/Services/Plotting/PlotWindowInset.cs",
+      "bytes": 5826,
+      "sha256": "62a516b6294df01e31774232d28e2221d5569d99d379567344d30a49f7c9cac4"
+    },
+    {
+      "path": "src/Common/Services/Plotting/RasterPlotOrientation.cs",
+      "bytes": 1106,
+      "sha256": "fd90b09063c9da3362c7b37599b2d70d42d239321603a581ee75811c45785070"
+    },
+    {
+      "path": "src/Common/Services/Scanning/CadTextExtractor.cs",
+      "bytes": 46051,
+      "sha256": "4cf5b5f4bcf37910f346d989211dde432a472cd772f4e0d616fbaee82ecae110"
+    },
+    {
+      "path": "src/Common/Services/Scanning/CadTextUpdater.cs",
+      "bytes": 21158,
+      "sha256": "ee602d9ce3b2553ec7fdf4401da6342a527b337dc1a387b5fb5e9e83ae77d12b"
+    },
+    {
+      "path": "src/Common/Services/Scanning/DwgSpaceCatalog.cs",
+      "bytes": 5299,
+      "sha256": "a3f00a518d5ec2157a9499316506b79f3d153d6cd40576a3239aa654b4aea773"
+    },
+    {
+      "path": "src/Common/Services/Scanning/ObjectSelectionPrompt.cs",
+      "bytes": 8877,
+      "sha256": "666950c725992073628f09c996c8b92d5c9826534f40050679b3f244c0cea984"
+    },
+    {
+      "path": "src/Common/Services/Scanning/RectangleFrameScanner.cs",
+      "bytes": 99250,
+      "sha256": "2a2a9cc3818e97a18ba0de4cfd4a31ea2ea7a603eec53e46746f8b4436de36a7"
+    },
+    {
+      "path": "src/Common/Services/Scanning/ScanCandidateFilter.cs",
+      "bytes": 5155,
+      "sha256": "3641185ad1d5e8f236780176dcbe83b65759f83a5988bb653f627e2557c2251b"
+    },
+    {
+      "path": "src/Common/Services/Scanning/TianzhengTextReader.cs",
+      "bytes": 11580,
+      "sha256": "8b72e406359bb46b27df21695873daca1bd465447e8b334bbbb78f6f173b9246"
+    },
+    {
+      "path": "src/Common/Services/Scanning/TitleBlockCornerModeGrouper.cs",
+      "bytes": 8714,
+      "sha256": "209ac6c5014ffc5f024f5bc449512a60a4b6d4e8cc71ab42187ad7d7c69e4307"
+    },
+    {
+      "path": "src/Common/Services/Scanning/TitleBlockScanner.cs",
+      "bytes": 60406,
+      "sha256": "bf3c125f5e36dba260fc8e83520fc45b8ad103e2b4d6e919ba0bf0054ae921de"
+    },
+    {
+      "path": "src/Common/Utilities/AtomicFileWriter.cs",
+      "bytes": 4306,
+      "sha256": "751172a5a54a5caece62e9edf0ee01c38be47732774d388d1f5132d61f0a1eac"
+    },
+    {
+      "path": "src/Common/Utilities/BatchPlotLogger.cs",
+      "bytes": 2559,
+      "sha256": "926dfbb7005a7e56f2d3bf5168f56854eb15719cc8869cd54f6d6fac229c550b"
+    },
+    {
+      "path": "src/Common/Utilities/CsvExporter.cs",
+      "bytes": 1522,
+      "sha256": "01c3c78941dde6e4612800b27c108ea62dc172cb3defc2e3ec5337ff3d47b9a9"
+    },
+    {
+      "path": "src/Common/Utilities/FileNameSanitizer.cs",
+      "bytes": 19713,
+      "sha256": "2e751aabc381d4a1d9b6be335926b787d09d022fd8ebf27980b6a4b5efd80eff"
+    },
+    {
+      "path": "src/Common/Utilities/MultiFileJobMerge.cs",
+      "bytes": 3243,
+      "sha256": "09bd9bbe1577b1f28a7ce73936a8d5c61947bdf9799b5c6ff13b9c9f96a01798"
+    },
+    {
+      "path": "src/Common/Utilities/NaturalStringComparer.cs",
+      "bytes": 1507,
+      "sha256": "70406cd60bbb80f019872286680aab11ab7e2757f23c42baeaf876b3fa1a84f2"
+    },
+    {
+      "path": "src/Common/Utilities/TitleBlockRegionConverter.cs",
+      "bytes": 3441,
+      "sha256": "539e824e7e44d08e744656898f78955ac62f09c5fcb9ddc270796c6fc106a18e"
+    },
+    {
+      "path": "src/Common/Views/AboutControl.xaml",
+      "bytes": 2492,
+      "sha256": "3723ae0468c1521d93c07d7d99770f4a5a3a3a4673f16982d3cec54cf209ae7a"
+    },
+    {
+      "path": "src/Common/Views/AboutControl.xaml.cs",
+      "bytes": 943,
+      "sha256": "a862480032762ebc9e094819887427f9f87d887c5c67724c24a2f23257e10730"
+    },
+    {
+      "path": "src/Common/Views/AboutDialog.xaml",
+      "bytes": 724,
+      "sha256": "042525cae0d0b76d797e17e410a574ed6b3a8207dfeeb49808002746ebd833a0"
+    },
+    {
+      "path": "src/Common/Views/AboutDialog.xaml.cs",
+      "bytes": 619,
+      "sha256": "7bd7ede4411fab076dbc6d62b439110429ed6dd4d96d0997486748a47e612de4"
+    },
+    {
+      "path": "src/Common/Views/BatchPlotForm.xaml",
+      "bytes": 16675,
+      "sha256": "e95dd9f096168aeec3a3c45123b71ea329a9d48fda8fa6bf58714d9248e4070b"
+    },
+    {
+      "path": "src/Common/Views/BatchPlotForm.xaml.cs",
+      "bytes": 115607,
+      "sha256": "d4ba7806495279dfa4a1800577bf2c69552cd53065b0523f658783862cc23934"
+    },
+    {
+      "path": "src/Common/Views/BatchPrintProgressWindow.xaml",
+      "bytes": 2940,
+      "sha256": "4edb07a2150497cdfb6005940191edff5f78a2a800615726f33c02d4668923dc"
+    },
+    {
+      "path": "src/Common/Views/BatchPrintProgressWindow.xaml.cs",
+      "bytes": 4778,
+      "sha256": "0fa75272960160fef821b20b7aed69e1adc8bc51bbba38d4f97470486e6bfc4b"
+    },
+    {
+      "path": "src/Common/Views/CustomScaleForm.xaml",
+      "bytes": 2068,
+      "sha256": "f544e92752e006b6f7401a81b971bcc06194ac8e141b6866d34ef38d3fe7bcd3"
+    },
+    {
+      "path": "src/Common/Views/CustomScaleForm.xaml.cs",
+      "bytes": 9809,
+      "sha256": "03cf6c368f5b41ee82d01c3e59ca78a7782fb48eef1c99bddd516fe45c0471bc"
+    },
+    {
+      "path": "src/Common/Views/DrawingNumberReorderControl.xaml",
+      "bytes": 5299,
+      "sha256": "1687a67d7979c3a858ffec3ac3c3dab78f9831f215dbf15e61526c23f5af86c4"
+    },
+    {
+      "path": "src/Common/Views/DrawingNumberReorderControl.xaml.cs",
+      "bytes": 4022,
+      "sha256": "9b3f58326d15bc1d0eed6a1fa6f0e754974e653292f67cebd8b445ae3c9e8c58"
+    },
+    {
+      "path": "src/Common/Views/DrawingNumberReorderDialog.xaml",
+      "bytes": 694,
+      "sha256": "410b178a391a60ea4db4a2eab551f44cf097f0e47e7aafe05eb92ee95c52ae7b"
+    },
+    {
+      "path": "src/Common/Views/DrawingNumberReorderDialog.xaml.cs",
+      "bytes": 2052,
+      "sha256": "3aebcc111d2f78e8360326ede4719583a23c3321e36483484d3ea29e3b869b69"
+    },
+    {
+      "path": "src/Common/Views/FieldBoxSelectDialog.xaml",
+      "bytes": 11295,
+      "sha256": "23b3c1d0377b2d8f98706797d1e22c521822fcbc6ab98197f0ebdf3af604439c"
+    },
+    {
+      "path": "src/Common/Views/FieldBoxSelectDialog.xaml.cs",
+      "bytes": 37909,
+      "sha256": "38ee626b5e2478c7ecb408d0f82238e24188d6e6bf73a6b87dde31613b829835"
+    },
+    {
+      "path": "src/Common/Views/MainWindow.xaml",
+      "bytes": 547,
+      "sha256": "3357223ae8a20a324990127f02b67366d3d6b216d5da65ab69ed97f24fdd8195"
+    },
+    {
+      "path": "src/Common/Views/MainWindow.xaml.cs",
+      "bytes": 4376,
+      "sha256": "0080eacda93425228aabb7b4f836ea55fcf6a85be44d5fc46aa264ceb8b4a9d6"
+    },
+    {
+      "path": "src/Common/Views/OperationLogControl.cs",
+      "bytes": 5776,
+      "sha256": "e62ca7da160f675d9e91527d33993163548c396e981ae8b2bb4112f0729d5596"
+    },
+    {
+      "path": "src/Common/Views/RectangleBatchPlotForm.xaml",
+      "bytes": 16889,
+      "sha256": "5ac31f0ae825d36d781db00fb4941701f5ddfa1ca359a5f5e70262b16e27b9eb"
+    },
+    {
+      "path": "src/Common/Views/RectangleBatchPlotForm.xaml.cs",
+      "bytes": 117718,
+      "sha256": "955cbb9ab3a03f5d1bab48c5839d3d8c75e16c9863a386a4b3ff68caaa4a5516"
+    },
+    {
+      "path": "src/Common/Views/ScanSpacePickerDialog.xaml",
+      "bytes": 930,
+      "sha256": "23276d3e8a5552f0a4e790b9c913a3d3e8e1992a6aa37b17dd24e9516f7b7f88"
+    },
+    {
+      "path": "src/Common/Views/ScanSpacePickerDialog.xaml.cs",
+      "bytes": 12744,
+      "sha256": "e28a8b4f7ccc2f229bb1c7ca0abc382d1505dc84dd3cf2fa57b35189192b41b5"
+    },
+    {
+      "path": "src/Common/Views/SettingsForm.xaml",
+      "bytes": 33221,
+      "sha256": "eb14fb1a53306c806dc658d6d3c76b676a0d8ee27d4a461e18c6395ee940e9ff"
+    },
+    {
+      "path": "src/Common/Views/SettingsForm.xaml.cs",
+      "bytes": 51025,
+      "sha256": "2e9fe5b9ae4e7dece19f4e8ddca10e7747db4d7c0dd917160898b0c4fcef7fc0"
+    },
+    {
+      "path": "src/Common/Views/ShortcutSettingsControl.xaml",
+      "bytes": 2153,
+      "sha256": "4216654685b9915e2d9b0bcd3f35e5addba39d01c823daa6ca62d971abbacd9c"
+    },
+    {
+      "path": "src/Common/Views/ShortcutSettingsControl.xaml.cs",
+      "bytes": 4660,
+      "sha256": "84a9e74b6bbdea3366d8b7be587417879badd386e5e65cb3678887d75707ef67"
+    },
+    {
+      "path": "src/Common/Views/ShortcutSettingsDialog.xaml",
+      "bytes": 675,
+      "sha256": "ef2d1ee3671188a8608e41820ca565f2b33a63be603e333c03ec5a72545e78cc"
+    },
+    {
+      "path": "src/Common/Views/ShortcutSettingsDialog.xaml.cs",
+      "bytes": 1362,
+      "sha256": "e876eba7a3781698d85d22c77409bb87dc917bb7d4e21ff44e70ad9faf79ea2a"
+    },
+    {
+      "path": "src/Common/Views/SinglePlotForm.xaml",
+      "bytes": 5538,
+      "sha256": "07f6a08b4aee41ca42eba4a0039c5b596122d8da14b6c89fc8156f3dfccdbb3c"
+    },
+    {
+      "path": "src/Common/Views/SinglePlotForm.xaml.cs",
+      "bytes": 25904,
+      "sha256": "522fde3de0a79b6dfa25bf00d43323b7e96cbfb4452b4235fff00d098706fc23"
+    },
+    {
+      "path": "src/Common/Views/SinglePlotPaperSelectionForm.xaml",
+      "bytes": 2147,
+      "sha256": "b95e31ecd2169af569ffa523a07186f46a657461f0a2b758683483394018d3fc"
+    },
+    {
+      "path": "src/Common/Views/SinglePlotPaperSelectionForm.xaml.cs",
+      "bytes": 1129,
+      "sha256": "9fcc4fd7fa76c076f66e5c0a11e52e7983c26050e5db2d06a2114f48c164800c"
+    },
+    {
+      "path": "src/Common/Views/SortOrderControl.xaml",
+      "bytes": 8262,
+      "sha256": "97a150e3bf8e903f7f16cac682d4c667714b2c880d41d96bfbd2851e7eb6b1af"
+    },
+    {
+      "path": "src/Common/Views/SortOrderControl.xaml.cs",
+      "bytes": 1734,
+      "sha256": "17d7aacdf4f486af46e5c5e08100ae33a7db7fbfe929a04b47a04bc75742cec0"
+    },
+    {
+      "path": "src/Common/Views/SortOrderDialog.xaml",
+      "bytes": 683,
+      "sha256": "aebc4c16940bd38b94a8903599e874f3c655b11b2fa51705b0bc357d37325dcb"
+    },
+    {
+      "path": "src/Common/Views/SortOrderDialog.xaml.cs",
+      "bytes": 1694,
+      "sha256": "8f6c29d3325a42c4d50585fd64d23d7e3c7952e35a61d7302d1d9100a58f6641"
+    },
+    {
+      "path": "src/Common/Views/TitleBlockLibraryManagerForm.xaml",
+      "bytes": 4628,
+      "sha256": "3127fd9696640c24d1f1508e1ec5a60c8da790989503299f0bf6c32f5e6b5e8c"
+    },
+    {
+      "path": "src/Common/Views/TitleBlockLibraryManagerForm.xaml.cs",
+      "bytes": 38060,
+      "sha256": "3c25191449aef86b600afc6cfdf86d356574a71ddecc38ed1191628559f87d4b"
+    },
+    {
+      "path": "src/Common/Views/TitleBlockModeDialog.xaml",
+      "bytes": 2604,
+      "sha256": "05b2be1bf3e077c0ac09d5e5e33c06d92b1e2b5b4c3d9b9ae5b12ccd9eb0e9b5"
+    },
+    {
+      "path": "src/Common/Views/TitleBlockModeDialog.xaml.cs",
+      "bytes": 2078,
+      "sha256": "225e282947d7e4d3772b9e5222bce11f8d70c70fca569ee30dcb5610f09f7ff2"
+    },
+    {
+      "path": "src/Common/Views/UiLayout.cs",
+      "bytes": 5630,
+      "sha256": "4cc3d7b2f4635d63548495efec97448f4f9ea316bd202f1a1742c10345f2c569"
+    },
+    {
+      "path": "src/Common/Views/WpfUi.xaml",
+      "bytes": 3772,
+      "sha256": "ef19081968526dffb1c0256d293b8ddb8f6719d728035fc7f9a348cfae78bd1d"
+    },
+    {
+      "path": "src/PianNoCN/Pia/EnumDecompressionType.cs",
+      "bytes": 82,
+      "sha256": "c6cf99f2c0ad1629deaa80829b69314fd6940f24d6ff29167b347ddf17eb3382"
+    },
+    {
+      "path": "src/PianNoCN/Pia/PiaException.cs",
+      "bytes": 451,
+      "sha256": "539ce8dde8a24eb405cac199a4743cd9e89dac31a02a0ce9fac66517a2f74dfc"
+    },
+    {
+      "path": "src/PianNoCN/Pia/PiaFile.cs",
+      "bytes": 1601,
+      "sha256": "988e6a41f45fa869df788ceaa9b0dc291bc2b6db97b07f755bd2fbbc538e2bdc"
+    },
+    {
+      "path": "src/PianNoCN/Pia/PiaHeader.cs",
+      "bytes": 1032,
+      "sha256": "08f16f08a225f918c510ec156093ae648c3633e96aa478feae815ffd32c5f5b6"
+    },
+    {
+      "path": "src/PianNoCN/Pia/PiaNode.cs",
+      "bytes": 2991,
+      "sha256": "69335624177f81f3847e36b006d5e4e7161d7f4dd7f8ddb96539bfcaa9356770"
+    },
+    {
+      "path": "src/PianNoCN/Pia/PiaSerializer.cs",
+      "bytes": 7548,
+      "sha256": "6ed9566117a11ad79cd664dee74ba85c6785ca6a35dea57b27ed2a770770165a"
+    },
+    {
+      "path": "src/PianNoCN/PianNoCN.csproj",
+      "bytes": 447,
+      "sha256": "b9ccad4ab4cff76a530d2baa3af2ac0f982619121b1d3a929b0edf084080e2de"
+    },
+    {
+      "path": "src/PianNoCN/Plot/Media.cs",
+      "bytes": 175,
+      "sha256": "c698daef927ba9d6a279d0498fe425b7c4153a5b4f5afd64ffb263bbaaae99c2"
+    },
+    {
+      "path": "src/PianNoCN/Plot/PlotterConfiguration.cs",
+      "bytes": 5295,
+      "sha256": "6b3ee1f71ccb87839f42150147e4a2f876bcb3d3de684d67f00656b904b035f6"
+    },
+    {
+      "path": "src/ZWCAD/AcadPlotterInstaller.cs",
+      "bytes": 27610,
+      "sha256": "1812cf1f92641d48a9492c639c976e0a46ac5c3e6a574dfe42c2436fde95a86b"
+    },
+    {
+      "path": "src/ZWCAD/AutoloadManager.cs",
+      "bytes": 6116,
+      "sha256": "538d4177c9902948e577daddf0654494c30e5e1f9f5e2a4bd96ddbc76f03d04d"
+    },
+    {
+      "path": "src/ZWCAD/Plotter/PlotterService.cs",
+      "bytes": 12973,
+      "sha256": "14e3838a68f543f3c4bfa504a7f8963b9a5b16a31a735d3c105b781d285bafc0"
+    },
+    {
+      "path": "src/ZWCAD/Plotter/PlotterService.Documents.cs",
+      "bytes": 5210,
+      "sha256": "afd6198f87de9be0d004d3b4c1f056b3346b650cea68ebb03bb6019258d40006"
+    },
+    {
+      "path": "src/ZWCAD/Plotter/PlotterService.Media.cs",
+      "bytes": 14647,
+      "sha256": "278aa0a6777929c67ef6259957a4033d26148890d1a5128a7ff242a8ed6d42f1"
+    },
+    {
+      "path": "src/ZWCAD/Plotter/PlotterService.MultiFile.cs",
+      "bytes": 12934,
+      "sha256": "4e00ca2ab8a32d1fdb65ef5ec1688daf8f9e8c3cb5753cc5ae6f36c2c08197ee"
+    },
+    {
+      "path": "src/ZWCAD/Plotter/PlotterService.Pipeline.cs",
+      "bytes": 17666,
+      "sha256": "23cdfa721726135ba0d9b59a019b748719a16bf5a25f448579c6a5302c22bed9"
+    },
+    {
+      "path": "src/ZWCAD/Plotter/PlotterService.Scale.cs",
+      "bytes": 6238,
+      "sha256": "a4fe92c644f0bece6131f07690cf94c916e49d0fb8e950deaa2dd16f5458ccdb"
+    },
+    {
+      "path": "src/ZWCAD/Plotter/PlotterService.SystemVariables.cs",
+      "bytes": 2465,
+      "sha256": "8b498e4dd51ac8f44367ce7504234f165026822a94d1c57da1ad5b91f1e9eaed"
+    },
+    {
+      "path": "src/ZWCAD/Plotter/PlotterService.WarmUp.cs",
+      "bytes": 12178,
+      "sha256": "a52de11e30bcb4d6da42d6fd058845c3a1792cae4bf93dd77e71d26a16771170"
+    },
+    {
+      "path": "src/ZWCAD/Plotter/PlotterService.Window.cs",
+      "bytes": 8679,
+      "sha256": "1a562e8c57de37284efbb1d505e83f38583bbd5719f9c4596fedf4aba6c94e40"
+    },
+    {
+      "path": "src/ZWCAD/Properties/AssemblyInfo.cs",
+      "bytes": 161,
+      "sha256": "11c54537a5e88c38c1b40e4411c85615fb9ea9eaa64c0162101a15c747334611"
+    },
+    {
+      "path": "tests/LibraryInputRouting/DwgViewFitRegression.cs",
+      "bytes": 1348,
+      "sha256": "9e95cae59e52b9abb808709bf53251486a5c1c820a5d1b159891f7af9b944a40"
+    },
+    {
+      "path": "tests/LibraryInputRouting/LibraryInputRouting.csproj",
+      "bytes": 655,
+      "sha256": "3908eac43e6195b64094337d2e0d1c5a63debab205d2126ae12d5f983abf6884"
+    },
+    {
+      "path": "tests/LibraryInputRouting/PaperAndLogRegression.cs",
+      "bytes": 3811,
+      "sha256": "a35089f04d489e0c36efb4302873358959837857bf0b1ff8dd25a88de052d37b"
+    },
+    {
+      "path": "tests/LibraryInputRouting/Program.cs",
+      "bytes": 7728,
+      "sha256": "c6fc0588ca990e754577b9935edb8bef013c5e4c8e0ff28f45c9d73a27ecd10c"
+    },
+    {
+      "path": "交接说明.md",
+      "bytes": 19679,
+      "sha256": "c7fadc3fe36537bddca26c659ac369751cd542dd0b7f75f6caa8e65df9866390"
+    }
+  ]
+}

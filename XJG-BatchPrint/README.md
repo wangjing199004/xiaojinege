@@ -1,0 +1,286 @@
+# XJG批量打印
+
+一个面向 ZWCAD 和 AutoCAD 的 .NET 批量打印插件。插件可以学习图框块，识别图名、图号、图幅和比例，支持跨文件批量扫描，并输出 PDF、PNG、JPG、DWF 或按图框拆分 DWG。当前版本：v1.15.9。
+
+## 使用教程
+
+图文教程网页：[docs/tutorial.html](docs/tutorial.html)
+
+## 版本选择
+
+发布包按 CAD 平台和 .NET 运行时拆分：
+
+| CAD 平台 | 适用版本 | 加载 DLL |
+| --- | --- | --- |
+| 中望 CAD | ZWCAD Enterprise x64 | `BatchPlotter.dll` |
+| AutoCAD | AutoCAD 2015 ~ 2024 x64 | `AcadBatchPlot.dll` |
+| AutoCAD | AutoCAD 2025 ~ 2027 x64 | `AcadBatchPlot.Core.dll` |
+
+AutoCAD 2015 ~ 2024 全系列共用同一个 `AcadBatchPlot.dll`，使用 .NET Framework 4.8 + AutoCAD.NET 20.0 SDK（2015）编译。AutoCAD 2025 ~ 2027 全系列共用同一个 `AcadBatchPlot.Core.dll`，使用 .NET 8 + AutoCAD.NET.Core 25.0。代码主体复用，仅项目文件和 CAD API 引用不同。
+
+## 主要功能
+
+- 图框信息库：新增、编辑、删除、导入、导出图框定义。
+- 图框识别：按块名匹配图框；带可见性属性的动态块按“块名+可见性名”区分不同状态。支持用户框选图名、图号和打印外边界。
+- 固定输出纸张：图框加入信息库时可设置输出图幅，以后该图框始终按这个纸张尺寸打印。
+- 图幅识别：支持 A0、A1、A2、A3 以及加长图。
+- 比例识别：图框块按录入纸张短边自动识别任意比例，包括 1:143、10:1、2.1:1；加长图按同一比例继续识别实际长边。
+- 批量打印：支持扫描当前图、框选扫描、多文件批打后跨文件批量打印。
+- 多格式输出：支持 PDF、PNG、JPG、DWF 和 DWG；选择什么格式，预览和正式输出就使用什么格式。
+- 自有栅格设备：PNG/JPG 使用插件自有 `LA_png` / `LA_jpg`，不回退到 CAD 自带设备。
+- 通用型批量打印：框选范围后识别普通矩形及布局块内矩形，支持纸张/比例候选、连续编号、红框标识和空间排序；比例仍以“比例设置”中的内置及自定义列表为准。
+- 单张打印：直接框选图纸外框，选择纸张与 PDF 保存位置，默认使用 `DWG文件名.pdf`。
+- 布局打印：跨文件打印时可临时打开 DWG，保证布局视口和外部参照正常加载。
+- PDF 合并：勾选"合并为单个 PDF"后，打印完成的单页 PDF 自动合并为一个文件。
+- CAD 原生预览：在批量打印列表中点击"预览"按钮，使用 CAD PlotEngine 直接预览排版效果，无需生成临时 PDF。
+- 文件名规则：在设置中用 `A/B/C/D/E/F/G/T/N` 分别表示图号、版次、图名、日期、信息1、信息2、设计阶段、图幅、序号；序号可设置起始值、固定补零位数（0 表示不补零）或按清单总张数自动推断位数。用反斜杠转义占位字母（如 `\A` 输出字母 `A`），非法文件名字符自动替换为 `_`。
+- 重名处理：默认覆盖，也可在设置中改为自动追加序号。
+- 清单编辑：可在批量打印界面修改图名、图号，并同步回当前打开的 CAD 图纸文字。
+- 图号图名标红：图框块批量打印清单中，重复图号、重复图名会显示为红色。
+- 清单排序：右键菜单"移到第一个"可调整打印顺序。
+- 图纸目录：根据识别清单在当前 CAD 生成目录表格，表头为"序号、图号、图名、图幅、备注"。
+- 目录设置：可设置目录列宽、行高、文字高度比例和目录文字样式，也可从 CAD 框选单元格尺寸。
+- 批量 CAD 拆图：按识别清单把图纸拆成单独 DWG；先另存副本再删框外，与图框相交的图元（穿框填充、块、图像、视口）会保留。
+- 不打印外边框：正式打印时按纸面四边各内退 1mm 裁切内容，不把图框临时移到不打印层。
+- 图框库去重：删除图框后自动记录已删除块名，防止从 ZWCAD 图框库重新导入。
+- 快捷键设置：为常用命令设置简化命令别名（如把"批量打印(选图框块)"简化为 `ZBP`），写入 CAD 的 PGP 文件，执行 REINIT 或重启 CAD 后生效，启动时自动恢复。
+- 自动加载：NETLOAD 后可通过菜单为当前这套 CAD 安装启动自动加载，也支持卸载。
+- 菜单栏集成：插件只创建"批量打印"菜单栏入口，不再创建浮动小工具栏。
+- 文字转图形：常规设置可选择把 PDF/DWF 中的 TrueType 文字按图形输出，避免接收方缺少字体；默认关闭且不修改 DWG 文字。
+- 日志总开关：所有打印、拆图、扫描和图框诊断日志统一受“生成打印日志”控制，默认关闭。
+- 可见性过滤：实体自身隐藏、所在图层关闭/冻结或父块不可见时不参与矩形框扫描；可见的 Defpoints 等不打印图层仍可作为打印边界。
+
+## 使用方式
+
+官方推荐：解压后用 `NETLOAD` 加载，再点击菜单「安装自动加载」。
+
+1. 下载 Release 里对应 CAD 版本的 zip 包，解压到固定目录，不要删除或移动。
+2. 打开 CAD，执行 `NETLOAD`，选择对应 DLL：
+   - 中望 CAD：`BatchPlotter.dll`
+   - AutoCAD 2015 ~ 2024：`AcadBatchPlot.dll`
+   - AutoCAD 2025 ~ 2027：`AcadBatchPlot.Core.dll`
+3. 点击菜单「批量打印」→「安装自动加载」。以后启动当前这套 CAD 会自动加载，无需再 `NETLOAD`。
+
+如果已经加载过旧版本，建议重启 CAD 后再加载新 DLL；菜单会随插件加载自动重建。
+
+卸载时打开 CAD，点击菜单「批量打印」→「卸载自动加载」。当前会话插件仍可用，关闭 CAD 后不再自动加载；解压目录可自行删除。
+
+### AutoCAD 发布包
+
+AutoCAD 版本请下载与本机 AutoCAD 年份对应的发布包，解压后 `NETLOAD` 对应 DLL，再点击「安装自动加载」。
+
+- AutoCAD 2015 ~ 2024：使用 `LA批打印-AutoCAD2015-2024-*.zip`。
+- AutoCAD 2025 ~ 2027：使用 `LA批打印-AutoCAD2025-2027-*.zip`。
+
+AutoCAD 包内带有 PDF 基础配置；插件首次打开批量打印窗口时还会安装或修复 `LA_pdf`、`LA_png`、`LA_jpg`、`LA_dwf` 绘图仪。PNG/JPG 只使用插件自有设备，不使用 CAD 自带设备兜底。
+
+AutoCAD 2025 ~ 2027 如果菜单栏未显示，可以执行 `ZBP_SHOW_PANEL` 打开批量打印主界面。
+
+如果 AutoCAD 2015 ~ 2024 点击菜单后提示 `未知命令 "^C^CZBP_..."`，请升级到最新版本。升级后若旧菜单仍存在，执行一次 `ZBP_RELOAD_MENU`，让插件重建菜单项。
+
+## 菜单说明
+
+- 新增图框：选择图框块，框选打印外边界、图名区域、图号区域，并设置输出纸张。
+- 图框库管理：查看和修改本地图框定义，包括块名、图幅、纸张尺寸等；窗口内另有"打开配置目录"按钮。
+- 批量打印(选图框块)：按图框库识别图名、图号并批量打印。
+- 通用型批量打印：框选扫描或扫描当前图，按矩形外框批量打印。
+- 单张打印：框选一张图纸外框并直接输出 PDF。
+- 设置：管理输出目录、重名处理、跨文件打印方式、目录表格尺寸、目录文字样式等。
+- 快捷键设置：为常用命令设置简化命令别名，详见下方"快捷键设置"章节。
+- 安装自动加载：写入当前用户的 CAD 自动加载注册表项。
+- 卸载自动加载：删除自动加载注册表项。
+- 关于：查看插件版本、作者和 QQ 群信息。
+
+## 快捷键设置
+
+"快捷键设置"可以为常用命令设置简化命令别名，方便在命令行直接输入调用：
+
+| 功能 | 原始命令 |
+| --- | --- |
+| 新增图框 | `ZBP_ADD_TITLE_BLOCK` |
+| 图框库管理 | `ZBP_MANAGE_LIBRARY` |
+| 批量打印(选图框块) | `ZBP_SHOW_PANEL` |
+| 通用型批量打印 | `ZBP_RECTANGLE_BATCH_PLOT` |
+| 单张打印 | `ZBP_SINGLE_PLOT` |
+| 设置 | `ZBP_SETTINGS` |
+
+简化命令规则：
+
+- 以字母开头，只含字母和数字，最长 16 位。
+- 同一简化命令不能同时分配给多个功能。
+- 别名写入 CAD 的 PGP 程序参数文件（AutoCAD 为 `acad.pgp`，中望 CAD 为 `ZWCAD.pgp`）末尾，按原编码和 BOM 追加，不影响文件原有内容。
+- 写入后需执行 `REINIT` 命令并勾选"PGP 文件"，或重启 CAD 后生效。
+- 与 PGP 中已有别名冲突时，以本次设置为准，保存时会提示冲突项。
+- 插件每次启动时自动恢复已保存的别名。
+
+## 批量打印流程
+
+1. 先通过"新增图框"把常用图框块加入图框信息库。
+2. 打开"批量打印"窗口。
+3. 点击"扫描当前图""框选扫描"或"多文件批打"识别图纸。
+4. 在表格中检查图号、图名、图幅、比例、文件路径和是否打印。
+5. 选择 PDF、PNG、JPG、DWF 或 DWG；PDF 可选“合并为单个 PDF”。
+6. 选择输出目录和 CTB。绘图仪由插件按输出格式自动选择。
+7. 点击"开始打印"。
+
+输出目录快捷按钮：
+
+- 当前文件夹：使用所选 CAD 文件所在文件夹；多个 CAD 不在同一目录时取第一个文件所在目录。
+- 当前文件夹/输出格式：使用源 CAD 文件所在目录下的 `PDF`、`PNG`、`JPG`、`DWF` 或 `DWG` 子目录。
+- 指定文件夹：手动选择输出目录。
+
+## 批量 CAD 拆图
+
+在批量打印窗口识别图框后，输出格式选 **DWG** 并点击「开始打印」，或点击「批量拆图」。插件会按当前勾选清单输出单独 DWG 文件，文件名沿用设置里的文件名规则：
+
+```text
+图号_图名.dwg
+```
+
+输出位置为每个源 DWG 所在目录下的 `DWG` 子目录。
+
+拆图规则（v1.15.4）：
+
+- **另存再删**：复制已保存的源 DWG 到输出路径，再只删除当前图框外的对象；不使用 `Wblock()` 整库克隆，避免视口关闭、UCS 错位或拆出空图。
+- **模型空间**：只清理模型框外实体，不删除纸面布局，避免 CAD 打开拆出文件时报错。
+- **布局空间**：保留目标布局及模型空间，删除其他布局，并清理该布局图框外的纸面对象。
+- **UCS 图框**：在用户坐标系内判定去留，窗口用实际角点，不用四角世界包围盒。
+- **XCLIP 块**：裁剪框与图框打印范围相交或被包含即保留；读不到裁剪边界时保守保留，不按插入点或未裁剪外包删除。
+- **穿框图元**：与图框相交的填充、块、图像和骑框视口会保留；只贴边的紧邻图框仍不带入。
+- **未保存图纸**：拆图副本来自磁盘文件，请先保存源图。
+
+拆图与 PDF/PNG 等打印走不同内核，不走 `PublishEngine`、CTB 和打印预览。详见 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#74-dwg-拆图cad-按图框拆分)。
+
+## 图纸目录
+
+在批量打印窗口识别图框后，可以点击"生成目录"。插件会让用户在当前 CAD 中指定目录左上角基点，然后生成目录表格。
+
+目录列为：
+
+```text
+序号、图号、图名、图幅、备注
+```
+
+目录表格尺寸可在"设置 -> 图纸目录"中调整：
+
+- 序号列宽
+- 图号列宽
+- 图名列宽
+- 图幅列宽
+- 备注列宽
+- 行高
+- 文字高度比例
+- 目录文字样式
+
+也可以点击"从 CAD 框选单元格尺寸"，依次框选"序号、图号、图名、图幅、备注"五个单元格。插件会自动保存各列宽度，并以第一个单元格高度作为行高。目录文字高度会根据单元格高度和列宽自动反推。
+
+## 用户数据
+
+插件用户数据保存在：
+
+```text
+%APPDATA%\ZwcadBatchPlot   （中望 CAD）
+%APPDATA%\AcadBatchPlot    （AutoCAD）
+```
+
+主要文件：
+
+- `TitleBlockLibrary.json`：图框信息库。
+- `Settings.json`：用户设置。
+- `Logs`：运行日志。
+
+这些用户数据不应提交到 Git 仓库。
+
+## 文档
+
+| 文档 | 说明 |
+| --- | --- |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | 架构与主流程（命令、扫描、打印、拆图内核） |
+| [docs/用户使用说明.md](docs/用户使用说明.md) | 安装、菜单与常见问题 |
+| [docs/RELEASE_NOTES_v1.15.8.md](docs/RELEASE_NOTES_v1.15.8.md) | 当前版本发布说明 |
+| [docs/tutorial.html](docs/tutorial.html) | 图文教程 |
+
+## 开发
+
+中望 CAD 项目目标框架为 `.NET Framework 4.8`，通过 NuGet 包 `ZWCad.Net.2025` 引用中望 CAD 的 .NET API。该包以 `ExcludeAssets="runtime"` 引入——只在编译期使用，运行时由 ZWCAD 宿主提供，因此 `ZwManaged.dll` / `ZwDatabaseMgd.dll` 不会被复制到输出目录。
+
+这样无需在本机安装中望 CAD 即可编译，也不再有硬编码的安装路径。
+
+主要依赖：
+
+- `ZWCad.Net.2025`（NuGet，仅 ZWCAD 项目）
+- `AutoCAD.NET` / `AutoCAD.NET.Core`（NuGet，仅 AutoCAD 项目）
+- `Newtonsoft.Json`、`PDFsharp`、`SharpZipLib`（NuGet）
+
+`FileTools/` 是本地参考项目目录，不参与编译，也不会提交到 Git 仓库。
+
+PDF 合并使用 PDFsharp（`PdfDocumentService`），避免把 x86 PDF 阅读组件加载进中望 CAD x64 进程。
+
+解决方案为 `LA.BatchPlot.sln`，包含四个项目，可直接用 Visual Studio 打开，或在命令行一次编译全部平台：
+
+```powershell
+dotnet build LA.BatchPlot.sln -c Release
+```
+
+项目文件统一放在 `src\<项目名>\` 下，源码按用途分目录，输出目录仍集中在仓库根目录：
+
+| 项目文件 | 平台 | 输出目录 | 目标 DLL |
+| --- | --- | --- | --- |
+| `src/BatchPlotter/BatchPlotter.csproj` | ZWCAD (net48) | `bin\` | `BatchPlotter.dll` |
+| `src/AcadBatchPlot/AcadBatchPlot.csproj` | AutoCAD 2015–2024 (net48) | `bin-acad\` | `AcadBatchPlot.dll` |
+| `src/AcadBatchPlot.Core/AcadBatchPlot.Core.csproj` | AutoCAD 2025–2027 (net8.0-windows) | `bin-acad2025-2027\` | `AcadBatchPlot.Core.dll` |
+| `src/PianNoCN/PianNoCN.csproj` | 通用解析库 | （随各平台输出） | `PianNoCN.dll` |
+
+仅编译 ZWCAD 版本：
+
+```powershell
+dotnet build src\BatchPlotter\BatchPlotter.csproj -c Release
+```
+
+生成结果在 `bin\BatchPlotter.dll`。
+
+编译全部平台：
+
+```powershell
+.\scripts\build-dll.ps1 -Target All -Configuration Release
+```
+
+生成本地发布目录与三组 ZIP：
+
+```powershell
+.\scripts\package-release.ps1 -Version 1.15.8
+```
+
+输出位于 `release\v1.15.8\`，包含 ZWCAD、AutoCAD 2015–2024、AutoCAD 2025–2027 三组完整安装目录和对应压缩包。
+
+### 双平台同步（默认）
+
+代码与 Release **默认同时发布到 GitHub 与 Gitee**：
+
+| 平台 | 仓库 |
+| --- | --- |
+| GitHub | https://github.com/Edwardhehe/batchPrintZWCAD |
+| Gitee | https://gitee.com/Edwardhehe/batchPrintLA |
+
+推送代码（含双远程配置）：
+
+```powershell
+.\scripts\push-all.ps1
+.\scripts\push-all.ps1 -Tags   # 连同 tag
+```
+
+一键发版（打包 → 打 tag → 双推 → 两侧创建 Release 并上传 ZIP）：
+
+```powershell
+.\scripts\publish-release.ps1 -Version 1.15.8
+```
+
+Gitee 需本机已保存凭据（私人令牌），或设置环境变量 `GITEE_TOKEN`。`git push origin` 已配置双 `pushurl`，日常推送也会同时到两边。
+
+## 说明
+
+本项目支持 ZWCAD Enterprise，以及 AutoCAD 2015 ~ 2024 和 AutoCAD 2025 ~ 2027 两个兼容组。其他版本可能可以运行，但不在当前发布范围内。
+
+## 协议
+
+本项目使用 MIT License。

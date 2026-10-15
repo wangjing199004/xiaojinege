@@ -1,0 +1,195 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+namespace ZwcadBatchPlot;
+
+public sealed class TitleBlockDefinition
+{
+    /// <summary>可自由拉伸图框：字段以当前打印外框右下角为锚点，扫描时重算当前外框。</summary>
+    public const string DynamicRightBottomCoordinateMode = "FrameRightBottomDynamic";
+
+    public string BlockName { get; set; } = "";
+    public bool HasPrintRegion { get; set; }
+    public string CoordinateMode { get; set; } = "Local";
+    public LocalRectangle PrintRegion { get; set; } = new();
+    public string PaperName { get; set; } = "";
+    public double PaperWidthMm { get; set; }
+    public double PaperHeightMm { get; set; }
+    public LocalRectangle TitleRegion { get; set; } = new();
+    public LocalRectangle DrawingNumberRegion { get; set; } = new();
+    public LocalRectangle DateRegion { get; set; } = new();
+    public LocalRectangle RevisionRegion { get; set; } = new();
+    public LocalRectangle PhaseRegion { get; set; } = new();
+    public LocalRectangle Info1Region { get; set; } = new();
+    public LocalRectangle Info2Region { get; set; } = new();
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
+}
+
+public sealed class TitleBlockLibrary
+{
+    public int Version { get; set; } = 2;
+    public List<TitleBlockDefinition> Blocks { get; set; } = new();
+}
+
+public sealed class LocalRectangle
+{
+    public double MinX { get; set; }
+    public double MinY { get; set; }
+    public double MaxX { get; set; }
+    public double MaxY { get; set; }
+
+    /// <summary>矩形实际宽度（旋转 UCS 下与包围盒宽度不同），0 表示用 MaxX-MinX。</summary>
+    public double ActualWidth { get; set; }
+    /// <summary>矩形实际高度，同上。</summary>
+    public double ActualHeight { get; set; }
+    /// <summary>矩形 4 个实际角点（WCS），格式 [x0,y0,x1,y1,x2,y2,x3,y3]。null 表示无。</summary>
+    public double[]? CornerPoints { get; set; }
+
+    public static LocalRectangle FromPoints(double x1, double y1, double x2, double y2)
+    {
+        return new LocalRectangle
+        {
+            MinX = Math.Min(x1, x2),
+            MinY = Math.Min(y1, y2),
+            MaxX = Math.Max(x1, x2),
+            MaxY = Math.Max(y1, y2)
+        };
+    }
+
+    public bool Contains(double x, double y, double tolerance = 1e-6)
+    {
+        return x >= MinX - tolerance
+            && x <= MaxX + tolerance
+            && y >= MinY - tolerance
+            && y <= MaxY + tolerance;
+    }
+
+    /// <summary>区域是否有实际面积（非零区域）。零区域表示该字段未配置。</summary>
+    public bool HasArea(double tolerance = 1e-6)
+    {
+        return Math.Abs(MaxX - MinX) > tolerance
+            && Math.Abs(MaxY - MinY) > tolerance;
+    }
+}
+
+public sealed class PlotJob
+{
+    public bool Selected { get; set; } = true;
+    public bool IsManualWindow { get; set; }
+    public string SourceFile { get; set; } = "";
+    public string OutputFileName => Path.GetFileName(OutputPath);
+    /// <summary>
+    /// 界面中显示的最终输出文件名。合并 PDF 时后台会临时改写 OutputPath，
+    /// 此值始终保留用户配置所对应的文件名，避免临时序号出现在表格中。
+    /// </summary>
+    public string DisplayOutputFileName { get; set; } = "";
+    public long SortPriority { get; set; }
+    public string SpaceName { get; set; } = "";
+    public bool IsPaperSpace { get; set; }
+    /// <summary>
+    /// CAD 布局选项卡顺序。位置排序必须先按此值排列布局，再在布局内部比较图框坐标；
+    /// 不能用块表遍历顺序或首个图框的识别序号代替。
+    /// </summary>
+    public int LayoutTabOrder { get; set; } = int.MaxValue;
+    public string BlockName { get; set; } = "";
+    public string BlockHandle { get; set; } = "";
+    public int MatchIndex { get; set; }
+    public string DrawingNumber { get; set; } = "";
+    public string Title { get; set; } = "";
+    public string CadDrawingNumber { get; set; } = "";
+    public string CadTitle { get; set; } = "";
+    public string Date { get; set; } = "";
+    public string Revision { get; set; } = "";
+    public string Phase { get; set; } = "";
+    public string Info1 { get; set; } = "";
+    public string Info2 { get; set; } = "";
+    public string CadDate { get; set; } = "";
+    public string CadRevision { get; set; } = "";
+    public string CadPhase { get; set; } = "";
+    public string CadInfo1 { get; set; } = "";
+    public string CadInfo2 { get; set; } = "";
+    public string PaperName { get; set; } = "";
+    public string ScaleText { get; set; } = "";
+    public string SizeText { get; set; } = "";
+    public string PaperSizeText { get; set; } = "";
+    public string DetectionNote { get; set; } = "";
+    public double PaperWidthMm { get; set; }
+    public double PaperHeightMm { get; set; }
+    public double MinX { get; set; }
+    public double MinY { get; set; }
+    public double MaxX { get; set; }
+    public double MaxY { get; set; }
+    /// <summary>
+    /// 模型空间任务是否必须按扫描时的 UCS 解释。为 true 时，Min/Max 仍保留 WCS 包围盒，
+    /// 打印、预览和空间排序改用下列 UCS 边界，避免旋转 UCS 被轴对齐包围盒放大。
+    /// </summary>
+    public bool UsesUserCoordinateSystem { get; set; }
+    public double UcsMinX { get; set; }
+    public double UcsMinY { get; set; }
+    public double UcsMaxX { get; set; }
+    public double UcsMaxY { get; set; }
+    public double UcsOriginX { get; set; }
+    public double UcsOriginY { get; set; }
+    public double UcsOriginZ { get; set; }
+    public double UcsXAxisX { get; set; } = 1d;
+    public double UcsXAxisY { get; set; }
+    public double UcsXAxisZ { get; set; }
+    public double UcsYAxisX { get; set; }
+    public double UcsYAxisY { get; set; } = 1d;
+    public double UcsYAxisZ { get; set; }
+    public string OutputPath { get; set; } = "";
+    /// <summary>是否按纸张短边预留边距，打印时居中等比例缩小。</summary>
+    public bool LeavePaperMargin { get; set; }
+    /// <summary>
+    /// 留白距离（毫米）。正数 = 扩大纸张模式（纸张各边增加 margin*2，比例不变）；
+    /// 负数 = 缩比例模式（原有逻辑，用 abs 值计算缩放比例）。
+    /// </summary>
+    public double PaperMarginMm { get; set; } = 1d;
+    /// <summary>扩大纸张留白模式下实际使用的打印宽度（毫米）；0 表示使用 PaperWidthMm。</summary>
+    public double EffectivePaperWidthMm { get; set; }
+    /// <summary>扩大纸张留白模式下实际使用的打印高度（毫米）；0 表示使用 PaperHeightMm。</summary>
+    public double EffectivePaperHeightMm { get; set; }
+
+    /// <summary>MinX/Y/MaxX/MaxY 已经是 DCS 坐标，GetPlotWindow 跳过 WCS→DCS 变换。</summary>
+    public bool IsDcsWindow { get; set; }
+    /// <summary>任意纸张单张打印必须使用精确物理尺寸，禁止名称或相近纸张回退。</summary>
+    public bool RequireExactPaperSize { get; set; }
+    /// <summary>不依赖 ScaleToFit，按打印窗口与纸张物理尺寸计算精确等比缩放。</summary>
+    public bool UseExactWindowScale { get; set; }
+    /// <summary>本次命令是否向 PMP 新增了纸张，供 CAD 决定是否强制刷新介质列表。</summary>
+    public bool CustomPaperWasAdded { get; set; }
+    /// <summary>
+    /// 图框扫描阶段识别出的固有任意纸张标记。该值不随正负留白切换，
+    /// 用于区分“图纸本来就要自定义纸张”和“正留白临时扩大纸张”。
+    /// </summary>
+    public bool DetectedRequiresCustomPaperRegistration { get; set; }
+    /// <summary>本次输出是否必须把纸张按实测宽高注册到当前 PDF/DWF 绘图器 PMP。</summary>
+    public bool RequiresCustomPaperRegistration { get; set; }
+    /// <summary>本作业打印样式（CTB）；空则使用批打窗体当前选择的样式。</summary>
+    public string StyleSheet { get; set; } = "";
+    /// <summary>打印区域 4 个实际 WCS 角点，格式 [x0,y0,x1,y1,x2,y2,x3,y3]。null 时用 Min/Max。</summary>
+    public double[]? CornerPoints { get; set; }
+}
+
+public enum TitleBlockScanScope
+{
+    AllSpaces,
+    PaperLayouts,
+    CurrentSpace,
+    ModelSpace
+}
+
+public sealed class PaperDetection
+{
+    public string PaperName { get; set; } = "未知";
+    public string ScaleText { get; set; } = "未知";
+    public double ScaleValue { get; set; }
+    public bool IsLong { get; set; }
+    public double PaperWidthMm { get; set; }
+    public double PaperHeightMm { get; set; }
+    public string Note { get; set; } = "";
+    /// <summary>纸张长边不按固定模数吸附，必须按实测物理尺寸动态注册。</summary>
+    public bool RequiresCustomPaper { get; set; }
+}

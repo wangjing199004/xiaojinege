@@ -1,0 +1,52 @@
+<UserControl x:Class="ZwcadBatchPlot.AboutControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             FontFamily="Microsoft YaHei UI" FontSize="11">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="WpfUi.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Margin="16,12,16,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- 标题：字号与主打印页一致，仅加粗区分产品名 -->
+        <StackPanel Grid.Row="0" HorizontalAlignment="Center" Margin="0,0,0,10">
+            <TextBlock Text="XJG 批量打印" FontWeight="Bold"
+                       Foreground="#FF1A73E8" HorizontalAlignment="Center"/>
+            <TextBlock Text="{Binding VersionText}"
+                       Foreground="DimGray" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+        </StackPanel>
+
+        <Border Grid.Row="1" Height="1" Background="#FFE0E0E0" Margin="0,0,0,10"/>
+
+        <StackPanel Grid.Row="2" Margin="8,0">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                <TextBlock Text="设计：" Foreground="DimGray" Width="48"/>
+                <TextBlock Text="XJG"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                <TextBlock Text="邮箱：" Foreground="DimGray" Width="48"/>
+                <TextBlock Text="794671225@qq.com"/>
+            </StackPanel>
+            <TextBlock TextWrapping="Wrap" Foreground="DimGray" Margin="0,4,0,0"
+                       Text="本工具箱是XJG根据LA批量打印的源码修改而成，向Edward致敬！"/>
+        </StackPanel>
+
+        <Border Grid.Row="3" Height="1" Background="#FFE0E0E0" Margin="0,8,0,10"/>
+
+        <StackPanel Grid.Row="4" HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button Content="确定" MinWidth="76"
+                    Style="{StaticResource PluginButtonStyle}"
+                    Click="OnOkClick" IsDefault="True"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

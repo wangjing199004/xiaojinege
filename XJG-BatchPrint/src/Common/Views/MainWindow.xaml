@@ -1,0 +1,14 @@
+<Window x:Class="ZwcadBatchPlot.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="批量打印"
+        Width="980" Height="600"
+        MinWidth="780" MinHeight="500"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize"
+        FontFamily="Microsoft YaHei UI"
+        FontSize="11"
+        TextOptions.TextFormattingMode="Display"
+        UseLayoutRounding="True">
+    <TabControl x:Name="_tabs" />
+</Window>

@@ -1,0 +1,198 @@
+﻿<Window x:Class="ZwcadBatchPlot.FieldBoxSelectDialog"
+       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+       Title="设置图框字段与纸张"
+       Width="460" MinWidth="430"
+       SizeToContent="Height"
+       ResizeMode="NoResize"
+       ShowInTaskbar="False"
+       Topmost="True"
+       WindowStartupLocation="CenterScreen"
+       FontFamily="Microsoft YaHei UI"
+       FontSize="11"
+       TextOptions.TextFormattingMode="Display"
+       UseLayoutRounding="True"
+       Background="{x:Static SystemColors.ControlBrush}">
+   <Window.Resources>
+       <ResourceDictionary>
+           <ResourceDictionary.MergedDictionaries>
+               <ResourceDictionary Source="WpfUi.xaml" />
+           </ResourceDictionary.MergedDictionaries>
+       </ResourceDictionary>
+   </Window.Resources>
+   <Grid Margin="12,8,12,8">
+       <Grid.ColumnDefinitions>
+           <ColumnDefinition Width="Auto" />
+           <ColumnDefinition Width="*" />
+       </Grid.ColumnDefinitions>
+       <Grid.RowDefinitions>
+           <RowDefinition Height="52" />
+           <RowDefinition Height="48" />
+           <RowDefinition Height="34" />
+           <RowDefinition Height="34" />
+           <RowDefinition Height="34" />
+           <RowDefinition Height="34" />
+           <RowDefinition Height="34" />
+           <RowDefinition Height="34" />
+           <RowDefinition Height="34" />
+           <RowDefinition Height="34" />
+           <RowDefinition Height="*" />
+           <RowDefinition Height="36" />
+       </Grid.RowDefinitions>
+
+       <TextBlock Grid.Row="0" Grid.Column="0" Text="套用已有图框" VerticalAlignment="Center" Margin="0,0,8,0" />
+       <Grid Grid.Row="0" Grid.Column="1">
+           <Grid.RowDefinitions>
+               <RowDefinition Height="*" />
+               <RowDefinition Height="14" />
+           </Grid.RowDefinitions>
+           <ComboBox x:Name="_libraryTemplateCombo" Grid.Row="0" VerticalAlignment="Center" />
+           <TextBlock x:Name="_libraryTemplateHint" Grid.Row="1" FontSize="10" Foreground="DimGray"
+                      VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+       </Grid>
+
+       <TextBlock Grid.Row="1" Grid.Column="0" Text="打印范围" VerticalAlignment="Center" Margin="0,0,8,0" />
+       <Grid Grid.Row="1" Grid.Column="1">
+           <Grid.ColumnDefinitions>
+               <ColumnDefinition Width="*" />
+               <ColumnDefinition Width="Auto" />
+           </Grid.ColumnDefinitions>
+           <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,6,0">
+               <TextBlock x:Name="_printAreaStatus" Foreground="Green" />
+               <TextBlock Text="如果觉得自动识别的边框不对，请自己调整这里" FontSize="10" Foreground="DimGray" />
+           </StackPanel>
+           <Button Grid.Column="1" Content="框选" MinWidth="60" VerticalAlignment="Center"
+                   Style="{StaticResource PluginButtonStyle}" Click="OnSelectPrintAreaClick" />
+       </Grid>
+
+       <TextBlock Grid.Row="2" Grid.Column="0" Text="图名 *" VerticalAlignment="Center" Margin="0,0,8,0" />
+       <Grid Grid.Row="2" Grid.Column="1">
+           <Grid.ColumnDefinitions>
+               <ColumnDefinition Width="*" />
+               <ColumnDefinition Width="Auto" />
+               <ColumnDefinition Width="Auto" />
+           </Grid.ColumnDefinitions>
+           <TextBlock x:Name="_titleStatus" Grid.Column="0" VerticalAlignment="Center"
+                      TextTrimming="CharacterEllipsis" Margin="0,0,8,0" Text="(未选择)" />
+           <Button Grid.Column="1" Content="框选" MinWidth="60" Margin="0,0,6,0"
+                   Style="{StaticResource PluginButtonStyle}" Click="OnSelectTitleClick" />
+           <Button Grid.Column="2" Content="清除" MinWidth="60"
+                   Style="{StaticResource PluginButtonStyle}" Click="OnClearTitleClick" />
+       </Grid>
+
+       <TextBlock Grid.Row="3" Grid.Column="0" Text="图号 *" VerticalAlignment="Center" Margin="0,0,8,0" />
+       <Grid Grid.Row="3" Grid.Column="1">
+           <Grid.ColumnDefinitions>
+               <ColumnDefinition Width="*" />
+               <ColumnDefinition Width="Auto" />
+               <ColumnDefinition Width="Auto" />
+           </Grid.ColumnDefinitions>
+           <TextBlock x:Name="_numberStatus" Grid.Column="0" VerticalAlignment="Center"
+                      TextTrimming="CharacterEllipsis" Margin="0,0,8,0" Text="(未选择)" />
+           <Button Grid.Column="1" Content="框选" MinWidth="60" Margin="0,0,6,0"
+                   Style="{StaticResource PluginButtonStyle}" Click="OnSelectNumberClick" />
+           <Button Grid.Column="2" Content="清除" MinWidth="60"
+                   Style="{StaticResource PluginButtonStyle}" Click="OnClearNumberClick" />
+       </Grid>
+
+       <TextBlock Grid.Row="4" Grid.Column="0" Text="日期" VerticalAlignment="Center" Margin="0,0,8,0" />
+       <Grid Grid.Row="4" Grid.Column="1">
+           <Grid.ColumnDefinitions>
+               <ColumnDefinition Width="*" />
+               <ColumnDefinition Width="Auto" />
+               <ColumnDefinition Width="Auto" />
+           </Grid.ColumnDefinitions>
+           <TextBlock x:Name="_dateStatus" Grid.Column="0" VerticalAlignment="Center"
+                      TextTrimming="CharacterEllipsis" Margin="0,0,8,0" Text="(未选择)" />
+           <Button Grid.Column="1" Content="框选" MinWidth="60" Margin="0,0,6,0"
+                   Style="{StaticResource PluginButtonStyle}" Click="OnSelectDateClick" />
+           <Button Grid.Column="2" Content="清除" MinWidth="60"
+                   Style="{StaticResource PluginButtonStyle}" Click="OnClearDateClick" />
+       </Grid>
+
+       <TextBlock Grid.Row="5" Grid.Column="0" Text="版次" VerticalAlignment="Center" Margin="0,0,8,0" />
+       <Grid Grid.Row="5" Grid.Column="1">
+           <Grid.ColumnDefinitions>
+               <ColumnDefinition Width="*" />
+               <ColumnDefinition Width="Auto" />
+               <ColumnDefinition Width="Auto" />
+           </Grid.ColumnDefinitions>
+           <TextBlock x:Name="_revisionStatus" Grid.Column="0" VerticalAlignment="Center"
+                      TextTrimming="CharacterEllipsis" Margin="0,0,8,0" Text="(未选择)" />
+           <Button Grid.Column="1" Content="框选" MinWidth="60" Margin="0,0,6,0"
+                   Style="{StaticResource PluginButtonStyle}" Click="OnSelectRevisionClick" />
+           <Button Grid.Column="2" Content="清除" MinWidth="60"
+                   Style="{StaticResource PluginButtonStyle}" Click="OnClearRevisionClick" />
+       </Grid>
+
+       <TextBlock Grid.Row="6" Grid.Column="0" Text="设计阶段" VerticalAlignment="Center" Margin="0,0,8,0" />
+       <Grid Grid.Row="6" Grid.Column="1">
+           <Grid.ColumnDefinitions>
+               <ColumnDefinition Width="*" />
+               <ColumnDefinition Width="Auto" />
+               <ColumnDefinition Width="Auto" />
+           </Grid.ColumnDefinitions>
+           <TextBlock x:Name="_phaseStatus" Grid.Column="0" VerticalAlignment="Center"
+                      TextTrimming="CharacterEllipsis" Margin="0,0,8,0" Text="(未选择)" />
+           <Button Grid.Column="1" Content="框选" MinWidth="60" Margin="0,0,6,0"
+                   Style="{StaticResource PluginButtonStyle}" Click="OnSelectPhaseClick" />
+           <Button Grid.Column="2" Content="清除" MinWidth="60"
+                   Style="{StaticResource PluginButtonStyle}" Click="OnClearPhaseClick" />
+       </Grid>
+
+       <TextBlock Grid.Row="7" Grid.Column="0" Text="信息1" VerticalAlignment="Center" Margin="0,0,8,0" />
+       <Grid Grid.Row="7" Grid.Column="1">
+           <Grid.ColumnDefinitions>
+               <ColumnDefinition Width="*" />
+               <ColumnDefinition Width="Auto" />
+               <ColumnDefinition Width="Auto" />
+           </Grid.ColumnDefinitions>
+           <TextBlock x:Name="_info1Status" Grid.Column="0" VerticalAlignment="Center"
+                      TextTrimming="CharacterEllipsis" Margin="0,0,8,0" Text="(未选择)" />
+           <Button Grid.Column="1" Content="框选" MinWidth="60" Margin="0,0,6,0"
+                   Style="{StaticResource PluginButtonStyle}" Click="OnSelectInfo1Click" />
+           <Button Grid.Column="2" Content="清除" MinWidth="60"
+                   Style="{StaticResource PluginButtonStyle}" Click="OnClearInfo1Click" />
+       </Grid>
+
+       <TextBlock Grid.Row="8" Grid.Column="0" Text="信息2" VerticalAlignment="Center" Margin="0,0,8,0" />
+       <Grid Grid.Row="8" Grid.Column="1">
+           <Grid.ColumnDefinitions>
+               <ColumnDefinition Width="*" />
+               <ColumnDefinition Width="Auto" />
+               <ColumnDefinition Width="Auto" />
+           </Grid.ColumnDefinitions>
+           <TextBlock x:Name="_info2Status" Grid.Column="0" VerticalAlignment="Center"
+                      TextTrimming="CharacterEllipsis" Margin="0,0,8,0" Text="(未选择)" />
+           <Button Grid.Column="1" Content="框选" MinWidth="60" Margin="0,0,6,0"
+                   Style="{StaticResource PluginButtonStyle}" Click="OnSelectInfo2Click" />
+           <Button Grid.Column="2" Content="清除" MinWidth="60"
+                   Style="{StaticResource PluginButtonStyle}" Click="OnClearInfo2Click" />
+       </Grid>
+
+       <TextBlock Grid.Row="9" Grid.Column="0" Text="纸张" VerticalAlignment="Center" Margin="0,0,8,0" />
+       <Grid Grid.Row="9" Grid.Column="1">
+           <Grid.ColumnDefinitions>
+               <ColumnDefinition Width="*" />
+               <ColumnDefinition Width="Auto" />
+           </Grid.ColumnDefinitions>
+           <ComboBox x:Name="_paperName" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,6,0" />
+           <Button Grid.Column="1" Content="任意纸张…" MinWidth="100" VerticalAlignment="Center"
+                   Style="{StaticResource PluginButtonStyle}" Click="OnPickArbitraryPaperClick" />
+       </Grid>
+
+       <TextBlock Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap" FontSize="10"
+                  Foreground="DimGray" VerticalAlignment="Top" Margin="0,4,0,0"
+                  Text="可先套用纸张兼容的已有图框（字段+纸张一并填入）。图名、图号为必选；点击&quot;框选&quot;可手动修改，已选区域以红色临时框标识。" />
+
+       <StackPanel Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal"
+                   HorizontalAlignment="Right" VerticalAlignment="Bottom">
+           <Button Content="取消" MinWidth="76" Margin="6,0,0,0"
+                   Style="{StaticResource PluginButtonStyle}" Click="OnCancelClick" />
+           <Button Content="跳过" MinWidth="76" Margin="6,0,0,0"
+                   Style="{StaticResource PluginButtonStyle}" Click="OnSkipClick" />
+           <Button Content="确定" MinWidth="76" Margin="6,0,0,0" IsDefault="True"
+                   Style="{StaticResource PluginButtonStyle}" Click="OnOkClick" />
+       </StackPanel>
+   </Grid>
+</Window>

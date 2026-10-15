@@ -1,0 +1,31 @@
+XJG 批量打印插件 v1.15.9
+
+支持版本：
+- AcadBatchPlot.dll：AutoCAD 2015 ~ 2024，共用同一个 DLL（.NET Framework 4.8）。
+
+支持输出：
+- 批量打印：PDF、PNG、JPG、DWF、DWG。
+- 单张框选打印：PDF。
+- PNG/JPG 使用插件自有 LA_png / LA_jpg 设备，不使用 AutoCAD 自带设备兜底。
+- 清单预览使用当前选择的输出格式；DWG 拆图不提供打印预览。
+
+安装（官方推荐）：
+1. 把本目录解压到固定位置，不要删除或移动。
+2. 打开 AutoCAD，命令行输入 NETLOAD。
+3. AutoCAD 2015 ~ 2024 选择 AcadBatchPlot.dll。
+4. 点击菜单「XJG批量打印」→「安装自动加载」。
+5. 以后启动当前这套 AutoCAD 会自动加载，无需再 NETLOAD。
+6. 菜单栏通常会出现「XJG批量打印」；如果未显示，可执行 ZBP_SHOW_PANEL 打开主界面。
+7. 首次打开批量打印窗口时，插件会自动安装或修复 LA_pdf、LA_png、LA_jpg、LA_dwf 绘图仪。
+
+卸载：
+1. 打开 AutoCAD。
+2. 点击菜单「XJG批量打印」→「卸载自动加载」。
+3. 当前会话插件仍可用；关闭 CAD 后不再自动加载。解压目录可自行删除。
+4. 卸载不会删除图框库、设置和日志。
+
+用户数据位置：
+%APPDATA%\AcadBatchPlot
+
+说明：
+本工具箱是 XJG 根据 LA批量打印 的源码修改而成，向 Edward 致敬！
