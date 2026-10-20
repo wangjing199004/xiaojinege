@@ -124,6 +124,8 @@ public sealed partial class RectangleBatchPlotControl : UserControl
 
     private readonly Document _document;
     private readonly AppSettings _settings;
+    private readonly SharedPrintOptions _sharedPrintOptions;
+    private bool _printOptionsReady;
     private readonly TemporarySequenceOverlay _overlay;
     /// <summary>CAD 红框高亮的任务；按引用保存，表头排序或删行后不会错位。</summary>
     private PlotJob? _highlightedJob;
@@ -137,6 +139,8 @@ public sealed partial class RectangleBatchPlotControl : UserControl
     private bool _updatingPrintSelection;
     private bool _viewSortedByHeader;
     private bool _outputDirectoryIsCustom;
+    private bool _changingSavePathMode;
+    private int _lastSavePathMode;
     private bool _outputDirectoryModified;
     private bool _suppressTextEvents;
     private bool _suppressComboEvents;
@@ -156,6 +160,7 @@ public sealed partial class RectangleBatchPlotControl : UserControl
     {
         _document = document;
         _settings = AppSettingsStore.Load();
+        _sharedPrintOptions = new SharedPrintOptions(_settings);
         _overlay = new TemporarySequenceOverlay(document);
         InitializeComponent();
         InitializeGrid();
@@ -164,18 +169,19 @@ public sealed partial class RectangleBatchPlotControl : UserControl
         _leaveMargin.IsChecked = _settings.LeavePaperMargin;
         _mergePdf.IsChecked = _settings.MergePdf;
         _recognizeByModeCheck.IsChecked = _settings.RecognizeTitleByDominantFrameMode;
-        LoadPlotOptions();
         InitScanScopeCombo();
+        LoadPlotOptions();
     }
 
     private void InitializeGrid()
     {
-        _grid.ItemsSource = _displayRows;
+        SourceFileGrouping.Attach(_grid, _displayRows, "Job.SourceFile");
     }
 
     /// <summary>主面板关闭时调用：取消打印、清理临时红框/序号。</summary>
     public void Shutdown()
     {
+        SaveCurrentPlotOptions();
         _printCts?.Cancel();
         _overlayScheduleGeneration++;
         _overlay.Dispose();
@@ -281,7 +287,10 @@ public sealed partial class RectangleBatchPlotControl : UserControl
         => PlotStyleManager.EditSelectedStyle(Window.GetWindow(this), _style.SelectedItem?.ToString());
 
     private void LeaveMargin_CheckedChanged(object sender, RoutedEventArgs e)
-        => _marginInput.IsEnabled = SupportsLeaveMargin && _leaveMargin.IsChecked == true;
+    {
+        _marginInput.IsEnabled = SupportsLeaveMargin && _leaveMargin.IsChecked == true;
+        SaveCurrentPlotOptions();
+    }
 
     private void PrintOrStop_Click(object sender, RoutedEventArgs e) => PrintOrStop();
 
@@ -352,7 +361,7 @@ public sealed partial class RectangleBatchPlotControl : UserControl
         }
 
         _settings.RecognizeTitleByDominantFrameMode = _recognizeByModeCheck.IsChecked == true;
-        AppSettingsStore.TrySave(_settings, out _);
+        SaveCurrentPlotOptions();
     }
 
         private void Grid_Sorting(object sender, DataGridSortingEventArgs e)
@@ -1004,7 +1013,7 @@ public sealed partial class RectangleBatchPlotControl : UserControl
         }
 
         _settings.ScanScope = item.Scope;
-        AppSettingsStore.TrySave(_settings, out _);
+        SaveCurrentPlotOptions();
     }
 
     private sealed class ScanScopeItem
@@ -2515,8 +2524,11 @@ public sealed partial class RectangleBatchPlotControl : UserControl
         _outputFormatCombo.Items.Add("JPG");
         _outputFormatCombo.Items.Add("DWF");
         _outputFormatCombo.Items.Add("DWG");
-        _outputFormatCombo.SelectedIndex = 0;
+        _outputFormatCombo.SelectedItem = _settings.LastOutputFormat;
         RefreshSavePathModeOptions(preserveSelection: false);
+        SetSavePathMode(_settings.SavePathMode);
+        _outputDirectoryIsCustom = _settings.SavePathMode == 2;
+        if (_outputDirectoryIsCustom) SetOutputDirectoryText(_settings.CustomOutputDirectory);
 
         var pdfInstall = AcadPlotterInstaller.InstallBundledPlotter();
         var pngInstall = AcadPlotterInstaller.InstallPngPlotter();
@@ -2547,10 +2559,14 @@ public sealed partial class RectangleBatchPlotControl : UserControl
         PlotStyleManager.RestoreSavedStyle(_style, _settings.LastStyleSheet);
         // 上次样式在当前 CAD 不可用时已回退；仅当记忆值确有变化时写回设置，避免下次仍记住失效 CTB，
         // 也避免每次打开窗口都写设置文件（被占用时曾导致窗口构造崩溃）。
-        SaveCurrentPlotOptions(onlyIfChanged: true);
         UpdateOutputFormatUi();
         _suppressComboEvents = false;
         _styleSelectionReady = true;
+        _printOptionsReady = true;
+        SaveCurrentPlotOptions();
+        _mergePdf.Checked += (_, _) => SaveCurrentPlotOptions();
+        _mergePdf.Unchecked += (_, _) => SaveCurrentPlotOptions();
+        _marginInput.SelectionChanged += (_, _) => SaveCurrentPlotOptions();
         // 窗体显示后空闲时预热打印管线，把首张开销挪出批打进度窗（PlotMany 内同键调用为空操作）。
         SchedulePlotWarmUp();
     }
@@ -2757,6 +2773,7 @@ public sealed partial class RectangleBatchPlotControl : UserControl
         if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
         {
             _outputDirectoryIsCustom = true;
+            SetSavePathMode(2);
             SetOutputDirectoryText(dialog.SelectedPath);
             SaveCurrentPlotOptions();
             RefreshOutputPaths();
@@ -2775,11 +2792,13 @@ public sealed partial class RectangleBatchPlotControl : UserControl
         if (string.IsNullOrWhiteSpace(directory))
         {
             _outputDirectoryIsCustom = false;
+            SetSavePathMode(0);
             UpdateAutomaticOutputDirectory();
         }
         else
         {
             _outputDirectoryIsCustom = true;
+            SetSavePathMode(2);
             SetOutputDirectoryText(directory);
         }
 
@@ -2790,30 +2809,49 @@ public sealed partial class RectangleBatchPlotControl : UserControl
     private void RefreshSavePathModeOptions(bool preserveSelection)
     {
         var selectedIndex = preserveSelection && _savePathModeCombo.SelectedIndex >= 0
-            ? Math.Min(_savePathModeCombo.SelectedIndex, 1)
+            ? Math.Min(_savePathModeCombo.SelectedIndex, 2)
             : 0;
         var format = SelectedOutputFormat;
         var formatPathText = string.IsNullOrWhiteSpace(format)
-            ? "源文件路径/输出格式"
-            : "源文件路径/" + format;
+            ? "源文件路径/文件名输出格式"
+            : "源文件路径/文件名" + format;
 
         var wasSuppressing = _suppressComboEvents;
         _suppressComboEvents = true;
         try
         {
+            _changingSavePathMode = true;
             _savePathModeCombo.Items.Clear();
             _savePathModeCombo.Items.Add("源文件路径");
             _savePathModeCombo.Items.Add(formatPathText);
+            _savePathModeCombo.Items.Add("其他路径");
             _savePathModeCombo.SelectedIndex = selectedIndex;
         }
         finally
         {
+            _changingSavePathMode = false;
             _suppressComboEvents = wasSuppressing;
         }
     }
 
+    private void SetSavePathMode(int index)
+    {
+        _changingSavePathMode = true;
+        try { _savePathModeCombo.SelectedIndex = index; }
+        finally { _changingSavePathMode = false; }
+        _lastSavePathMode = index;
+    }
+
     private void ApplySelectedSavePathMode()
     {
+        if (_changingSavePathMode || _savePathModeCombo.SelectedIndex < 0) return;
+        if (_savePathModeCombo.SelectedIndex == 2)
+        {
+            ChooseOutputDirectory();
+            SetSavePathMode(_lastSavePathMode);
+            return;
+        }
+        _lastSavePathMode = _savePathModeCombo.SelectedIndex;
         _outputDirectoryIsCustom = false;
         UpdateAutomaticOutputDirectory();
         SaveCurrentPlotOptions();
@@ -2884,7 +2922,7 @@ public sealed partial class RectangleBatchPlotControl : UserControl
     /// <summary>DWG 拆图不走留白；PNG/JPG 先出 PDF 再转图，留白语义与 PDF 相同。</summary>
     private bool SupportsLeaveMargin => !IsDwgOutput;
     private string? AutomaticOutputSubfolder => _savePathModeCombo.SelectedIndex == 1
-        ? FileNameSanitizer.Clean(SelectedOutputFormat)
+        ? FileNameSanitizer.Clean(SourceStem()) + FileNameSanitizer.Clean(SelectedOutputFormat)
         : null;
     /// <summary>PNG/JPG 与 PDF 共用 PDF 绘图仪，打印后再按设置 DPI 转图。</summary>
     private string SelectedDevice() => IsDwfOutput
@@ -2895,6 +2933,7 @@ public sealed partial class RectangleBatchPlotControl : UserControl
     /// <summary>记住上次的输出选项（非关键保存：失败只记日志，不打断操作）。</summary>
     private void SaveCurrentPlotOptions(bool onlyIfChanged = false)
     {
+        if (!_printOptionsReady) return;
         var device = AcadPlotterInstaller.PreferredPdfPlotter;
         var style = PlotStyleManager.NormalizeStyleName(SelectedStyle());
         var styleSheet = string.IsNullOrEmpty(style) ? _settings.LastStyleSheet : style;
@@ -2902,24 +2941,17 @@ public sealed partial class RectangleBatchPlotControl : UserControl
         var leaveMargin = _leaveMargin.IsChecked == true;
         var recognizeByMode = _recognizeByModeCheck.IsChecked == true;
         var marginMm = ReadMarginValue(_marginInput);
-        var changed = !string.Equals(_settings.LastPlotDevice, device, StringComparison.Ordinal)
-            || !string.Equals(_settings.LastStyleSheet, styleSheet, StringComparison.Ordinal)
-            || _settings.MergePdf != mergePdf
-            || _settings.LeavePaperMargin != leaveMargin
-            || _settings.RecognizeTitleByDominantFrameMode != recognizeByMode
-            || !_settings.PaperMarginMm.Equals(marginMm);
         _settings.LastPlotDevice = device;
         _settings.LastStyleSheet = styleSheet;
         _settings.MergePdf = mergePdf;
         _settings.LeavePaperMargin = leaveMargin;
         _settings.RecognizeTitleByDominantFrameMode = recognizeByMode;
         _settings.PaperMarginMm = marginMm;
-        if (onlyIfChanged && !changed)
-        {
-            return;
-        }
-
-        AppSettingsStore.TrySave(_settings, out _);
+        _settings.LastOutputFormat = SelectedOutputFormat;
+        _settings.SavePathMode = _savePathModeCombo.SelectedIndex;
+        if (_outputDirectoryIsCustom) _settings.CustomOutputDirectory = _outputDirectory.Text.Trim();
+        _settings.ScanScope = GetSelectedScanScope();
+        _sharedPrintOptions.Save(_settings);
     }
 
     /// <summary>初始化留白下拉列表，正值=扩大纸张，负值=缩比例，整数1~10配对显示。</summary>

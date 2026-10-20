@@ -1,4 +1,4 @@
-<UserControl x:Class="ZwcadBatchPlot.SettingsControl"
+﻿<UserControl x:Class="ZwcadBatchPlot.SettingsControl"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:ZwcadBatchPlot"
@@ -59,7 +59,8 @@
 
                         <GroupBox Header="打印行为" Margin="0,0,0,4" Padding="8">
                             <StackPanel>
-                                <CheckBox x:Name="_openExternalDwgForPlot" Content="跨文件打印时临时打开 DWG" Margin="0,0,0,2" />
+                                <CheckBox x:Name="_silentBatchPlot" Content="静默批打（不逐张缩放显示图幅）" Margin="0,0,0,2"
+                                          ToolTip="正式打印保留当前缩放范围，仅在必要时校正图框方向；跨文件仍临时打开 DWG 并初始化布局，完成后关闭插件打开的图纸且不保存。预览仍定位到所选图幅。" />
                                 <CheckBox x:Name="_hideFrameBoundaryWhenPlotting" Content="不打印图框的外边框" Margin="0,0,0,2"
                                           ToolTip="勾选后，正式打印把内容四边各裁 1mm，外框线不再输出；纸张、比例和留白不变。" />
                                 <CheckBox x:Name="_plotTransparency" Content="打印透明度" Margin="0,0,0,2"

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -96,7 +96,7 @@ public static partial class PlotterService
     }
 
     /** PrepareEditorViewForPlot：出图前校正视图方向与扭转。 */
-    private static void PrepareEditorViewForPlot(Document doc, PlotJob job)
+    private static void PrepareEditorViewForPlot(Document doc, PlotJob job, bool fitFrame = true)
     {
         // 图纸空间无视图概念，跳过。
         // 已生成 DCS 的任务必须保留生成时的视图；UCS 任务没有提前生成 DCS，必须在这里恢复扫描时的 UCS 视图。
@@ -123,6 +123,8 @@ public static partial class PlotterService
             : Math.Max(Math.Abs(job.MaxY - job.MinY), 1);
 
         using var view = doc.Editor.GetCurrentView();
+        var previousDirection = view.ViewDirection;
+        var previousTwist = view.ViewTwist;
         if (job.UsesUserCoordinateSystem)
         {
             var xAxis = new Vector3d(job.UcsXAxisX, job.UcsXAxisY, job.UcsXAxisZ).GetNormal();
@@ -136,10 +138,19 @@ public static partial class PlotterService
             view.ViewTwist = 0;
         }
 
-        view.Target = center;
-        view.CenterPoint = Point2d.Origin;
-        view.Width = width * 1.05;
-        view.Height = height * 1.05;
+        // 静默打印仅校正必要的方向，不逐张平移、缩放到图框。
+        if (fitFrame)
+        {
+            view.Target = center;
+            view.CenterPoint = Point2d.Origin;
+            view.Width = width * 1.05;
+            view.Height = height * 1.05;
+        }
+        else if (previousDirection.IsEqualTo(view.ViewDirection)
+                 && Math.Abs(Math.IEEERemainder(previousTwist - view.ViewTwist, Math.PI * 2)) < 1e-10)
+        {
+            return;
+        }
         doc.Editor.SetCurrentView(view);
     }
 

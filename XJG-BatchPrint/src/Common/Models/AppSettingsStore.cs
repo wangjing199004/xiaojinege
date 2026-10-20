@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -54,6 +54,10 @@ public sealed class DirectoryColumnSetting
 public sealed class AppSettings
 {
     public string LastPlotDevice { get; set; } = "";
+    public string LastOutputFormat { get; set; } = "PDF";
+    /// <summary>0=源目录，1=文件名加格式子目录，2=其他路径。</summary>
+    public int SavePathMode { get; set; }
+    public string CustomOutputDirectory { get; set; } = "";
     public string LastStyleSheet { get; set; } = "";
     public double PaperMatchToleranceMm { get; set; } = 1.0;
     /// <summary>命令快捷键：键为原始命令名（ZBP_*），值为用户设置的简化命令。</summary>
@@ -142,6 +146,8 @@ public sealed class AppSettings
     /// <summary>文件名序号的起始值。</summary>
     public int FileNameSequenceStartNumber { get; set; } = 1;
     public bool OpenExternalDwgForPlot { get; set; } = true;
+    /// <summary>正式批打不逐张平移缩放视图；预览仍定位到图框。</summary>
+    public bool SilentBatchPlot { get; set; } = true;
     public double DirectoryIndexWidth { get; set; } = 900;
     public double DirectoryNumberWidth { get; set; } = 3200;
     public double DirectoryTitleWidth { get; set; } = 5200;
@@ -257,6 +263,12 @@ public static class AppSettingsStore
 
     private static AppSettings Normalize(AppSettings settings)
     {
+        if (!new[] { "PDF", "PNG", "JPG", "DWF", "DWG" }.Contains(settings.LastOutputFormat))
+            settings.LastOutputFormat = "PDF";
+        if (settings.SavePathMode < 0 || settings.SavePathMode > 2) settings.SavePathMode = 0;
+        settings.CustomOutputDirectory = settings.CustomOutputDirectory?.Trim() ?? "";
+        if (settings.SavePathMode == 2 && string.IsNullOrWhiteSpace(settings.CustomOutputDirectory))
+            settings.SavePathMode = 0;
         // 旧版 Settings.json 不包含该字段时会得到枚举默认值 DrawingNumber；
         // 对异常整数再做一次兜底，避免损坏配置让排序行为不可预测。
         if (!Enum.IsDefined(typeof(TitleBlockSortMode), settings.TitleBlockBatchSortMode))

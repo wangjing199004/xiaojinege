@@ -44,11 +44,15 @@ public sealed partial class BatchPlotControl : UserControl
     private readonly List<string> _selectedDwgFiles = new();
     private readonly TemporarySequenceOverlay _sequenceOverlay;
     private readonly AppSettings _settings;
+    private readonly SharedPrintOptions _sharedPrintOptions;
+    private bool _printOptionsReady;
     private bool _sequenceOverlayFollowsCurrentJobs;
     /// <summary>多文件批打进列表后禁止 CAD 临时红框/序号，直至再次扫描当前图或框选。</summary>
     private bool _suppressSequenceOverlayFromMultiFile;
     private int _overlayScheduleGeneration;
     private bool _outputDirectoryIsCustom;
+    private bool _changingSavePathMode;
+    private int _lastSavePathMode;
     private bool _outputDirectoryModified;
     private bool _updatingPrintSelection;
     private bool _allowDoubleClickTextEdit;
@@ -67,8 +71,6 @@ public sealed partial class BatchPlotControl : UserControl
     private TitleBlockScanScope? _lastScanScope;
     /// <summary>上次「框选扫描」选中的对象，供图框库变更后静默重扫复用。</summary>
     private ObjectId[]? _lastSelectedIds;
-    private HashSet<string> _duplicateDrawingNumbers = new(StringComparer.OrdinalIgnoreCase);
-    private HashSet<string> _duplicateTitles = new(StringComparer.OrdinalIgnoreCase);
     private bool _styleSelectionReady;
 
     /// <summary>原 _plotOnlyControls：非 DWG 输出格式时才启用。</summary>
@@ -79,6 +81,7 @@ public sealed partial class BatchPlotControl : UserControl
         _currentDocument = currentDocument;
         _sequenceOverlay = new TemporarySequenceOverlay(currentDocument);
         _settings = AppSettingsStore.Load();
+        _sharedPrintOptions = new SharedPrintOptions(_settings);
         InitializeComponent();
 
         _plotOnlyControls = new UIElement[]
@@ -97,7 +100,7 @@ public sealed partial class BatchPlotControl : UserControl
         InitScanScopeCombo();
         _outputDirectory.Text = GetDefaultOutputDirectory();
 
-        _grid.ItemsSource = _jobs;
+        SourceFileGrouping.Attach(_grid, _jobs, "SourceFile");
 
         LoadPlotOptions();
         RefreshStatus();
@@ -128,8 +131,12 @@ public sealed partial class BatchPlotControl : UserControl
         _outputFormatCombo.Items.Add("JPG");
         _outputFormatCombo.Items.Add("DWF");
         _outputFormatCombo.Items.Add("DWG");
-        _outputFormatCombo.SelectedIndex = 0;
+        _outputFormatCombo.SelectedItem = _settings.LastOutputFormat;
         RefreshSavePathModeOptions(preserveSelection: false);
+        SetSavePathMode(_settings.SavePathMode);
+        _outputDirectoryIsCustom = _settings.SavePathMode == 2;
+        if (_outputDirectoryIsCustom) _outputDirectory.Text = _settings.CustomOutputDirectory;
+        _outputDirectoryModified = false;
 
         try
         {
@@ -160,8 +167,11 @@ public sealed partial class BatchPlotControl : UserControl
 
         UpdateOutputFormatUi();
         // 仅当记忆值确有变化时写回设置，避免每次打开窗口都写设置文件（被占用时曾导致窗口构造崩溃）。
-        SaveCurrentSettings(onlyIfChanged: true);
         _styleSelectionReady = true;
+        _printOptionsReady = true;
+        SaveCurrentSettings();
+        _mergePdfCheckBox.Checked += (_, _) => SaveCurrentSettings();
+        _mergePdfCheckBox.Unchecked += (_, _) => SaveCurrentSettings();
         // 窗体显示后空闲时预热打印管线，把首张开销挪出批打进度窗（PlotMany 内同键调用为空操作）。
         SchedulePlotWarmUp();
     }
@@ -252,7 +262,7 @@ public sealed partial class BatchPlotControl : UserControl
         }
 
         _settings.ScanScope = item.Scope;
-        AppSettingsStore.TrySave(_settings, out _);
+        SaveCurrentSettings();
     }
 
     private sealed class ScanScopeItem
@@ -1163,39 +1173,14 @@ public sealed partial class BatchPlotControl : UserControl
     /// </summary>
     private void RebuildDuplicateIdentitySets()
     {
-        _duplicateDrawingNumbers = FindDuplicateIdentityKeys(_jobs.Select(job => job.DrawingNumber));
-        _duplicateTitles = FindDuplicateIdentityKeys(_jobs.Select(job => job.Title));
-        DuplicateBrushConverter.DrawingNumbers = _duplicateDrawingNumbers;
-        DuplicateBrushConverter.Titles = _duplicateTitles;
+        var converter = (DuplicateBrushConverter)Resources["DuplicateBrushConverter"];
+        converter.DrawingNumbers = DuplicateIdentityFinder.Find(_jobs,
+            job => GetSourceGroupKey(job.SourceFile), job => job.DrawingNumber);
+        converter.Titles = DuplicateIdentityFinder.Find(_jobs,
+            job => GetSourceGroupKey(job.SourceFile), job => job.Title);
         _grid.Items.Refresh();
     }
 
-    /// <summary>
-    /// 找出出现超过一次的图号或图名（忽略大小写和首尾空白）。
-    /// </summary>
-    private static HashSet<string> FindDuplicateIdentityKeys(IEnumerable<string> values)
-    {
-        var counts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-        foreach (var value in values)
-        {
-            var key = NormalizeIdentityText(value);
-            if (key.Length == 0)
-            {
-                continue;
-            }
-
-            counts[key] = counts.TryGetValue(key, out var count) ? count + 1 : 1;
-        }
-
-        return new HashSet<string>(
-            counts.Where(pair => pair.Value > 1).Select(pair => pair.Key),
-            StringComparer.OrdinalIgnoreCase);
-    }
-
-    private static string NormalizeIdentityText(string? value)
-    {
-        return (value ?? string.Empty).Trim();
-    }
 
     // ── CAD 红框序号标注 ──
 
@@ -1436,7 +1421,10 @@ public sealed partial class BatchPlotControl : UserControl
         _grid.Items.Refresh();
         // 图号重排窗口中的方向同时作为下次默认值，并与其它位置排序入口保持一致。
         _settings.SortOrderHorizontalFirst = dialog.HorizontalFirst;
-        AppSettingsStore.TrySave(_settings, out _);
+        var savedSortSettings = AppSettingsStore.Load();
+        savedSortSettings.SortOrderHorizontalFirst = dialog.HorizontalFirst;
+        savedSortSettings.TitleBlockBatchSortMode = _settings.TitleBlockBatchSortMode;
+        AppSettingsStore.TrySave(savedSortSettings, out _);
         SortAndRefreshOutputPaths();
 
         // 反写 CAD 文件中的图号（批量：共享一次文档锁定/事务/图框库加载，逐张写在图多时会明显变慢）
@@ -1721,6 +1709,7 @@ public sealed partial class BatchPlotControl : UserControl
         {
             _outputDirectory.Text = dialog.SelectedPath;
             _outputDirectoryIsCustom = true;
+            SetSavePathMode(2);
             SaveCurrentSettings();
             SortAndRefreshOutputPaths();
             AppendLog("INFO", "输出目录切换为 " + dialog.SelectedPath);
@@ -1761,11 +1750,13 @@ public sealed partial class BatchPlotControl : UserControl
         if (string.IsNullOrWhiteSpace(directory))
         {
             _outputDirectoryIsCustom = false;
+            SetSavePathMode(0);
             UpdateAutomaticOutputDirectory();
         }
         else
         {
             _outputDirectoryIsCustom = true;
+            SetSavePathMode(2);
             _outputDirectory.Text = directory;
         }
 
@@ -1902,7 +1893,10 @@ public sealed partial class BatchPlotControl : UserControl
 
         _settings.TitleBlockBatchSortMode = dialog.SortMode;
         _settings.SortOrderHorizontalFirst = dialog.HorizontalFirst;
-        AppSettingsStore.TrySave(_settings, out _);
+        var savedSortSettings = AppSettingsStore.Load();
+        savedSortSettings.SortOrderHorizontalFirst = dialog.HorizontalFirst;
+        savedSortSettings.TitleBlockBatchSortMode = _settings.TitleBlockBatchSortMode;
+        AppSettingsStore.TrySave(savedSortSettings, out _);
 
         // 最终排序只能经过统一入口，否则位置预排会被随后的图号排序覆盖。
         SortAndRefreshOutputPaths();
@@ -1957,6 +1951,7 @@ public sealed partial class BatchPlotControl : UserControl
         _settings.AutoFileNameSequenceDigits = updated.AutoFileNameSequenceDigits;
         _settings.FileNameSequenceStartNumber = updated.FileNameSequenceStartNumber;
         _settings.OpenExternalDwgForPlot = updated.OpenExternalDwgForPlot;
+        _settings.SilentBatchPlot = updated.SilentBatchPlot;
         _settings.DirectoryIndexWidth = updated.DirectoryIndexWidth;
         _settings.DirectoryNumberWidth = updated.DirectoryNumberWidth;
         _settings.DirectoryTitleWidth = updated.DirectoryTitleWidth;
@@ -2137,21 +2132,40 @@ public sealed partial class BatchPlotControl : UserControl
     private void RefreshSavePathModeOptions(bool preserveSelection)
     {
         var selectedIndex = preserveSelection && _savePathModeCombo.SelectedIndex >= 0
-            ? Math.Min(_savePathModeCombo.SelectedIndex, 1)
+            ? Math.Min(_savePathModeCombo.SelectedIndex, 2)
             : 0;
         var format = SelectedOutputFormat;
         var formatPathText = string.IsNullOrWhiteSpace(format)
-            ? "源文件路径/输出格式"
-            : "源文件路径/" + format;
+            ? "源文件路径/文件名输出格式"
+            : "源文件路径/文件名" + format;
 
+        _changingSavePathMode = true;
         _savePathModeCombo.Items.Clear();
         _savePathModeCombo.Items.Add("源文件路径");
         _savePathModeCombo.Items.Add(formatPathText);
+        _savePathModeCombo.Items.Add("其他路径");
         _savePathModeCombo.SelectedIndex = selectedIndex;
+        _changingSavePathMode = false;
+    }
+
+    private void SetSavePathMode(int index)
+    {
+        _changingSavePathMode = true;
+        try { _savePathModeCombo.SelectedIndex = index; }
+        finally { _changingSavePathMode = false; }
+        _lastSavePathMode = index;
     }
 
     private void ApplySelectedSavePathMode()
     {
+        if (_changingSavePathMode || _savePathModeCombo.SelectedIndex < 0) return;
+        if (_savePathModeCombo.SelectedIndex == 2)
+        {
+            ChooseOutputDirectory();
+            SetSavePathMode(_lastSavePathMode);
+            return;
+        }
+        _lastSavePathMode = _savePathModeCombo.SelectedIndex;
         _outputDirectoryIsCustom = false;
         UpdateAutomaticOutputDirectory();
         SaveCurrentSettings();
@@ -2161,15 +2175,20 @@ public sealed partial class BatchPlotControl : UserControl
 
     private void UpdateAutomaticOutputDirectory()
     {
-        _outputDirectory.Text = AppendAutomaticSubfolder(GetSelectedCadDirectory());
+        _outputDirectory.Text = AppendAutomaticSubfolder(GetSelectedCadDirectory(), GetSelectedCadFile());
+        _outputDirectoryModified = false;
     }
 
-    private string AppendAutomaticSubfolder(string sourceDirectory)
+    private string GetSelectedCadFile() => _selectedDwgFiles.FirstOrDefault(File.Exists)
+        ?? _jobs.Select(x => x.SourceFile).FirstOrDefault(x => !string.IsNullOrWhiteSpace(x) && File.Exists(x))
+        ?? _currentDocument.Database.Filename;
+
+    private string AppendAutomaticSubfolder(string sourceDirectory, string sourceFile)
     {
         var subfolder = AutomaticOutputSubfolder;
         return string.IsNullOrWhiteSpace(subfolder)
             ? sourceDirectory
-            : Path.Combine(sourceDirectory, subfolder);
+            : Path.Combine(sourceDirectory, FileNameSanitizer.Clean(Path.GetFileNameWithoutExtension(sourceFile)) + subfolder);
     }
 
     private string GetOutputDirectory(PlotJob job)
@@ -2185,7 +2204,7 @@ public sealed partial class BatchPlotControl : UserControl
         var sourceDirectory = string.IsNullOrWhiteSpace(sourceFile)
             ? GetSelectedCadDirectory()
             : Path.GetDirectoryName(sourceFile) ?? GetSelectedCadDirectory();
-        return AppendAutomaticSubfolder(sourceDirectory);
+        return AppendAutomaticSubfolder(sourceDirectory, sourceFile);
     }
 
     private string GetOutputLocationDescription()
@@ -2198,7 +2217,7 @@ public sealed partial class BatchPlotControl : UserControl
         var subfolder = AutomaticOutputSubfolder;
         return string.IsNullOrWhiteSpace(subfolder)
             ? "每个源 DWG 所在目录"
-            : $"每个源 DWG 所在目录下的 {subfolder} 文件夹";
+            : $"每个源 DWG 所在目录下的 文件名{subfolder} 文件夹";
     }
 
     private void UpdateOutputFormatUi()
@@ -2741,28 +2760,23 @@ public sealed partial class BatchPlotControl : UserControl
     /// <summary>记住上次的输出选项（非关键保存：失败只记日志，不打断操作或关闭窗口）。</summary>
     private void SaveCurrentSettings(bool onlyIfChanged = false)
     {
+        if (!_printOptionsReady) return;
         var device = AcadPlotterInstaller.PreferredPdfPlotter;
         var style = PlotStyleManager.NormalizeStyleName(_styleCombo.SelectedItem?.ToString());
         var styleSheet = string.IsNullOrEmpty(style) ? _settings.LastStyleSheet : style;
         var mergePdf = _mergePdfCheckBox.IsChecked == true;
         var leaveMargin = _leaveMarginCheckBox.IsChecked == true;
         var marginMm = ReadMarginValue(_marginInput);
-        var changed = !string.Equals(_settings.LastPlotDevice, device, StringComparison.Ordinal)
-            || !string.Equals(_settings.LastStyleSheet, styleSheet, StringComparison.Ordinal)
-            || _settings.MergePdf != mergePdf
-            || _settings.LeavePaperMargin != leaveMargin
-            || !_settings.PaperMarginMm.Equals(marginMm);
         _settings.LastPlotDevice = device;
         _settings.LastStyleSheet = styleSheet;
         _settings.MergePdf = mergePdf;
         _settings.LeavePaperMargin = leaveMargin;
         _settings.PaperMarginMm = marginMm;
-        if (onlyIfChanged && !changed)
-        {
-            return;
-        }
-
-        AppSettingsStore.TrySave(_settings, out _);
+        _settings.LastOutputFormat = SelectedOutputFormat;
+        _settings.SavePathMode = _savePathModeCombo.SelectedIndex;
+        if (_outputDirectoryIsCustom) _settings.CustomOutputDirectory = _outputDirectory.Text.Trim();
+        _settings.ScanScope = GetSelectedScanScope();
+        _sharedPrintOptions.Save(_settings);
     }
 
     // ── UI 事件处理器 ──
@@ -2813,6 +2827,7 @@ public sealed partial class BatchPlotControl : UserControl
         }
 
         UpdateOutputFormatUi();
+        SaveCurrentSettings();
         SchedulePlotWarmUp();
     }
 
@@ -2846,6 +2861,7 @@ public sealed partial class BatchPlotControl : UserControl
         _marginInput.IsEnabled = SupportsLeaveMargin && _leaveMarginCheckBox.IsChecked == true;
         // 留白开关切换时立即更新所有作业状态，清除扩大纸张模式留下的精确纸张标记。
         ApplyLeaveMarginSelection(_jobs);
+        SaveCurrentSettings();
     }
 
     private void MarginInput_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -2857,6 +2873,7 @@ public sealed partial class BatchPlotControl : UserControl
 
         // 留白值改变时立即重置所有作业的扩大纸张状态，避免正↔负切换后遗留无效精确纸张标记。
         ApplyLeaveMarginSelection(_jobs);
+        SaveCurrentSettings();
     }
 
     /// <summary>留白下拉列表选项，+ 为扩大纸张，- 为缩比例。</summary>
@@ -2914,24 +2931,15 @@ public sealed class RowIndexConverter : IValueConverter
 /// </summary>
 public sealed class DuplicateBrushConverter : IValueConverter
 {
-    public static HashSet<string>? DrawingNumbers;
-    public static HashSet<string>? Titles;
+    public HashSet<PlotJob> DrawingNumbers { get; set; } = new();
+    public HashSet<PlotJob> Titles { get; set; } = new();
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        var text = (value as string)?.Trim();
-        if (string.IsNullOrEmpty(text) || parameter as string != "DrawingNumber" && parameter as string != "Title")
-        {
-            return Brushes.Black;
-        }
-
-        var duplicates = parameter as string == "DrawingNumber" ? DrawingNumbers : Titles;
-        if (text is null || duplicates is null)
-        {
-            return Brushes.Black;
-        }
-
-        return duplicates.Contains(text) ? Brushes.Red : Brushes.Black;
+        if (value is not PlotJob job) return Brushes.Black;
+        var duplicate = parameter as string == "DrawingNumber" ? DrawingNumbers.Contains(job)
+            : parameter as string == "Title" && Titles.Contains(job);
+        return duplicate ? Brushes.Red : Brushes.Black;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

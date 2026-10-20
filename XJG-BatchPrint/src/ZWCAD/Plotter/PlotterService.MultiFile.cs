@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -109,7 +109,7 @@ public static partial class PlotterService
             cancellationToken.ThrowIfCancellationRequested();
             try
             {
-                PrepareExternalSpace(doc, job, ref lastSpaceKey);
+                PrepareExternalSpace(doc, job, ref lastSpaceKey, fitFrame: !settings.SilentBatchPlot);
                 beforeJob?.Invoke(job);
                 // 进度窗 Activate 会抢走 CAD 焦点，出图前必须再次确认活动文档。
                 ActivateExternalDocument(doc, sourceFile);
@@ -221,6 +221,13 @@ public static partial class PlotterService
      */
     private static void ActivateExternalDocument(Document doc, string sourceFile)
     {
+        if (CadApp.DocumentManager.MdiActiveDocument == doc)
+        {
+            // 同一文件内逐张打印无需重复刷屏和等待；布局准备仍负责必要的 Regen。
+            HostApplicationServices.WorkingDatabase = doc.Database;
+            return;
+        }
+
         if (CadApp.DocumentManager.MdiActiveDocument != doc)
         {
             CadApp.DocumentManager.MdiActiveDocument = doc;
@@ -282,7 +289,7 @@ public static partial class PlotterService
      * 同一 SpaceName 只重生成一次；模型非 DCS 窗口按每张图对齐视图。
      * 切布局后先释放文档锁再刷屏，让视口显示列表有机会生成。
      */
-    private static void PrepareExternalSpace(Document doc, PlotJob job, ref string? lastSpaceKey)
+    private static void PrepareExternalSpace(Document doc, PlotJob job, ref string? lastSpaceKey, bool fitFrame = true)
     {
         var spaceKey = string.IsNullOrWhiteSpace(job.SpaceName) ? "__CURRENT__" : job.SpaceName.Trim();
         if (!string.Equals(lastSpaceKey, spaceKey, StringComparison.OrdinalIgnoreCase))
@@ -318,7 +325,7 @@ public static partial class PlotterService
         {
             using (doc.LockDocument())
             {
-                PrepareEditorViewForPlot(doc, job);
+                PrepareEditorViewForPlot(doc, job, fitFrame);
             }
         }
     }

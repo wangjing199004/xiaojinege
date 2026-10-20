@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -64,6 +64,7 @@ public static partial class PlotterService
         Action<PlotJob>? beforeJob = null,
         CancellationToken cancellationToken = default)
     {
+        settings.SilentBatchPlot = AppSettingsStore.Load().SilentBatchPlot;
         var results = new List<PlotJobResult>();
         var oldActive = CadApp.DocumentManager.MdiActiveDocument;
 
@@ -229,7 +230,7 @@ public static partial class PlotterService
                     // 当前图批打原先未对齐视图；UCS/斜图框与单张打印不一致时会打斜。
                     if (!job.IsPaperSpace && !job.IsDcsWindow)
                     {
-                        PrepareEditorViewForPlot(currentDocument, job);
+                        PrepareEditorViewForPlot(currentDocument, job, fitFrame: !settings.SilentBatchPlot);
                     }
 
                     PlotDatabase(currentDocument.Database, currentDocument.Name, job, deviceName, styleSheet, settings, currentDocument);

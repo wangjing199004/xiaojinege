@@ -1,8 +1,12 @@
-{
-  "createdAt": "2026-10-15T13:15:47.687634+08:00",
-  "checkpoint": "v9",
-  "releasePublished": false,
+﻿{
+  "date": "2026-10-20",
+  "checkpoint": "v13",
   "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 9,
+      "sha256": "8b9c3028d6467ff3be7c793141927841d70f47f52d0590677438f488ca154992"
+    },
     {
       "path": ".gitignore",
       "bytes": 353,
@@ -10,13 +14,13 @@
     },
     {
       "path": "artifacts/current/AutoCAD2015-2024/AcadBatchPlot.dll",
-      "bytes": 807424,
-      "sha256": "c74ddee39ac74a095011f4a5b04196b8feeb8afd554fa51eccc6ec9f8188d200"
+      "bytes": 815616,
+      "sha256": "7c7b06ae7fd13a216edfbf337bd72f63f125a76a3c15ba891aba4524169d3a77"
     },
     {
       "path": "artifacts/current/AutoCAD2015-2024/AcadBatchPlot.pdb",
-      "bytes": 259888,
-      "sha256": "25171b3778c25eab338956f202f4f0847a09419792c0313ef11166a5e03c432f"
+      "bytes": 262304,
+      "sha256": "b662663f85cb30a049a0d573e80f683ee49e3c5bf0b031bea880d22421959154"
     },
     {
       "path": "artifacts/current/AutoCAD2015-2024/de/PdfSharp.Charting.resources.dll",
@@ -160,13 +164,13 @@
     },
     {
       "path": "artifacts/current/AutoCAD2025-2027/AcadBatchPlot.Core.dll",
-      "bytes": 824320,
-      "sha256": "61592547144e252a60702f0b4a84656ee63338682a963ee02a847236c6e654d4"
+      "bytes": 833024,
+      "sha256": "db11b3c3e9fb9d616172668b15602a8ce349454e00e5f20c106b5faf83100838"
     },
     {
       "path": "artifacts/current/AutoCAD2025-2027/AcadBatchPlot.Core.pdb",
-      "bytes": 273224,
-      "sha256": "04db4264182417458bac5c6e9e5a2789d3a19b518e26ae7f12cd0236e6143fa3"
+      "bytes": 275656,
+      "sha256": "9b5fa77ee5de5c7a8de8235295af7c804b0925b14ca23390fb4e449691a0a0de"
     },
     {
       "path": "artifacts/current/AutoCAD2025-2027/AcadBatchPlot.Core.runtimeconfig.json",
@@ -400,13 +404,13 @@
     },
     {
       "path": "artifacts/current/ZWCAD2025/BatchPlotter.dll",
-      "bytes": 776704,
-      "sha256": "baf476a759b7f82775a693e835149bacf93ea8730e016f580a243d27e1d8b3f2"
+      "bytes": 784896,
+      "sha256": "478b68710e08d69a061be75a763d072bb624b76737d0a3dfaf3c31eaa4cd349a"
     },
     {
       "path": "artifacts/current/ZWCAD2025/BatchPlotter.pdb",
-      "bytes": 248672,
-      "sha256": "0364701158153eba492282d1b6c6ad92815158df3f5954a7e6fc805c430e67c6"
+      "bytes": 251092,
+      "sha256": "39c47382428994399aaf06e798cf6266e82787e5e09cff9a852306993a2cfe85"
     },
     {
       "path": "artifacts/current/ZWCAD2025/de/PdfSharp.Charting.resources.dll",
@@ -500,13 +504,13 @@
     },
     {
       "path": "artifacts/current/更新说明.txt",
-      "bytes": 1233,
-      "sha256": "e5cd0d5d787c806053d8c994fa7397aefa65ab4b9236b2c5862eeeb8cdfc3653"
+      "bytes": 1265,
+      "sha256": "f626aba1b5469f0f6affdf66000c87b85c30063ee3248309b778659c901b25e7"
     },
     {
       "path": "CHECKPOINT.md",
-      "bytes": 2182,
-      "sha256": "38431c557c1500008aa27a8af1227f9acb2e693793ab411369b1f7628844b542"
+      "bytes": 1895,
+      "sha256": "56d18d0b28a90a16bed73be8710095f7c020b93b0b5028e62d20d8072e0cfbcb"
     },
     {
       "path": "Directory.Build.props",
@@ -835,8 +839,8 @@
     },
     {
       "path": "src/AutoCAD/Plotter/PlotterService.cs",
-      "bytes": 11924,
-      "sha256": "4c83f59e9f4a21cf69f0d79cf66893f7a9b74289063df8bca70de9bc2a5d5dc9"
+      "bytes": 12352,
+      "sha256": "d046317d2cfc43399c955b1d2d9b8206f004b37f86b00c1fa9dd7f2e2e9f450a"
     },
     {
       "path": "src/AutoCAD/Plotter/PlotterService.Documents.cs",
@@ -850,8 +854,8 @@
     },
     {
       "path": "src/AutoCAD/Plotter/PlotterService.MultiFile.cs",
-      "bytes": 13018,
-      "sha256": "cc1702085c3444cdfb38808bd60826fe1f4a59193f80a3502dea935e673bc977"
+      "bytes": 13762,
+      "sha256": "3ac69e02225d2f7f4877564d6b44eb37e659c1ea1479b79773c98277b6860ef2"
     },
     {
       "path": "src/AutoCAD/Plotter/PlotterService.Pipeline.cs",
@@ -875,8 +879,8 @@
     },
     {
       "path": "src/AutoCAD/Plotter/PlotterService.Window.cs",
-      "bytes": 8974,
-      "sha256": "0538666b718c0a3dc1ce3e58a5846697ad438e8060b99a0b8c35f3d87ac29b61"
+      "bytes": 9736,
+      "sha256": "55d421f0e22145c0b8c7fdd57002efbb5efa8c1fc0d25ce8d8e1a359113b4cd9"
     },
     {
       "path": "src/AutoCAD/PluginAssemblyResolver.cs",
@@ -1045,8 +1049,13 @@
     },
     {
       "path": "src/Common/Models/AppSettingsStore.cs",
-      "bytes": 24808,
-      "sha256": "deebd840c387de4ba7391100c3a2bde4cd52ad707601cdf0e330836cc02da92d"
+      "bytes": 26257,
+      "sha256": "aa3df8c067154e58104de9283a4d9547ab1f9e233425cd15662e4d35056d7643"
+    },
+    {
+      "path": "src/Common/Models/DuplicateIdentityFinder.cs",
+      "bytes": 901,
+      "sha256": "390a8c8e72d02096d6ef856202568aadeb0ef32369ca86268e2dbc8dbcce0d97"
     },
     {
       "path": "src/Common/Models/Models.cs",
@@ -1057,6 +1066,11 @@
       "path": "src/Common/Models/RectangleScanProgress.cs",
       "bytes": 646,
       "sha256": "ec29978ced01ecc250e0fc26404f94bf3f80247308c9669b9d3366cb3c2ff062"
+    },
+    {
+      "path": "src/Common/Models/SharedPrintOptions.cs",
+      "bytes": 1601,
+      "sha256": "4847a17a05f989aad5109e00ccf1ad81c95831ed327e3f9000a8064399d3b297"
     },
     {
       "path": "src/Common/Models/TitleBlockLibraryStore.cs",
@@ -1125,8 +1139,8 @@
     },
     {
       "path": "src/Common/Services/Plotting/DwgSplit/DwgSplitService.cs",
-      "bytes": 14774,
-      "sha256": "bc8966b5f1ab3c3feacc3af6216837a3b73771deb7871e76f7b6190839f0d133"
+      "bytes": 15272,
+      "sha256": "f078dff763771ebc3d050c9c7a800765d69fc1fd95c4d985e0624880d15ebc44"
     },
     {
       "path": "src/Common/Services/Plotting/ObjectLineweightPlotStyle.cs",
@@ -1275,13 +1289,13 @@
     },
     {
       "path": "src/Common/Views/BatchPlotForm.xaml",
-      "bytes": 16675,
-      "sha256": "e95dd9f096168aeec3a3c45123b71ea329a9d48fda8fa6bf58714d9248e4070b"
+      "bytes": 16804,
+      "sha256": "40afb1ce68453cc6431325388e85edf86510287c1473e94fff3933b196e50191"
     },
     {
       "path": "src/Common/Views/BatchPlotForm.xaml.cs",
-      "bytes": 115607,
-      "sha256": "d4ba7806495279dfa4a1800577bf2c69552cd53065b0523f658783862cc23934"
+      "bytes": 116844,
+      "sha256": "2df4eeb468578f69292fe529184211b1c8386bd4e1100d997d60153a0fcadb47"
     },
     {
       "path": "src/Common/Views/BatchPrintProgressWindow.xaml",
@@ -1350,13 +1364,13 @@
     },
     {
       "path": "src/Common/Views/RectangleBatchPlotForm.xaml",
-      "bytes": 16889,
-      "sha256": "5ac31f0ae825d36d781db00fb4941701f5ddfa1ca359a5f5e70262b16e27b9eb"
+      "bytes": 17031,
+      "sha256": "b086e0d5ade2e780b3276337f82606109bf349e5c3503741b4e3dadba4fa6056"
     },
     {
       "path": "src/Common/Views/RectangleBatchPlotForm.xaml.cs",
-      "bytes": 117718,
-      "sha256": "955cbb9ab3a03f5d1bab48c5839d3d8c75e16c9863a386a4b3ff68caaa4a5516"
+      "bytes": 119181,
+      "sha256": "bc0b53b485fe77929c2030509ef371892144eb21c339f10e3060add20ca3a703"
     },
     {
       "path": "src/Common/Views/ScanSpacePickerDialog.xaml",
@@ -1370,13 +1384,13 @@
     },
     {
       "path": "src/Common/Views/SettingsForm.xaml",
-      "bytes": 33221,
-      "sha256": "eb14fb1a53306c806dc658d6d3c76b676a0d8ee27d4a461e18c6395ee940e9ff"
+      "bytes": 33956,
+      "sha256": "995f8c569982eac5b31a625944d67b9e4627f53b06778651737fe124f352d8d7"
     },
     {
       "path": "src/Common/Views/SettingsForm.xaml.cs",
-      "bytes": 51025,
-      "sha256": "2e9fe5b9ae4e7dece19f4e8ddca10e7747db4d7c0dd917160898b0c4fcef7fc0"
+      "bytes": 50997,
+      "sha256": "5c3d7182bb637ef2cd1ad667c35302fe3879e634244accc2ebce0d660bc9602d"
     },
     {
       "path": "src/Common/Views/ShortcutSettingsControl.xaml",
@@ -1439,6 +1453,11 @@
       "sha256": "8f6c29d3325a42c4d50585fd64d23d7e3c7952e35a61d7302d1d9100a58f6641"
     },
     {
+      "path": "src/Common/Views/SourceFileGrouping.cs",
+      "bytes": 2538,
+      "sha256": "be8713fb8a2c0a7aa2f02608178ef04da3dfd02ac7c988464749f9a858ce2542"
+    },
+    {
       "path": "src/Common/Views/TitleBlockLibraryManagerForm.xaml",
       "bytes": 4628,
       "sha256": "3127fd9696640c24d1f1508e1ec5a60c8da790989503299f0bf6c32f5e6b5e8c"
@@ -1465,8 +1484,8 @@
     },
     {
       "path": "src/Common/Views/WpfUi.xaml",
-      "bytes": 3772,
-      "sha256": "ef19081968526dffb1c0256d293b8ddb8f6719d728035fc7f9a348cfae78bd1d"
+      "bytes": 6622,
+      "sha256": "8f97adc69a1c6de44486467206aab9f88678355a506b0bf45208d2f7015967b8"
     },
     {
       "path": "src/PianNoCN/Pia/EnumDecompressionType.cs",
@@ -1525,8 +1544,8 @@
     },
     {
       "path": "src/ZWCAD/Plotter/PlotterService.cs",
-      "bytes": 12973,
-      "sha256": "14e3838a68f543f3c4bfa504a7f8963b9a5b16a31a735d3c105b781d285bafc0"
+      "bytes": 13445,
+      "sha256": "05038eb0c404ba09ab4dee6f64d0e21eccd36a1fb95ff581577117f6c75a7e76"
     },
     {
       "path": "src/ZWCAD/Plotter/PlotterService.Documents.cs",
@@ -1540,8 +1559,8 @@
     },
     {
       "path": "src/ZWCAD/Plotter/PlotterService.MultiFile.cs",
-      "bytes": 12934,
-      "sha256": "4e00ca2ab8a32d1fdb65ef5ec1688daf8f9e8c3cb5753cc5ae6f36c2c08197ee"
+      "bytes": 13674,
+      "sha256": "d6aee1c5031a69606c3b82ffd2c6df8c34c81e1c01574dd16c891fbb2dc5f79c"
     },
     {
       "path": "src/ZWCAD/Plotter/PlotterService.Pipeline.cs",
@@ -1565,8 +1584,8 @@
     },
     {
       "path": "src/ZWCAD/Plotter/PlotterService.Window.cs",
-      "bytes": 8679,
-      "sha256": "1a562e8c57de37284efbb1d505e83f38583bbd5719f9c4596fedf4aba6c94e40"
+      "bytes": 9387,
+      "sha256": "cd3328666edffcbc621c1e98be955ec6db1ceae7a12ab673bfc968bad6eb8e32"
     },
     {
       "path": "src/ZWCAD/Properties/AssemblyInfo.cs",
@@ -1580,8 +1599,8 @@
     },
     {
       "path": "tests/LibraryInputRouting/LibraryInputRouting.csproj",
-      "bytes": 655,
-      "sha256": "3908eac43e6195b64094337d2e0d1c5a63debab205d2126ae12d5f983abf6884"
+      "bytes": 770,
+      "sha256": "97b958cb2371dbadfcda10ffa4207bf747eefe782b76e0000ce6167f9c065e0d"
     },
     {
       "path": "tests/LibraryInputRouting/PaperAndLogRegression.cs",
@@ -1590,8 +1609,18 @@
     },
     {
       "path": "tests/LibraryInputRouting/Program.cs",
-      "bytes": 7728,
-      "sha256": "c6fc0588ca990e754577b9935edb8bef013c5e4c8e0ff28f45c9d73a27ecd10c"
+      "bytes": 9446,
+      "sha256": "b75259fc91fceeab57d393cf91c266feb6b3c400c619ae3e1adb357e576358ad"
+    },
+    {
+      "path": "tests/PrintOptionsAndGrouping/PrintOptionsAndGrouping.csproj",
+      "bytes": 565,
+      "sha256": "4775bcd91046609e9d752fd8974bb27076bf63653e743214c603ccafb838681a"
+    },
+    {
+      "path": "tests/PrintOptionsAndGrouping/Program.cs",
+      "bytes": 7509,
+      "sha256": "a4750c8b0945b0dcb42bea1cf594baaae0513dfed9a6507f8f2117ff4b5c499f"
     },
     {
       "path": "交接说明.md",

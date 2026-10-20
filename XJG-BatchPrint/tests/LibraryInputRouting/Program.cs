@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using ZwcadBatchPlot;
 using ZwSoft.ZwCAD.ApplicationServices;
 
@@ -12,6 +12,26 @@ internal static class Program
 
     private static void Main()
     {
+        var identities = new[]
+        {
+            (Source: "A/建筑.dwg", Number: " A01 ", Title: "平面图"),
+            (Source: "A/建筑.dwg", Number: "a01", Title: "立面图"),
+            (Source: "B/建筑.dwg", Number: "A01", Title: "平面图"),
+            (Source: "B/建筑.dwg", Number: "B02", Title: "平面图"),
+            (Source: "B/建筑.dwg", Number: "", Title: ""),
+            (Source: "B/建筑.dwg", Number: " ", Title: " ")
+        };
+        var duplicateNumbers = DuplicateIdentityFinder.Find(identities, row => row.Source, row => row.Number);
+        var duplicateTitles = DuplicateIdentityFinder.Find(identities, row => row.Source, row => row.Title);
+        Check(duplicateNumbers.Count == 2 && duplicateNumbers.Contains(identities[0])
+            && duplicateNumbers.Contains(identities[1]) && !duplicateNumbers.Contains(identities[2]),
+            "图号只能在同一源文件内标红，忽略大小写和首尾空白");
+        Check(duplicateTitles.Count == 2 && duplicateTitles.Contains(identities[2])
+            && duplicateTitles.Contains(identities[3]) && !duplicateTitles.Contains(identities[0]),
+            "图名独立比较，各源文件之间不标红，空值忽略");
+        Check(DuplicateIdentityFinder.Find(new[] {identities[0]}, row => row.Source, row => row.Number).Count == 0,
+            "删除同源重复行后应清除标红");
+        Console.WriteLine("PASS: duplicate identities scoped to full source file, independent number/title, blanks, case/trim, removal");
         PaperAndLogRegression.Run();
         DwgViewFitRegression.Run();
         var manager = Application.DocumentManager;

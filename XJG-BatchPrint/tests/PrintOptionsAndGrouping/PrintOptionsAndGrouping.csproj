@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF><Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../src/Common/Views/SourceFileGrouping.cs" Link="SourceFileGrouping.cs" />
+    <Compile Include="../../src/Common/Models/SharedPrintOptions.cs" Link="SharedPrintOptions.cs" />
+    <None Include="../../src/Common/Views/WpfUi.xaml" Link="WpfUi.xaml" CopyToOutputDirectory="Always" />
+  </ItemGroup>
+</Project>

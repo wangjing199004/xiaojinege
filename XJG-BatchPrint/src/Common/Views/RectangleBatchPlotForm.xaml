@@ -138,7 +138,7 @@
             <!-- 选项行：保存路径 / 合并 PDF / 留白 -->
             <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
                 <TextBlock Text="保存路径:" VerticalAlignment="Center" Margin="0,0,8,0" />
-                <ComboBox x:Name="_savePathModeCombo" Width="170" IsEditable="False"
+                <ComboBox x:Name="_savePathModeCombo" Width="210" IsEditable="False"
                           VerticalContentAlignment="Center" Margin="0,0,8,0"
                           SelectionChanged="SavePathMode_SelectionChanged" />
                 <CheckBox x:Name="_mergePdf" Content="合并 PDF" VerticalAlignment="Center"
@@ -175,6 +175,9 @@
                   PreviewMouseRightButtonDown="Grid_PreviewMouseRightButtonDown"
                   SelectionChanged="Grid_SelectionChanged"
                   CurrentCellChanged="Grid_CurrentCellChanged">
+            <DataGrid.GroupStyle>
+                <StaticResource ResourceKey="SourceFileGroupStyle" />
+            </DataGrid.GroupStyle>
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Style.Triggers>

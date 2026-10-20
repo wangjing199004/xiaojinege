@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
@@ -9,5 +9,6 @@
     <Compile Include="../../src/Common/Infrastructure/OperationLogStore.cs" Link="OperationLogStore.cs" />
     <Compile Include="../../src/Common/Geometry/DwgViewFit.cs" Link="DwgViewFit.cs" />
     <Compile Include="../../src/Common/Services/Paper/CustomPaperBatchPreparer.cs" Link="CustomPaperBatchPreparer.cs" />
+    <Compile Include="../../src/Common/Models/DuplicateIdentityFinder.cs" Link="DuplicateIdentityFinder.cs" />
   </ItemGroup>
 </Project>

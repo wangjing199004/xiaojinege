@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -289,7 +289,7 @@ public static class DwgSplitService
         }
         else
         {
-            directory = Path.Combine(sourceDirectory, FileNameSanitizer.Clean(sourceSubfolder!));
+            directory = Path.Combine(sourceDirectory, FileNameSanitizer.Clean(Path.GetFileNameWithoutExtension(sourceFile)) + FileNameSanitizer.Clean(sourceSubfolder!));
         }
 
         var baseName = FileNameSanitizer.FormatFileNamePattern(

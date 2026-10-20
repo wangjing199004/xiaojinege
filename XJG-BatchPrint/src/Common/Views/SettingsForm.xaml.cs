@@ -1269,7 +1269,7 @@ public sealed partial class SettingsControl : UserControl
         _autoFileNameSequenceDigits.IsChecked = settings.AutoFileNameSequenceDigits;
         UpdateSequenceDigitsState();
         UpdateFileNamePreview();
-        _openExternalDwgForPlot.IsChecked = settings.OpenExternalDwgForPlot;
+        _silentBatchPlot.IsChecked = settings.SilentBatchPlot;
         _directoryColorIndex.SelectedIndex = Math.Max(0, Math.Min(256, settings.DirectoryColorIndex));
         _directoryTextHeight.Value = settings.DirectoryTextHeight;
         _directoryTextWidthFactor.Value = settings.DirectoryTextWidthFactor;
@@ -1355,7 +1355,7 @@ public sealed partial class SettingsControl : UserControl
         current.FileNameSequenceStartNumber = (int)_fileNameSequenceStart.Value;
         current.FileNameSequenceDigits = (int)_fileNameSequenceDigits.Value;
         current.AutoFileNameSequenceDigits = _autoFileNameSequenceDigits.IsChecked == true;
-        current.OpenExternalDwgForPlot = _openExternalDwgForPlot.IsChecked == true;
+        current.SilentBatchPlot = _silentBatchPlot.IsChecked == true;
         current.DirectoryColorIndex = _directoryColorIndex.SelectedItem is DirectoryColorItem colorItem
             ? colorItem.Index
             : 7;
