@@ -81,10 +81,14 @@
                         Style="{StaticResource PluginButtonStyle}" Margin="0,0,3,0"
                         Click="RenumberDrawingNumbers_Click"
                         ToolTip="按空间位置重新排序图框，按顺序分配前缀+递增图号。" />
-                <Button x:Name="_generateDirectoryButton" Content="生成目录" MinWidth="92"
+                <Button x:Name="_generateDirectoryButton" Content="生成普通目录" MinWidth="108"
                         Style="{StaticResource PluginButtonStyle}" Margin="0,0,3,0"
                         Click="GenerateDrawingDirectory_Click"
                         ToolTip="在当前 CAD 指定基点，生成图纸目录表。" />
+                <Button Content="生成HP目录" MinWidth="104"
+                        Style="{StaticResource PluginButtonStyle}" Margin="0,0,3,0"
+                        Click="ExportHpDirectory_Click"
+                        ToolTip="在当前图纸点选位置插入 HP 目录；序号填满，内容为块外单行文字。27行以内A4，更多用A3；超59行全部按A3分页，不使用原目录设置。" />
             </WrapPanel>
 
             <!-- 设置行（原 settingsRow 8 列） -->

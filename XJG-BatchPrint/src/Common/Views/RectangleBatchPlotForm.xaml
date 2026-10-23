@@ -59,7 +59,7 @@
         <!-- 顶部操作区：动作行 / 输出行 / 选项行 -->
         <StackPanel DockPanel.Dock="Top" Margin="10,4,10,2">
             <!-- 动作行 -->
-            <StackPanel Orientation="Horizontal">
+            <WrapPanel>
                 <Button x:Name="_scanCurrentBtn" Content="扫描当前图" MinWidth="108"
                         Style="{StaticResource PluginButtonStyle}" Margin="0,0,3,0"
                         Click="ScanCurrentDrawing_Click"
@@ -84,11 +84,15 @@
                         ToolTip="清空当前矩形框清单，不影响 CAD 文件。" />
                 <Rectangle Width="1" Height="14" Fill="#CDD2D8"
                            Margin="4,0,12,0" VerticalAlignment="Center" />
-                <Button x:Name="_generateDirectoryBtn" Content="生成目录" MinWidth="92"
+                <Button x:Name="_generateDirectoryBtn" Content="生成普通目录" MinWidth="108"
                         Style="{StaticResource PluginButtonStyle}" Margin="0,0,3,0"
                         Click="GenerateDirectory_Click"
                         ToolTip="按「目录设置」生成图纸目录表并插入到当前 CAD。" />
-            </StackPanel>
+                <Button Content="生成HP目录" MinWidth="104"
+                        Style="{StaticResource PluginButtonStyle}" Margin="0,0,3,0"
+                        Click="ExportHpDirectory_Click"
+                        ToolTip="在当前图纸点选位置插入 HP 目录；序号填满，内容为块外单行文字。27行以内A4，更多用A3；超59行全部按A3分页，不使用原目录设置。" />
+            </WrapPanel>
 
             <!-- 输出行：输出目录 / 浏览 / 输出格式 / CTB / 设置 / 开始打印 -->
             <Grid Margin="0,4,0,0">

@@ -1,0 +1,8 @@
+﻿PASS insert rows=1, pages=1, template=A4, full serials, loose DBText, literal/long text, selected order, placement, empty attribute defaults/values and preserved anchors, layer locks, repeated insertion
+PASS insert rows=27, pages=1, template=A4, full serials, loose DBText, literal/long text, selected order, placement, empty attribute defaults/values and preserved anchors, layer locks, repeated insertion
+PASS insert rows=28, pages=1, template=A3, full serials, loose DBText, literal/long text, selected order, placement, empty attribute defaults/values and preserved anchors, layer locks, repeated insertion
+PASS insert rows=59, pages=1, template=A3, full serials, loose DBText, literal/long text, selected order, placement, empty attribute defaults/values and preserved anchors, layer locks, repeated insertion
+PASS insert rows=60, pages=2, template=A3, full serials, loose DBText, literal/long text, selected order, placement, empty attribute defaults/values and preserved anchors, layer locks, repeated insertion
+PASS insert rows=86, pages=2, template=A3, full serials, loose DBText, literal/long text, selected order, placement, empty attribute defaults/values and preserved anchors, layer locks, repeated insertion
+PASS insert rows=118, pages=2, template=A3, full serials, loose DBText, literal/long text, selected order, placement, empty attribute defaults/values and preserved anchors, layer locks, repeated insertion
+PASS insert rows=119, pages=3, template=A3, full serials, loose DBText, literal/long text, selected order, placement, empty attribute defaults/values and preserved anchors, layer locks, repeated insertion

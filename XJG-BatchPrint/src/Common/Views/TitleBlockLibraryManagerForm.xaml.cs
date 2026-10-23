@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 #if AUTOCAD
 using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.EditorInput;
 #if ACAD_CORE
 using CadApp = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 #else
@@ -19,6 +20,7 @@ using CadApp = Autodesk.AutoCAD.ApplicationServices.Application;
 #endif
 #else
 using ZwSoft.ZwCAD.DatabaseServices;
+using ZwSoft.ZwCAD.EditorInput;
 using CadApp = ZwSoft.ZwCAD.ApplicationServices.Application;
 #endif
 
@@ -774,6 +776,46 @@ public sealed partial class TitleBlockLibraryControl : UserControl
                 FileName = TitleBlockLibraryStore.DefaultDirectory,
                 UseShellExecute = true
             });
+        });
+    }
+
+    private void OnInsertStandardFrameClick(object sender, RoutedEventArgs e)
+    {
+        var document = CadApp.DocumentManager.MdiActiveDocument;
+        if (document == null || document.IsDisposed)
+        {
+            MessageBox.Show("请先打开需要插入图框的图纸。", "插入标准图框", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+        var owner = Window.GetWindow(this);
+        var picker = new StandardFramePickerDialog();
+        if (CadDialog.ShowModal(picker, owner) != true || picker.SelectedTemplate == null) return;
+        var selected = picker.SelectedTemplate;
+        var inserted = false;
+        string? failure = null;
+        PendingLibraryInput.QueuePanel(owner, document, "插入标准图框", () =>
+        {
+            try
+            {
+                using (document.LockDocument())
+                    inserted = StandardFrameInserter.PromptAndInsert(document, selected.Id);
+                if (inserted)
+                {
+                    document.Editor.Regen();
+                    CadPickDiagnostics.Log("standard-frame", "inserted " + selected.Name);
+                }
+            }
+            catch (Exception ex)
+            {
+                failure = ex.Message;
+                CadPickDiagnostics.Log("standard-frame-failed", ex.ToString());
+            }
+        }, afterRestore: () =>
+        {
+            if (failure != null)
+                MessageBox.Show(owner, "插入标准图框失败：" + failure, "插入标准图框", MessageBoxButton.OK, MessageBoxImage.Warning);
+            if (inserted) RefreshPresentBlocks();
+            _status.Text = failure != null ? "插入标准图框失败。" : inserted ? "已插入标准图框：" + selected.Name : "已取消插入标准图框。";
         });
     }
 

@@ -1,6 +1,6 @@
 ﻿{
-  "date": "2026-10-20",
-  "checkpoint": "v13",
+  "date": "2026-10-23",
+  "checkpoint": "v23",
   "files": [
     {
       "path": ".gitattributes",
@@ -14,13 +14,13 @@
     },
     {
       "path": "artifacts/current/AutoCAD2015-2024/AcadBatchPlot.dll",
-      "bytes": 815616,
-      "sha256": "7c7b06ae7fd13a216edfbf337bd72f63f125a76a3c15ba891aba4524169d3a77"
+      "bytes": 2104320,
+      "sha256": "aea3d5659b75c800785424f2a649589650f6cdfc9b9b394f0d1cdbc7e4cd55ff"
     },
     {
       "path": "artifacts/current/AutoCAD2015-2024/AcadBatchPlot.pdb",
-      "bytes": 262304,
-      "sha256": "b662663f85cb30a049a0d573e80f683ee49e3c5bf0b031bea880d22421959154"
+      "bytes": 270616,
+      "sha256": "d9878cd7fed4d76c5bac10f1f927632692369bf3f4558175a760cd9f2b989b35"
     },
     {
       "path": "artifacts/current/AutoCAD2015-2024/de/PdfSharp.Charting.resources.dll",
@@ -164,13 +164,13 @@
     },
     {
       "path": "artifacts/current/AutoCAD2025-2027/AcadBatchPlot.Core.dll",
-      "bytes": 833024,
-      "sha256": "db11b3c3e9fb9d616172668b15602a8ce349454e00e5f20c106b5faf83100838"
+      "bytes": 2121216,
+      "sha256": "27de9666566a769a89287f94eca6df2cb1c542511f49815fdb9141b67073d36a"
     },
     {
       "path": "artifacts/current/AutoCAD2025-2027/AcadBatchPlot.Core.pdb",
-      "bytes": 275656,
-      "sha256": "9b5fa77ee5de5c7a8de8235295af7c804b0925b14ca23390fb4e449691a0a0de"
+      "bytes": 284008,
+      "sha256": "414908b36187d1da2fa31b815feab8082c7135f2df9c07d32f4a3e6397ce6b17"
     },
     {
       "path": "artifacts/current/AutoCAD2025-2027/AcadBatchPlot.Core.runtimeconfig.json",
@@ -404,13 +404,13 @@
     },
     {
       "path": "artifacts/current/ZWCAD2025/BatchPlotter.dll",
-      "bytes": 784896,
-      "sha256": "478b68710e08d69a061be75a763d072bb624b76737d0a3dfaf3c31eaa4cd349a"
+      "bytes": 2073600,
+      "sha256": "9503295aeaea0f4454d6ed81a14682b4f52b90146222bd693ae1c1b00e4dfa29"
     },
     {
       "path": "artifacts/current/ZWCAD2025/BatchPlotter.pdb",
-      "bytes": 251092,
-      "sha256": "39c47382428994399aaf06e798cf6266e82787e5e09cff9a852306993a2cfe85"
+      "bytes": 259408,
+      "sha256": "ec12e60d9233e42d95a4aaddb409c8d6fd3cdc14c266655b08c65d31af06c922"
     },
     {
       "path": "artifacts/current/ZWCAD2025/de/PdfSharp.Charting.resources.dll",
@@ -503,14 +503,9 @@
       "sha256": "bca96944d731dd72877116d3472083c847fe307fc58ca39bce16cbe998c478f1"
     },
     {
-      "path": "artifacts/current/更新说明.txt",
-      "bytes": 1265,
-      "sha256": "f626aba1b5469f0f6affdf66000c87b85c30063ee3248309b778659c901b25e7"
-    },
-    {
       "path": "CHECKPOINT.md",
-      "bytes": 1895,
-      "sha256": "56d18d0b28a90a16bed73be8710095f7c020b93b0b5028e62d20d8072e0cfbcb"
+      "bytes": 1985,
+      "sha256": "b34ef68674b85f4ad55b470feb95da54f8c6dbb69e8c5570cfbb7ea3ee9ba57d"
     },
     {
       "path": "Directory.Build.props",
@@ -663,6 +658,21 @@
       "sha256": "56bcc6f0fb3094d9178e9f2d609b6e2abb2d6e45ed639c66d5d34894c2e88cb4"
     },
     {
+      "path": "docs/validation-v23/insert-regression.txt",
+      "bytes": 1644,
+      "sha256": "ffb6c2caa80a7307df8486b3e3cbd09c0ed23778db49c5f6df673887dd99527e"
+    },
+    {
+      "path": "docs/validation-v23/regression.txt",
+      "bytes": 1180,
+      "sha256": "d634f34e6acbecf5b90508c7956e03ec95a4cfb145e264eb142326c4ba004f9d"
+    },
+    {
+      "path": "docs/validation-v23/standard-regression.txt",
+      "bytes": 1863,
+      "sha256": "5ac36fbb1f7353100a9d4b62d1d2234d79644e7d6094069801590341de4bbfed"
+    },
+    {
       "path": "docs/wpf-migration-spec.md",
       "bytes": 7807,
       "sha256": "c5dc5ad845acf18aec5eda5ff68557bb7bb0726e0a191848cfbb55b331aa6cbf"
@@ -778,6 +788,41 @@
       "sha256": "ebf013d1b5079647d8d1e733d88b8be3df6f88a591046699cdc7322880d528a5"
     },
     {
+      "path": "resources/hp-directory/sheet-a.enc",
+      "bytes": 237304,
+      "sha256": "c552924d06e04167e8af31839ae8bb4b21e9fae546b7be12dfad59d9a1b8a144"
+    },
+    {
+      "path": "resources/hp-directory/sheet-b.enc",
+      "bytes": 238136,
+      "sha256": "d4e5d9b7d28338211991300af49a858341e04c3fcdc996ee2a912dcf89a8528e"
+    },
+    {
+      "path": "resources/hp-directory/std-a0.enc",
+      "bytes": 168792,
+      "sha256": "6252e4b5e1239783ced1093bc3ab7324ca7f3b0464e0883ff72c6fa3ec860227"
+    },
+    {
+      "path": "resources/hp-directory/std-a1.enc",
+      "bytes": 277496,
+      "sha256": "88c099bf5d0b2f62f5189a23a9ca1dcdd2b89017036fcdc59499667b0460f097"
+    },
+    {
+      "path": "resources/hp-directory/std-a2.enc",
+      "bytes": 168360,
+      "sha256": "8b3fc46a12b7fc511f6f681ad3680bdb6ced21999c74f43750abdb3f629d1119"
+    },
+    {
+      "path": "resources/hp-directory/std-cover.enc",
+      "bytes": 125368,
+      "sha256": "08f6fd83605d90dc5a29978d0688cf5cd82094d3592dfb155c8e108ab5db5283"
+    },
+    {
+      "path": "resources/hp-directory/std-seal.enc",
+      "bytes": 48888,
+      "sha256": "49a15b570b758f69cfc4007494732bed235514103f462b74e1dfb7d361961fd8"
+    },
+    {
       "path": "resources/zwcad/Plotters/LA_pdf.pc5",
       "bytes": 1250,
       "sha256": "be58e173ef35640eb2b30891885122aee76db67d7966959e5c6d5f35b76ec3b5"
@@ -796,6 +841,11 @@
       "path": "scripts/generate-zwcad-plotter.ps1",
       "bytes": 6361,
       "sha256": "bf6de8b2e85b75709f5917d235b77c59895a76c21964b4d8611eda8a7bb9671d"
+    },
+    {
+      "path": "scripts/Pack-HpTemplates.ps1",
+      "bytes": 2464,
+      "sha256": "0113817c9a5cda056ed92cb97a29572617a2636b292e24dd20a28d1d21d00c5c"
     },
     {
       "path": "scripts/package-release.ps1",
@@ -819,13 +869,13 @@
     },
     {
       "path": "src/AcadBatchPlot/AcadBatchPlot.csproj",
-      "bytes": 3696,
-      "sha256": "657bce753c0b57080069509a245f44cf79f6e985d15edf3282c69e50fb8168cf"
+      "bytes": 4980,
+      "sha256": "5080a00d5e24eef9db69067ecc3c2f07582e46f6edd64bf4d4121b31549bf265"
     },
     {
       "path": "src/AcadBatchPlot.Core/AcadBatchPlot.Core.csproj",
-      "bytes": 3100,
-      "sha256": "ed3e02286be6065a2296047ce135642a1cb2c342b01b577cd9be610a88d121d4"
+      "bytes": 4376,
+      "sha256": "d3811de1954143df4c52b84278ceaad2af56c4f391f2112f771ae0a14a4edb7c"
     },
     {
       "path": "src/AutoCAD/AcadPlotterInstaller.cs",
@@ -889,8 +939,8 @@
     },
     {
       "path": "src/BatchPlotter/BatchPlotter.csproj",
-      "bytes": 3402,
-      "sha256": "5a5785375ff04cbbbdaa639ae736458301218f005712ec60883bc82175f8bb12"
+      "bytes": 4685,
+      "sha256": "9823aadd811cf26ef63cf815308677a2b7b6ff4254313d984f20debd2099b531"
     },
     {
       "path": "src/Common/Commands/AddTitleBlockCommands.cs",
@@ -1023,6 +1073,26 @@
       "sha256": "9f3962d2f685a48ee3ff08758b7e759f4165d3aa977284c34bb466d793a28a39"
     },
     {
+      "path": "src/Common/Infrastructure/HpBlankDirectoryInserter.cs",
+      "bytes": 2335,
+      "sha256": "5ce25413edcf372d79c35b6a381cc003a19904097209d84ab6be0949148b59c7"
+    },
+    {
+      "path": "src/Common/Infrastructure/HpDirectoryExporter.cs",
+      "bytes": 10244,
+      "sha256": "8358ba41b74d32d08ca0d44059d4a0d42757b6f4f946abcf55ec3323a44e5bc4"
+    },
+    {
+      "path": "src/Common/Infrastructure/HpDirectoryPlan.cs",
+      "bytes": 910,
+      "sha256": "61177d2f2e5d83d0f75ba2a0da69f4c77b239479c444c4b10bf68791e097f1f5"
+    },
+    {
+      "path": "src/Common/Infrastructure/HpDirectoryTemplates.cs",
+      "bytes": 4143,
+      "sha256": "f4eeb99994ad734ddfcc3c520652f4f8b6cb8abc7c5cc127fead8f3ee6e05d18"
+    },
+    {
       "path": "src/Common/Infrastructure/LoadedAssemblyResolver.cs",
       "bytes": 1715,
       "sha256": "fa0030cb8c1c1899a0fbae54267dfe90c8093e90ff3792dce9e4f97aba65a030"
@@ -1036,6 +1106,21 @@
       "path": "src/Common/Infrastructure/RectangleScanProgressSession.cs",
       "bytes": 2804,
       "sha256": "a0f51946a2601f95481c54dc693d848d215fa14fe7cf7d25a1c5df26e016cd0b"
+    },
+    {
+      "path": "src/Common/Infrastructure/StandardFrameCatalog.cs",
+      "bytes": 1221,
+      "sha256": "6490c0353801a01ef4eb6b708033b18ce26ae73f0e66c87a2df48fc2a3cb3cd4"
+    },
+    {
+      "path": "src/Common/Infrastructure/StandardFrameInserter.cs",
+      "bytes": 13199,
+      "sha256": "bbe4a17dcb54143c3e6fe02e3ff81e81193b0c8337f1c7dba7b1cdcb98798283"
+    },
+    {
+      "path": "src/Common/Infrastructure/StandardFramePlacementJig.cs",
+      "bytes": 2472,
+      "sha256": "3e9a5e64b5687cd6dffbed2bc52c15945c1bd7a9f78efaad3e56330c7ef4b9f5"
     },
     {
       "path": "src/Common/Infrastructure/TemporarySequenceOverlay.cs",
@@ -1289,13 +1374,13 @@
     },
     {
       "path": "src/Common/Views/BatchPlotForm.xaml",
-      "bytes": 16804,
-      "sha256": "40afb1ce68453cc6431325388e85edf86510287c1473e94fff3933b196e50191"
+      "bytes": 17233,
+      "sha256": "f55d7cd02646e9000c9eda6306d1846ab0134014acc0f64e768ee79fc7b320dc"
     },
     {
       "path": "src/Common/Views/BatchPlotForm.xaml.cs",
-      "bytes": 116844,
-      "sha256": "2df4eeb468578f69292fe529184211b1c8386bd4e1100d997d60153a0fcadb47"
+      "bytes": 117145,
+      "sha256": "4a62cf7d26778e62b6cd04e996193037c0bac9b5ad7050a349e21391a8530c6c"
     },
     {
       "path": "src/Common/Views/BatchPrintProgressWindow.xaml",
@@ -1348,6 +1433,11 @@
       "sha256": "38ee626b5e2478c7ecb408d0f82238e24188d6e6bf73a6b87dde31613b829835"
     },
     {
+      "path": "src/Common/Views/HpDirectoryExportUi.cs",
+      "bytes": 2979,
+      "sha256": "8445866d696eaa80d854e4bb220413151e9d0aa7054cbed9cbbd85a165dcb6c0"
+    },
+    {
       "path": "src/Common/Views/MainWindow.xaml",
       "bytes": 547,
       "sha256": "3357223ae8a20a324990127f02b67366d3d6b216d5da65ab69ed97f24fdd8195"
@@ -1364,13 +1454,13 @@
     },
     {
       "path": "src/Common/Views/RectangleBatchPlotForm.xaml",
-      "bytes": 17031,
-      "sha256": "b086e0d5ade2e780b3276337f82606109bf349e5c3503741b4e3dadba4fa6056"
+      "bytes": 17433,
+      "sha256": "8bc21452422e7ffa6c2b2332fdcd1beae132ab1cd2b6c33498a6c086c16a19ac"
     },
     {
       "path": "src/Common/Views/RectangleBatchPlotForm.xaml.cs",
-      "bytes": 119181,
-      "sha256": "bc0b53b485fe77929c2030509ef371892144eb21c339f10e3060add20ca3a703"
+      "bytes": 119498,
+      "sha256": "81c6df0d2383d2f46ceef213d5f38f48c11b2421cdabcf0667f290779cdc7ccf"
     },
     {
       "path": "src/Common/Views/ScanSpacePickerDialog.xaml",
@@ -1458,14 +1548,19 @@
       "sha256": "be8713fb8a2c0a7aa2f02608178ef04da3dfd02ac7c988464749f9a858ce2542"
     },
     {
+      "path": "src/Common/Views/StandardFramePickerDialog.cs",
+      "bytes": 2333,
+      "sha256": "08bd0477a64b578533fbcc7dc39b738546818ddf6f7dca480d5c12b014269bbd"
+    },
+    {
       "path": "src/Common/Views/TitleBlockLibraryManagerForm.xaml",
-      "bytes": 4628,
-      "sha256": "3127fd9696640c24d1f1508e1ec5a60c8da790989503299f0bf6c32f5e6b5e8c"
+      "bytes": 4995,
+      "sha256": "b2dfd0db7ab4214fbfd52bb8e1f13b610788f85cabde2e97e829cff0c654a56b"
     },
     {
       "path": "src/Common/Views/TitleBlockLibraryManagerForm.xaml.cs",
-      "bytes": 38060,
-      "sha256": "3c25191449aef86b600afc6cfdf86d356574a71ddecc38ed1191628559f87d4b"
+      "bytes": 39988,
+      "sha256": "90b6faa5b5bc204a67466cc3c0e784cc8e46f8e1d60ded05b861a398d7b28703"
     },
     {
       "path": "src/Common/Views/TitleBlockModeDialog.xaml",
@@ -1593,6 +1688,31 @@
       "sha256": "11c54537a5e88c38c1b40e4411c85615fb9ea9eaa64c0162101a15c747334611"
     },
     {
+      "path": "tests/HpDirectory/HostRegression.cs",
+      "bytes": 7685,
+      "sha256": "9c8f33fd344e7e98e932b5d46f43d360e7b278b145f678f2725d75c4b03e4c60"
+    },
+    {
+      "path": "tests/HpDirectory/README.md",
+      "bytes": 1070,
+      "sha256": "646053101c838affb694a12a469c261e53faa7cd459e6de8b2a3fe0f02e684a7"
+    },
+    {
+      "path": "tests/HpTemplateProtection/HpTemplateProtection.csproj",
+      "bytes": 1276,
+      "sha256": "538a30fd6796e186813f44e6ef6dd2b16695d4fe85eee55a369026d8c8cf1c6f"
+    },
+    {
+      "path": "tests/HpTemplateProtection/Program.cs",
+      "bytes": 2862,
+      "sha256": "4ebdbda3988fac4ad454f1c12b52f1d7a73c7b42b182a7f0281b8e37ab86fa5c"
+    },
+    {
+      "path": "tests/HpTemplateProtection/README.md",
+      "bytes": 554,
+      "sha256": "65ca2474ef5f7a5facb101249393bfb059b3d54decbf6eb7b6279683b9abffdd"
+    },
+    {
       "path": "tests/LibraryInputRouting/DwgViewFitRegression.cs",
       "bytes": 1348,
       "sha256": "9e95cae59e52b9abb808709bf53251486a5c1c820a5d1b159891f7af9b944a40"
@@ -1621,6 +1741,16 @@
       "path": "tests/PrintOptionsAndGrouping/Program.cs",
       "bytes": 7509,
       "sha256": "a4750c8b0945b0dcb42bea1cf594baaae0513dfed9a6507f8f2117ff4b5c499f"
+    },
+    {
+      "path": "tests/StandardFrames/HostRegression.cs",
+      "bytes": 10141,
+      "sha256": "1a458883e00e70915255dfcd37f19144122a61f41c9b86a9f66c48816234eca7"
+    },
+    {
+      "path": "tests/StandardFrames/README.md",
+      "bytes": 1500,
+      "sha256": "86679a7c75506ae9447548fbda9ed4a2e3f223fb00b074cf24e2a497482e0705"
     },
     {
       "path": "交接说明.md",

@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><Nullable>enable</Nullable></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../src/Common/Infrastructure/HpDirectoryTemplates.cs" Link="HpDirectoryTemplates.cs" />
+    <Compile Include="../../src/Common/Infrastructure/StandardFrameCatalog.cs" Link="StandardFrameCatalog.cs" />
+    <EmbeddedResource Include="../../resources/hp-directory/std-a0.enc" LogicalName="ZwcadBatchPlot.Private.Std.1" />
+    <EmbeddedResource Include="../../resources/hp-directory/std-a1.enc" LogicalName="ZwcadBatchPlot.Private.Std.2" />
+    <EmbeddedResource Include="../../resources/hp-directory/std-a2.enc" LogicalName="ZwcadBatchPlot.Private.Std.3" />
+    <EmbeddedResource Include="../../resources/hp-directory/std-cover.enc" LogicalName="ZwcadBatchPlot.Private.Std.4" />
+    <EmbeddedResource Include="../../resources/hp-directory/std-seal.enc" LogicalName="ZwcadBatchPlot.Private.Std.5" />
+    <EmbeddedResource Include="../../resources/hp-directory/sheet-a.enc" LogicalName="ZwcadBatchPlot.Private.Hp.a" />
+    <EmbeddedResource Include="../../resources/hp-directory/sheet-b.enc" LogicalName="ZwcadBatchPlot.Private.Hp.b" />
+  </ItemGroup>
+</Project>

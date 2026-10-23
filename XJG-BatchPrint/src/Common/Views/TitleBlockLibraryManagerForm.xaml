@@ -1,4 +1,4 @@
-<UserControl x:Class="ZwcadBatchPlot.TitleBlockLibraryControl"
+﻿<UserControl x:Class="ZwcadBatchPlot.TitleBlockLibraryControl"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:ZwcadBatchPlot"
@@ -39,6 +39,9 @@
                         Style="{StaticResource PluginButtonStyle}" Click="OnExportClick" />
                 <Button Content="打开配置目录" Margin="0,0,4,0"
                         Style="{StaticResource PluginButtonStyle}" Click="OnOpenFolderClick" />
+                <Button Content="插入标准图框" Margin="0,0,4,0"
+                        Style="{StaticResource PluginButtonStyle}" Click="OnInsertStandardFrameClick"
+                        ToolTip="选择内置标准图框，鼠标中心对齐图框中心并动态预览；当前图层插入，属性留空，块内实体0层，原块基点不变。" />
                 <Button Content="关闭" Margin="0,0,0,0"
                         Style="{StaticResource PluginButtonStyle}" Click="OnCloseClick" />
             </StackPanel>

@@ -302,6 +302,13 @@ public sealed partial class RectangleBatchPlotControl : UserControl
     private void GeneralSettings_Click(object sender, RoutedEventArgs e) => ShowSettingsAtTab(0);
 
     /// <summary>按「目录设置」生成图纸目录表并插入到当前 CAD（直线表格）。</summary>
+    private void ExportHpDirectory_Click(object sender, RoutedEventArgs e)
+    {
+        _grid.CommitEdit(DataGridEditingUnit.Cell, true);
+        _grid.CommitEdit(DataGridEditingUnit.Row, true);
+        HpDirectoryExportUi.Run(Window.GetWindow(this), _document, _rows.Select(row => row.Job).ToList());
+    }
+
     private void GenerateDirectory_Click(object sender, RoutedEventArgs e)
     {
         if (_rows.Count == 0)

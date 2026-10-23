@@ -2792,6 +2792,13 @@ public sealed partial class BatchPlotControl : UserControl
 
     private void RenumberDrawingNumbers_Click(object sender, RoutedEventArgs e) => RenumberDrawingNumbers();
 
+    private void ExportHpDirectory_Click(object sender, RoutedEventArgs e)
+    {
+        _grid.CommitEdit(DataGridEditingUnit.Cell, true);
+        _grid.CommitEdit(DataGridEditingUnit.Row, true);
+        HpDirectoryExportUi.Run(Window.GetWindow(this), _currentDocument, _jobs.ToList());
+    }
+
     private void GenerateDrawingDirectory_Click(object sender, RoutedEventArgs e) => GenerateDrawingDirectory();
 
     private void ChooseOutputDirectory_Click(object sender, RoutedEventArgs e) => ChooseOutputDirectory();

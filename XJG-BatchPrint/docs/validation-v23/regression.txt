@@ -1,0 +1,8 @@
+﻿PASS rows=1, pages=1, template=A4, preserved 7 header attributes, selected sequence, row/column positions, literal text, text height, saved view
+PASS rows=27, pages=1, template=A4, preserved 7 header attributes, selected sequence, row/column positions, literal text, text height, saved view
+PASS rows=28, pages=1, template=A3, preserved 7 header attributes, selected sequence, row/column positions, literal text, text height, saved view
+PASS rows=59, pages=1, template=A3, preserved 7 header attributes, selected sequence, row/column positions, literal text, text height, saved view
+PASS rows=60, pages=2, template=A3, preserved 7 header attributes, selected sequence, row/column positions, literal text, text height, saved view
+PASS rows=86, pages=2, template=A3, preserved 7 header attributes, selected sequence, row/column positions, literal text, text height, saved view
+PASS rows=118, pages=2, template=A3, preserved 7 header attributes, selected sequence, row/column positions, literal text, text height, saved view
+PASS rows=119, pages=3, template=A3, preserved 7 header attributes, selected sequence, row/column positions, literal text, text height, saved view

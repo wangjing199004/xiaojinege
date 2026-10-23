@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
@@ -73,4 +73,27 @@
     </PropertyGroup>
     <Copy SourceFiles="$(_PdfiumSrc)" DestinationFiles="$(OutputPath)pdfium.dll" SkipUnchangedFiles="true" Condition="Exists('$(_PdfiumSrc)')" />
   </Target>
+  <ItemGroup>
+    <EmbeddedResource Include="$(RepoRoot)resources\hp-directory\std-a0.enc">
+      <LogicalName>ZwcadBatchPlot.Private.Std.1</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(RepoRoot)resources\hp-directory\std-a1.enc">
+      <LogicalName>ZwcadBatchPlot.Private.Std.2</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(RepoRoot)resources\hp-directory\std-a2.enc">
+      <LogicalName>ZwcadBatchPlot.Private.Std.3</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(RepoRoot)resources\hp-directory\std-cover.enc">
+      <LogicalName>ZwcadBatchPlot.Private.Std.4</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(RepoRoot)resources\hp-directory\std-seal.enc">
+      <LogicalName>ZwcadBatchPlot.Private.Std.5</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(RepoRoot)resources\hp-directory\sheet-a.enc">
+      <LogicalName>ZwcadBatchPlot.Private.Hp.a</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(RepoRoot)resources\hp-directory\sheet-b.enc">
+      <LogicalName>ZwcadBatchPlot.Private.Hp.b</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>
