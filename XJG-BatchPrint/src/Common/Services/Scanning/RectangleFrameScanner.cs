@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -108,12 +108,13 @@ public static class RectangleFrameScanner
     [ThreadStatic]
     private static CancellationToken _activeCancel;
 
-    /// <summary>本次扫描是否按图框库最多模式识别图名、图号。只在公共入口的 try/finally 内有效。</summary>
+    /// <summary>本次扫描是否按匹配图框库的字段区域识别图名、图号。只在公共入口的 try/finally 内有效。</summary>
     private static bool _recognizeByDominantMode;
 
     private static void ReportScan(string detail, int current = 0, int total = 0, string? title = null)
     {
         _activeCancel.ThrowIfCancellationRequested();
+        InlineReadProgress.Report(detail, current, total);
         _activeProgress?.Report(new RectangleScanProgress
         {
             Title = string.IsNullOrWhiteSpace(title) ? "正在识别图框…" : title!,
@@ -1053,7 +1054,7 @@ public static class RectangleFrameScanner
             packedRectangles.Add(rectangle);
         }
 
-        // 3f. 勾选时先按图框库最多模式，在本空间里取图名/图号；没取到的再退回属性 Tag。
+        // Library mode is strict: unmatched frames must not fall back to unrelated attributes.
         if (_recognizeByDominantMode)
         {
             ReportScan("正在按图框模式识别图名/图号…");
@@ -1062,7 +1063,7 @@ public static class RectangleFrameScanner
 
         ReportScan("正在识别图号/图名属性…");
         var attrSw = _activeProfile != null ? Stopwatch.StartNew() : null;
-        FillAttributeIdentities(database, ownerId, results, packedRectangles);
+        if (!_recognizeByDominantMode) FillAttributeIdentities(database, ownerId, results, packedRectangles);
         if (attrSw != null && _activeProfile != null)
         {
             attrSw.Stop();
@@ -1072,159 +1073,86 @@ public static class RectangleFrameScanner
         return results;
     }
 
-    /// <summary>
-    /// 用图框库中数量最多的模式，把图名、图号矩形放到每张图的右下角，并在同一空间取字。
-    /// 纸面毫米按这张图外框短边和纸张短边的实际比例放大。
-    /// </summary>
-    private static void FillDominantModeIdentities(
-        Database database,
-        ObjectId ownerId,
-        IReadOnlyList<Result> results,
-        IReadOnlyList<LocalRectangle> rectangles)
+    /// <summary>只读取当前空间中已匹配图框库的对应图名/图号区域。</summary>
+    private static void FillDominantModeIdentities(Database database, ObjectId ownerId,
+        IReadOnlyList<Result> results, IReadOnlyList<LocalRectangle> rectangles)
     {
-        if (results.Count == 0 || results.Count != rectangles.Count || !TryGetDominantMode(out var titleBox, out var numberBox))
+        if (results.Count == 0 || results.Count != rectangles.Count) return;
+        var name = TryGetLayoutName(database, ownerId);
+        if (string.IsNullOrWhiteSpace(name)) return;
+        var library = TitleBlockLibraryStore.Load();
+        if (library.Blocks.Count == 0) return;
+        ReportScan("正在按已匹配图框的字段区域读取图名/图号…");
+        var matched = TitleBlockScanner.ScanMatchedIdentities(database, library,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase) { name });
+        for (int i = 0; i < results.Count; i++)
         {
-            return;
-        }
-
-        var blockFrames = ScanTitleBlockFrames(database, TryGetLayoutName(database, ownerId));
-        try
-        {
-            using var tr = database.TransactionManager.StartTransaction();
-            var owner = (BlockTableRecord)tr.GetObject(ownerId, OpenMode.ForRead);
-            var cache = CadTextExtractor.BuildOwnerTextCacheWithoutBlockNames(tr, owner);
-            for (var i = 0; i < results.Count; i++)
-            {
-                var job = results[i].Job;
-                if (!TryCreateFrameAxes(
-                        rectangles[i],
-                        job.PaperWidthMm,
-                        job.PaperHeightMm,
-                        FindBlockFrameCorners(rectangles[i], blockFrames),
-                        out var axes))
-                {
-                    continue;
-                }
-
-                var title = ExtractCellText(cache, axes, titleBox);
-                if (!string.IsNullOrWhiteSpace(title))
-                {
-                    job.CadTitle = title;
-                    job.Title = title;
-                }
-
-                var number = ExtractCellText(cache, axes, numberBox);
-                if (!string.IsNullOrWhiteSpace(number))
-                {
-                    job.CadDrawingNumber = number;
-                    job.DrawingNumber = number;
-                }
-            }
-
-            tr.Commit();
-        }
-        catch
-        {
-            // 模式取字失败时留给属性 Tag 回退，不中断整次扫描。
+            ReportScan($"按图框库识别图名/图号：第 {i + 1} / {results.Count} 张", i + 1, results.Count);
+            var source = MatchLibraryFrame(rectangles[i], matched);
+            if (source == null) continue; // Unknown frame: no majority-mode or attribute guessing.
+            var job = results[i].Job;
+            if (!string.IsNullOrWhiteSpace(source.CadTitle) && source.CadTitle != "未识别图名")
+                job.Title = job.CadTitle = source.CadTitle;
+            if (!string.IsNullOrWhiteSpace(source.CadDrawingNumber) && source.CadDrawingNumber != "未识别图号")
+                job.DrawingNumber = job.CadDrawingNumber = source.CadDrawingNumber;
         }
     }
 
-    /// <summary>
-    /// 用户改纸后，按新纸张短边用图框库最多模式重取图名、图号。
-    /// 角点沿用扫描时的 WCS 或图纸空间四角。新窗口取到字就覆盖；取不到则清空，再按属性 Tag 回退。
-    /// </summary>
+    // Retain the entry-point name/settings key for compatibility with saved configurations.
     public static void RefillDominantModeIdentities(Database database, IReadOnlyList<PlotJob> jobs)
     {
-        if (database == null || jobs == null || jobs.Count == 0 || !TryGetDominantMode(out var titleBox, out var numberBox))
+        if (database == null || jobs == null) return;
+        foreach (var group in jobs.GroupBy(job => job.SpaceName ?? "", StringComparer.OrdinalIgnoreCase))
         {
-            return;
-        }
-
-        var ready = new List<(PlotJob Job, LocalRectangle Rectangle)>();
-        foreach (var job in jobs)
-        {
-            if (job != null && TryCreateIdentityRectangle(job, out var rectangle))
+            ObjectId owner;
+            using (var tr = database.TransactionManager.StartTransaction())
             {
-                ready.Add((job, rectangle));
+                if (!TryGetSpaceOwner(tr, database, group.Key, out owner)) continue;
             }
-        }
-
-        if (ready.Count == 0)
-        {
-            return;
-        }
-
-        var attributePass = new List<(ObjectId OwnerId, List<Result> Results, List<LocalRectangle> Rectangles)>();
-        var blockFramesBySpace = new Dictionary<string, List<double[]>>(StringComparer.OrdinalIgnoreCase);
-        foreach (var spaceName in ready.Select(item => item.Job.SpaceName ?? "").Distinct(StringComparer.OrdinalIgnoreCase))
-        {
-            blockFramesBySpace[spaceName] = ScanTitleBlockFrames(database, spaceName);
-        }
-
-        try
-        {
-            using var tr = database.TransactionManager.StartTransaction();
-            foreach (var spaceGroup in ready.GroupBy(item => item.Job.SpaceName ?? "", StringComparer.OrdinalIgnoreCase))
-            {
-                if (string.IsNullOrWhiteSpace(spaceGroup.Key)
-                    || !TryGetSpaceOwner(tr, database, spaceGroup.Key, out var ownerId))
+            var results = new List<Result>();
+            var rectangles = new List<LocalRectangle>();
+            foreach (var job in group)
+                if (TryCreateIdentityRectangle(job, out var rectangle))
                 {
-                    continue;
+                    results.Add(new Result { Job = job, CornerPoints = rectangle.CornerPoints });
+                    rectangles.Add(rectangle);
                 }
+            FillDominantModeIdentities(database, owner, results, rectangles);
+        }
+    }
 
-                var owner = (BlockTableRecord)tr.GetObject(ownerId, OpenMode.ForRead);
-                var spaceItems = spaceGroup.ToList();
-                var blockFrames = blockFramesBySpace.TryGetValue(spaceGroup.Key, out var frames)
-                    ? frames
-                    : new List<double[]>();
-                var cache = CadTextExtractor.BuildOwnerTextCacheWithoutBlockNames(tr, owner);
-                var results = new List<Result>(spaceItems.Count);
-                var rectangles = new List<LocalRectangle>(spaceItems.Count);
-                foreach (var item in spaceItems)
+    private static PlotJob? MatchLibraryFrame(LocalRectangle rectangle, IReadOnlyList<PlotJob> matched)
+    {
+        var corners = rectangle.CornerPoints is { Length: >= 8 } ? GetWorldPoints(rectangle) : new[] {
+            new Point3d(rectangle.MinX, rectangle.MinY, 0), new Point3d(rectangle.MaxX, rectangle.MinY, 0),
+            new Point3d(rectangle.MaxX, rectangle.MaxY, 0), new Point3d(rectangle.MinX, rectangle.MaxY, 0) };
+        if (corners.Length != 4) return null;
+        double diagonal = Math.Max(corners[0].DistanceTo(corners[2]), corners[1].DistanceTo(corners[3]));
+        double tolerance = Math.Max(1e-6, diagonal * .02);
+        PlotJob? best = null;
+        double bestScore = double.MaxValue;
+        bool ambiguous = false;
+        foreach (var candidate in matched)
+        {
+            if (candidate.CornerPoints is not { Length: >= 8 } points) continue;
+            double score = double.MaxValue;
+            // Compare all cyclic/reversed orders; centers alone also match small inner boxes.
+            for (int start = 0; start < 4; start++)
+                for (int direction = -1; direction <= 1; direction += 2)
                 {
-                    try
+                    double maxDistance = 0;
+                    for (int i = 0; i < 4; i++)
                     {
-                        var title = "";
-                        var number = "";
-                        if (TryCreateFrameAxes(
-                                item.Rectangle,
-                                item.Job.PaperWidthMm,
-                                item.Job.PaperHeightMm,
-                                FindBlockFrameCorners(item.Rectangle, blockFrames),
-                                out var axes))
-                        {
-                            title = ExtractCellText(cache, axes, titleBox);
-                            number = ExtractCellText(cache, axes, numberBox);
-                        }
-
-                        item.Job.CadTitle = title ?? "";
-                        item.Job.Title = title ?? "";
-                        item.Job.CadDrawingNumber = number ?? "";
-                        item.Job.DrawingNumber = number ?? "";
+                        int j = (start + direction * i + 8) % 4;
+                        maxDistance = Math.Max(maxDistance, corners[i].DistanceTo(new Point3d(points[j * 2], points[j * 2 + 1], 0)));
                     }
-                    catch
-                    {
-                        // 这一张取字失败时保留改纸前的图名图号。
-                    }
-
-                    results.Add(new Result { Job = item.Job, CornerPoints = item.Rectangle.CornerPoints });
-                    rectangles.Add(item.Rectangle);
+                    score = Math.Min(score, maxDistance);
                 }
-
-                attributePass.Add((ownerId, results, rectangles));
-            }
-
-            tr.Commit();
+            if (score > tolerance) continue;
+            if (Math.Abs(score - bestScore) < 1e-7) { ambiguous = true; continue; }
+            if (score < bestScore) { bestScore = score; best = candidate; ambiguous = false; }
         }
-        catch
-        {
-            return;
-        }
-
-        foreach (var pass in attributePass)
-        {
-            FillAttributeIdentities(database, pass.OwnerId, pass.Results, pass.Rectangles);
-        }
+        return ambiguous ? null : best;
     }
 
     /// <summary>用作业上保留的扫描角点还原取字矩形。Min/Max 已转成 DCS 时不能拿来套文字。</summary>
@@ -1429,16 +1357,7 @@ public static class RectangleFrameScanner
         try
         {
             var allowed = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { layoutName };
-            var jobs = TitleBlockScanner.Scan(
-                database,
-                TitleBlockLibraryStore.Load(),
-                database.Filename ?? "",
-                null,
-                TitleBlockScanScope.AllSpaces,
-                null,
-                null,
-                null,
-                allowed);
+            var jobs = TitleBlockScanner.ScanFrameGeometry(database, TitleBlockLibraryStore.Load(), allowed);
             foreach (var job in jobs)
             {
                 if (job?.CornerPoints is { Length: >= 8 } corners)

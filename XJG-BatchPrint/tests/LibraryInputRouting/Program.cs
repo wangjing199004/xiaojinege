@@ -121,6 +121,14 @@ internal static class Program
             afterRestore: () => uiReloads++);
         PendingLibraryInput.Execute("ZBP_PANEL_INPUT");
         Check(rowHeight == 20 && uiReloads == 2 && window.Visible, "取消取值不能改写原设置");
+        var finished = 0;
+        PendingLibraryInput.Queue(window, () => Check(PendingLibraryInput.IsPending, "取点执行中必须阻止热更新"),
+            onFinished: () => { Check(!PendingLibraryInput.IsPending, "完成后必须释放忙状态"); finished++; });
+        PendingLibraryInput.Execute();
+        PendingLibraryInput.Queue(window, () => throw new Exception("不应执行已关闭图纸的请求"), onFinished: () => finished++);
+        manager.Close(doc);
+        Check(finished == 2 && !PendingLibraryInput.IsPending, "关闭文档取消待执行请求时必须释放图框工具忙状态");
+        Console.WriteLine("PASS: reload blocked during input; normal finish/document-close cancellation release busy state");
         Console.WriteLine("PASS: defer, native command, duplicate, once, failure, document switch, document close, retry");
         Console.WriteLine("PASS: single frame command, command isolation, restore before detection, no detection on failure, bound document check");
         Console.WriteLine("PASS: deferred preview, hidden panel, frame/preview isolation, preview return/failure restore");

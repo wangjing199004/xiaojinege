@@ -1,0 +1,1 @@
+PASS source-backed real WPF editing: 20 external edits without recursion, deferred refresh only after commit, opened-drawing baseline updated, cancel performs no CAD update

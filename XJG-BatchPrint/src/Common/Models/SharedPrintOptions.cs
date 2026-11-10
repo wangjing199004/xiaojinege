@@ -13,7 +13,7 @@ internal sealed class SharedPrintOptions
         nameof(AppSettings.LastOutputFormat), nameof(AppSettings.SavePathMode),
         nameof(AppSettings.CustomOutputDirectory), nameof(AppSettings.LastPlotDevice),
         nameof(AppSettings.LastStyleSheet), nameof(AppSettings.MergePdf),
-        nameof(AppSettings.LeavePaperMargin), nameof(AppSettings.PaperMarginMm),
+        nameof(AppSettings.TitleBlockPrintWithSignature), nameof(AppSettings.LeavePaperMargin), nameof(AppSettings.PaperMarginMm),
         nameof(AppSettings.ScanScope), nameof(AppSettings.RecognizeTitleByDominantFrameMode)
     }.Select(name => typeof(AppSettings).GetProperty(name)!).ToArray();
     private readonly Dictionary<string, object?> _previous = new();

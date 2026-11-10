@@ -1,4 +1,4 @@
-﻿param([string]$TemplateDirectory = "")
+﻿param([string]$TemplateDirectory = "", [string[]]$TemplateNames = @())
 $ErrorActionPreference = 'Stop'
 $repoPath = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 if ([string]::IsNullOrWhiteSpace($TemplateDirectory)) { $TemplateDirectory = Join-Path $repoPath '目录' }
@@ -14,6 +14,7 @@ $output = Join-Path $repoPath 'resources/hp-directory'
 New-Item -ItemType Directory -Path $output -Force | Out-Null
 try {
     foreach ($sheet in @(@('A3目录', 'sheet-a.enc'), @('A4目录', 'sheet-b.enc'), @('A0+图框', 'std-a0.enc'), @('A1+图框', 'std-a1.enc'), @('A2+图框', 'std-a2.enc'), @('封面', 'std-cover.enc'), @('目录签章框', 'std-seal.enc'))) {
+        if ($TemplateNames.Count -gt 0 -and $sheet[0] -notin $TemplateNames) { continue }
         $plain = [IO.File]::ReadAllBytes((Join-Path $TemplateDirectory ($sheet[0] + '.dwg')))
         $aes = [Security.Cryptography.Aes]::Create()
         $aes.Key = $encryptionKey

@@ -39,8 +39,12 @@ internal static class StandardFrameInserter
         using var source = new Database(false, true);
         // source 在临时文件句柄前释放，读取失败时也能先关闭输入再删除临时文件。
         var materialized = HpDirectoryTemplates.OpenResource(item.Resource);
+        string revision;
         try
         {
+            using (var stream = System.IO.File.OpenRead(materialized.Path))
+            using (var sha = System.Security.Cryptography.SHA256.Create())
+                revision = BitConverter.ToString(sha.ComputeHash(stream)).Replace("-", "").ToLowerInvariant();
             source.ReadDwgFile(materialized.Path, FileOpenMode.OpenForReadAndAllShare, true, "");
             source.CloseInput(true);
         }
@@ -52,6 +56,27 @@ internal static class StandardFrameInserter
         finally { materialized.Dispose(); }
 
         ObjectId sourceFrame;
+        ObjectId sourceDefinition;
+        var previousDefinition = ObjectId.Null;
+        var importName = item.Name;
+        // 拉伸动作属于块定义；新版不能被Ignore映射回旧版定义。
+        // 只有三个可拉伸标准图框启用版本切换，静态模板继续复用原定义。
+        if (item.Id.EndsWith("-plus", StringComparison.Ordinal))
+        {
+            using var transaction = destination.TransactionManager.StartTransaction();
+            var table = (BlockTable)transaction.GetObject(destination.BlockTableId, OpenMode.ForRead);
+            if (table.Has(item.Name))
+            {
+                var existing = (BlockTableRecord)transaction.GetObject(table[item.Name], OpenMode.ForRead);
+                var marker = StandardFrameIdentity.Read(existing, transaction);
+                if (marker.Length > 0 && marker[0] == item.Id && (marker.Length < 2 || marker[1] != revision))
+                {
+                    previousDefinition = existing.ObjectId;
+                    importName = item.Name + "_更新_" + Guid.NewGuid().ToString("N");
+                }
+            }
+            transaction.Commit();
+        }
         var previousDatabase = HostApplicationServices.WorkingDatabase;
         HostApplicationServices.WorkingDatabase = source;
         try
@@ -85,14 +110,12 @@ internal static class StandardFrameInserter
             if (roots.Count != 1 || tr.GetObject(roots[0], OpenMode.ForRead) is not BlockReference frame)
                 throw new InvalidOperationException("内置标准图框应包含一个完整图框块。");
             // 同一模板使用固定的有效块名；动态匿名块仍由 CAD 按实例维护。
+            EnsureAttributeReferences(frame, tr);
             var definitionId = frame.IsDynamicBlock ? frame.DynamicBlockTableRecord : frame.BlockTableRecord;
+            sourceDefinition = definitionId;
             var sharedDefinition = (BlockTableRecord)tr.GetObject(definitionId, OpenMode.ForWrite);
-            sharedDefinition.Name = item.Name;
-            if (sharedDefinition.ExtensionDictionary.IsNull) sharedDefinition.CreateExtensionDictionary();
-            var metadata = (DBDictionary)tr.GetObject(sharedDefinition.ExtensionDictionary, OpenMode.ForWrite);
-            var marker = new Xrecord { Data = new ResultBuffer(new TypedValue(1, item.Id)) };
-            metadata.SetAt("XJG_STANDARD_TEMPLATE", marker);
-            tr.AddNewlyCreatedDBObject(marker, true);
+            sharedDefinition.Name = importName;
+            StandardFrameIdentity.Write(sharedDefinition, tr, item.Id, revision);
             sourceFrame = frame.ObjectId;
             tr.Commit();
         }
@@ -101,6 +124,7 @@ internal static class StandardFrameInserter
         using var mapping = new IdMapping();
         var insertedId = ObjectId.Null;
         var stagingId = ObjectId.Null;
+        var addedDefinitions = new List<ObjectId>();
         var placed = false;
         var committed = false;
         List<(ObjectId LayerId, bool WasLocked)>? locks = null;
@@ -116,17 +140,8 @@ internal static class StandardFrameInserter
                 if (blockTable.Has(sharedName))
                 {
                     var existing = (BlockTableRecord)targetTransaction.GetObject(blockTable[sharedName], OpenMode.ForRead);
-                    var valid = false;
-                    if (!existing.ExtensionDictionary.IsNull)
-                    {
-                        var metadata = (DBDictionary)targetTransaction.GetObject(existing.ExtensionDictionary, OpenMode.ForRead);
-                        if (metadata.Contains("XJG_STANDARD_TEMPLATE"))
-                        {
-                            var marker = (Xrecord)targetTransaction.GetObject(metadata.GetAt("XJG_STANDARD_TEMPLATE"), OpenMode.ForRead);
-                            using var data = marker.Data;
-                            valid = data != null && data.AsArray().Any(value => value.TypeCode == 1 && Equals(value.Value, item.Id));
-                        }
-                    }
+                    var marker = StandardFrameIdentity.Read(existing, targetTransaction);
+                    var valid = marker.Length > 0 && marker[0] == item.Id;
                     if (!valid) throw new InvalidOperationException("当前图纸存在同名非标准图框块：" + sharedName + "，请先重命名该块。");
                 }
                 var staging = new BlockTableRecord { Name = "XJG_PREVIEW_" + Guid.NewGuid().ToString("N") };
@@ -141,6 +156,21 @@ internal static class StandardFrameInserter
                 placed = place(inserted, targetTransaction);
                 if (placed)
                 {
+                    SynchronizeMissingDefinitions(source, sourceDefinition, inserted, targetTransaction, addedDefinitions);
+                    if (!previousDefinition.IsNull)
+                    {
+                        var old = (BlockTableRecord)targetTransaction.GetObject(previousDefinition, OpenMode.ForWrite);
+                        var importedId = inserted.IsDynamicBlock ? inserted.DynamicBlockTableRecord : inserted.BlockTableRecord;
+                        var imported = (BlockTableRecord)targetTransaction.GetObject(importedId, OpenMode.ForWrite);
+                        if (importedId == previousDefinition) throw new InvalidOperationException("新版图框仍引用旧定义，已取消插入。");
+                        var oldMarker = StandardFrameIdentity.Read(old, targetTransaction);
+                        var suffix = oldMarker.Length > 1 ? oldMarker[1].Substring(0, Math.Min(8, oldMarker[1].Length)) : old.Handle.ToString();
+                        var archiveName = item.Name + "_旧版_" + suffix;
+                        var candidate = archiveName;
+                        for (var counter = 2; blockTable.Has(candidate); counter++) candidate = archiveName + "_" + counter;
+                        old.Name = candidate;
+                        imported.Name = item.Name;
+                    }
                     var targetSpace = (BlockTableRecord)targetTransaction.GetObject(spaceId, OpenMode.ForWrite);
                     targetSpace.AssumeOwnershipOf(new ObjectIdCollection(new[] { insertedId }));
                     staging.Erase();
@@ -152,7 +182,20 @@ internal static class StandardFrameInserter
         }
         catch
         {
+            using (var cleanup = destination.TransactionManager.StartTransaction())
+            {
+                foreach (var id in addedDefinitions)
+                    if (id.IsValid && !id.IsErased) cleanup.GetObject(id, OpenMode.ForWrite, false, true).Erase();
+                cleanup.Commit();
+            }
             CleanupCancelledClone(destination, insertedId, stagingId, mapping);
+            if (!previousDefinition.IsNull && previousDefinition.IsValid && !previousDefinition.IsErased)
+            {
+                using var restore = destination.TransactionManager.StartTransaction();
+                var table = (BlockTable)restore.GetObject(destination.BlockTableId, OpenMode.ForRead);
+                if (!table.Has(item.Name)) ((BlockTableRecord)restore.GetObject(previousDefinition, OpenMode.ForWrite)).Name = item.Name;
+                restore.Commit();
+            }
             throw;
         }
         finally
@@ -168,6 +211,71 @@ internal static class StandardFrameInserter
         if (placed) return insertedId;
         CleanupCancelledClone(destination, insertedId, stagingId, mapping);
         return ObjectId.Null;
+    }
+
+    // 模板编辑器新增属性后，模型空间中的样板参照可能尚未执行ATTSYNC。
+    // 仅在临时源数据库补齐缺失实例属性，不改原始DWG。
+    private static void EnsureAttributeReferences(BlockReference frame, Transaction transaction)
+    {
+        var tags = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (ObjectId id in frame.AttributeCollection)
+            tags.Add(((AttributeReference)transaction.GetObject(id, OpenMode.ForRead)).Tag);
+        var definitions = new[] { frame.BlockTableRecord,
+            frame.IsDynamicBlock ? frame.DynamicBlockTableRecord : frame.BlockTableRecord }.Distinct();
+        foreach (var definitionId in definitions)
+        {
+            var block = (BlockTableRecord)transaction.GetObject(definitionId, OpenMode.ForRead);
+            foreach (ObjectId id in block)
+            {
+                if (transaction.GetObject(id, OpenMode.ForRead) is not AttributeDefinition definition
+                    || definition.Constant || !tags.Add(definition.Tag)) continue;
+                var attribute = new AttributeReference();
+                attribute.SetAttributeFromBlock(definition, frame.BlockTransform);
+                attribute.TextString = "";
+                if (!frame.IsWriteEnabled) frame.UpgradeOpen();
+                frame.AttributeCollection.AppendAttribute(attribute);
+                transaction.AddNewlyCreatedDBObject(attribute, true);
+                attribute.AdjustAlignment(frame.Database);
+            }
+        }
+    }
+
+    // 同名旧标准定义只补新增属性；保留原块名、已有定义和各实例的动态尺寸/内容。
+    // 放置确认后才同步，取消预览不会改旧图框定义。
+    private static void SynchronizeMissingDefinitions(Database source, ObjectId sourceDefinition,
+        BlockReference inserted, Transaction targetTransaction, List<ObjectId> added)
+    {
+        var targetId = inserted.IsDynamicBlock ? inserted.DynamicBlockTableRecord : inserted.BlockTableRecord;
+        var target = (BlockTableRecord)targetTransaction.GetObject(targetId, OpenMode.ForRead);
+        var tags = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (ObjectId id in target)
+            if (targetTransaction.GetObject(id, OpenMode.ForRead) is AttributeDefinition attribute) tags.Add(attribute.Tag);
+        var missing = new List<ObjectId>();
+        using (var transaction = source.TransactionManager.StartTransaction())
+        {
+            var definition = (BlockTableRecord)transaction.GetObject(sourceDefinition, OpenMode.ForRead);
+            foreach (ObjectId id in definition)
+                if (transaction.GetObject(id, OpenMode.ForRead) is AttributeDefinition attribute && tags.Add(attribute.Tag))
+                    missing.Add(id);
+            transaction.Commit();
+        }
+        if (missing.Count == 0) return;
+        if (!target.IsWriteEnabled) target.UpgradeOpen();
+        using var mapping = new IdMapping();
+        try
+        {
+            source.WblockCloneObjects(new ObjectIdCollection(missing.ToArray()), targetId, mapping,
+                DuplicateRecordCloning.Ignore, false);
+        }
+        finally
+        {
+            foreach (var id in missing)
+            {
+                try { var pair = mapping[id]; if (pair.IsCloned) added.Add(pair.Value); }
+                catch { /* 克隆未完成的对象尚无映射。 */ }
+            }
+        }
+        if (inserted.IsDynamicBlock) target.UpdateAnonymousBlocks();
     }
 
     private static void CleanupCancelledClone(Database database, ObjectId root, ObjectId staging, IdMapping mapping)

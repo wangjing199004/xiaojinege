@@ -49,6 +49,11 @@
                        Margin="8,0,0,0" TextTrimming="CharacterEllipsis" />
         </Border>
 
+        <StackPanel x:Name="_readProgressPanel" DockPanel.Dock="Bottom" Visibility="Collapsed" Margin="8,3,8,4">
+            <TextBlock x:Name="_readProgressText" TextTrimming="CharacterEllipsis" Margin="0,0,0,3" />
+            <ProgressBar x:Name="_readProgressBar" Height="8" Minimum="0" Maximum="100" />
+        </StackPanel>
+
         <!-- 顶部：动作行 / 设置行 / 保存路径行 -->
         <StackPanel DockPanel.Dock="Top" Margin="10,4,10,4">
             <!-- 动作行（原 FlowLayoutPanel WrapContents=true → WrapPanel） -->
@@ -61,6 +66,10 @@
                         Style="{StaticResource PluginButtonStyle}" Margin="0,0,3,0"
                         Click="ScanSelectedObjects_Click"
                         ToolTip="回到 CAD 选择图框块（可点选或框选）；未拾取时右键可选扫描范围。" />
+                <Button x:Name="_scanOpenDrawingsButton" Content="扫描已打开图纸" MinWidth="132"
+                        Style="{StaticResource PluginButtonStyle}" Margin="0,0,3,0"
+                        Click="ScanOpenDrawings_Click"
+                        ToolTip="按扫描范围读取 CAD 中所有已打开图纸的当前内容，按文件分组加入清单。" />
                 <Button x:Name="_addFilesButton" Content="多文件批打" MinWidth="108"
                         Style="{StaticResource PluginButtonStyle}" Margin="0,0,3,0"
                         Click="AddDwgFiles_Click"
@@ -154,6 +163,8 @@
                           VerticalContentAlignment="Center" Margin="0,0,2,0"
                           SelectionChanged="MarginInput_SelectionChanged" />
                 <TextBlock Text="mm" VerticalAlignment="Center" Margin="3,0,12,0" />
+                <CheckBox x:Name="_withSignatureCheckBox" Content="带签名" VerticalAlignment="Center"
+                          Margin="0,0,12,0" ToolTip="打印前备份原DWG，按图框签名配置临时签名；完成、停止或失败均还原，不保存签名到原文件。DWG拆图不适用。" />
                 <TextBlock Text="扫描范围:" VerticalAlignment="Center" Margin="0,0,6,0" />
                 <ComboBox x:Name="_scanScopeCombo" Width="110" IsEditable="False"
                           VerticalContentAlignment="Center" Margin="0,0,2,0"
@@ -236,6 +247,7 @@
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem x:Name="_moveToFirstItem" Header="移到第一个" Click="MoveToFirst_Click" />
+                    <MenuItem Header="打印" Click="MarkHighlightedPrint_Click" />
                     <MenuItem x:Name="_markNotPrintItem" Header="不打印" Click="MarkNotPrint_Click" />
                     <MenuItem x:Name="_deleteItem" Header="删除" Click="DeleteHighlighted_Click" />
                 </ContextMenu>

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -76,9 +76,9 @@ public sealed partial class ShortcutSettingsControl : UserControl
         return "";
     }
 
-    private void OnOkClick(object sender, RoutedEventArgs e)
+    internal bool TryReadAliases(out Dictionary<string, string> aliases)
     {
-        var aliases = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        aliases = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var usedAliases = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var errors = new List<string>();
         foreach (var row in _rows)
@@ -111,13 +111,17 @@ public sealed partial class ShortcutSettingsControl : UserControl
                 "快捷键设置",
                 MessageBoxButton.OK,
                 MessageBoxImage.Warning);
-            return;
+            return false;
         }
 
         Aliases = aliases;
-        OkRequested?.Invoke();
+        return true;
     }
 
+    private void OnOkClick(object sender, RoutedEventArgs e)
+    { if (TryReadAliases(out _)) OkRequested?.Invoke(); }
+    internal void SetAliases(IReadOnlyDictionary<string, string> aliases)
+    { foreach (var row in _rows) row.Input.Text = FindCurrentAlias(aliases, row.CommandName); Aliases = aliases; }
     private void OnCancelClick(object sender, RoutedEventArgs e) => CancelRequested?.Invoke();
 
     private sealed class AliasRow

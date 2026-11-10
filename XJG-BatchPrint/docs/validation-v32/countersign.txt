@@ -1,0 +1,3 @@
+PASS A0+图框.dwg: three text-only names, label centers, nested blocks, rotation/scale, matching height, repeat replaces
+PASS A1+图框.dwg: three text-only names, label centers, nested blocks, rotation/scale, matching height, repeat replaces
+PASS A2+图框.dwg: three text-only names, label centers, nested blocks, rotation/scale, matching height, repeat replaces

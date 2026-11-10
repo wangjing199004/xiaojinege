@@ -94,6 +94,7 @@ public sealed partial class BatchPlotControl : UserControl
 
         // 首次使用默认为关闭；之后恢复用户上一次操作，避免每次重复勾选。
         _mergePdfCheckBox.IsChecked = _settings.MergePdf;
+        _withSignatureCheckBox.IsChecked = _settings.TitleBlockPrintWithSignature;
         _leaveMarginCheckBox.IsChecked = _settings.LeavePaperMargin;
         InitMarginCombo(_marginInput, 68, _settings.PaperMarginMm);
         _marginInput.IsEnabled = _leaveMarginCheckBox.IsChecked == true;
@@ -108,7 +109,9 @@ public sealed partial class BatchPlotControl : UserControl
     }
 
     /// <summary>主面板关闭时调用：取消打印、清理临时红框/序号、保存设置。</summary>
-    public void Shutdown()
+    internal bool IsBusy => _printCts != null;
+
+    public void Shutdown(bool persistSettings = true)
     {
         if (_closed) return;
         _closed = true;
@@ -116,7 +119,7 @@ public sealed partial class BatchPlotControl : UserControl
         _printCts?.Cancel();
         _renumberDialog?.Close();
         ClearSequenceOverlay(repaint: false);
-        SaveCurrentSettings();
+        if (persistSettings) SaveCurrentSettings();
         // 清理临时红框和序号，不再退订或接管 CAD 删除命令。
         _sequenceOverlay.Dispose();
     }
@@ -170,6 +173,8 @@ public sealed partial class BatchPlotControl : UserControl
         _styleSelectionReady = true;
         _printOptionsReady = true;
         SaveCurrentSettings();
+        _withSignatureCheckBox.Checked += (_, _) => SaveCurrentSettings();
+        _withSignatureCheckBox.Unchecked += (_, _) => SaveCurrentSettings();
         _mergePdfCheckBox.Checked += (_, _) => SaveCurrentSettings();
         _mergePdfCheckBox.Unchecked += (_, _) => SaveCurrentSettings();
         // 窗体显示后空闲时预热打印管线，把首张开销挪出批打进度窗（PlotMany 内同键调用为空操作）。
@@ -278,17 +283,37 @@ public sealed partial class BatchPlotControl : UserControl
         public override string ToString() => Display;
     }
 
+    private bool TryGetScanLibrary(out TitleBlockLibrary library)
+    {
+        library = new TitleBlockLibrary();
+        try
+        {
+            library = TitleBlockLibraryStore.Load();
+            if (library.Blocks.Count > 0) return true;
+            _statusLabel.Text = "无法扫描：图框库为空，请先新增并保存图框。";
+            AppendLog("WARN", "扫描未开始：图框库为空。");
+            MessageBox.Show(Window.GetWindow(this), "图框库为空，尚不能识别图框。\n\n请进入「图框库」页，点击「新增图框」，在图中选择样板图框并完成字段、打印范围及纸张设置，保存后再扫描。\n也可在「设置 > 配置管理」导入已有图框库配置。", "扫描未开始", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (Exception ex)
+        {
+            _statusLabel.Text = "无法扫描：图框库读取失败。";
+            AppendLog("ERROR", "图框库读取失败：" + ex);
+            MessageBox.Show(Window.GetWindow(this), "图框库读取失败，扫描未开始：\n" + ex.Message + "\n请在设置 > 配置管理导入可用配置，或检查图框库文件。", "扫描未开始", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+        return false;
+    }
+
+    private void ShowNoScanResults(string operation)
+    {
+        _statusLabel.Text = operation + "完成，未识别到匹配图框。";
+        AppendLog("INFO", operation + "：未识别到匹配图框。");
+        MessageBox.Show(Window.GetWindow(this), "扫描已完成，但未识别到匹配图框。\n\n请检查：\n1.「扫描范围」是否包含图框所在的模型或布局。\n2. 图框库是否已添加并保存本图使用的图框块及动态可见性。\n3. 图框的打印范围、字段和纸张是否已正确设置。", operation, MessageBoxButton.OK, MessageBoxImage.Information);
+    }
+
     private void ScanCurrentDrawing()
     {
         _suppressSequenceOverlayFromMultiFile = false;
-        var library = TitleBlockLibraryStore.Load();
-        if (library.Blocks.Count == 0)
-        {
-            System.Windows.MessageBox.Show("图框库为空。请在“图框库”页点击“新增图框”添加图框。", "图框块打印", MessageBoxButton.OK, MessageBoxImage.Information);
-            ClearSequenceOverlay();
-            RefreshStatus();
-            return;
-        }
+        if (!TryGetScanLibrary(out var library)) return;
 
         // 不再弹窗选择范围：直接使用「扫描范围」下拉的当前值。
         var scope = GetSelectedScanScope();
@@ -296,8 +321,18 @@ public sealed partial class BatchPlotControl : UserControl
         // 记住本次扫描条件，图框库变更后可静默重扫。
         _lastScanScope = scope;
         _lastSelectedIds = null;
-        RunScan(library, scope: scope);
-        AppendLog("INFO", $"扫描当前图完成，识别 {_jobs.Count} 张。");
+        try
+        {
+            RunScan(library, scope: scope);
+            AppendLog("INFO", $"扫描当前图完成，识别 {_jobs.Count} 张。");
+            if (_jobs.Count == 0) ShowNoScanResults("扫描当前图");
+        }
+        catch (Exception ex)
+        {
+            _statusLabel.Text = "扫描当前图失败。";
+            AppendLog("ERROR", "扫描当前图失败：" + ex);
+            MessageBox.Show(Window.GetWindow(this), "扫描失败：" + ex.Message + "\n请检查图框库设置和扫描范围，详情可在设置 > 日志中查看。", "扫描当前图", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
     }
 
     /// <summary>
@@ -307,6 +342,7 @@ public sealed partial class BatchPlotControl : UserControl
     /// </summary>
     private void RunScan(TitleBlockLibrary library, TitleBlockScanScope? scope = null, ObjectId[]? selectedIds = null)
     {
+        using var readProgress = InlineReadProgress.Start(_readProgressPanel, _readProgressBar, _readProgressText);
         var scannedJobs = selectedIds is { Length: > 0 }
             ? TitleBlockScanner.Scan(_currentDocument, library, selectedIds, _settings.PaperMatchToleranceMm)
             : TitleBlockScanner.Scan(_currentDocument, library, scope!.Value, _settings.PaperMatchToleranceMm);
@@ -361,14 +397,9 @@ public sealed partial class BatchPlotControl : UserControl
     private void ScanSelectedObjects()
     {
         _suppressSequenceOverlayFromMultiFile = false;
-        var library = TitleBlockLibraryStore.Load();
-        if (library.Blocks.Count == 0)
-        {
-            System.Windows.MessageBox.Show("图框库为空，请先新增图框。", "批量打印", MessageBoxButton.OK, MessageBoxImage.Information);
-            ClearSequenceOverlay();
-            return;
-        }
+        if (!TryGetScanLibrary(out var library)) return;
 
+        bool noResults = false, duplicatesOnly = false;
         PendingLibraryInput.QueuePanel(Window.GetWindow(this), _currentDocument, "图框块框选扫描", () =>
         {
             var prompt = ObjectSelectionPrompt.Prompt(
@@ -379,6 +410,8 @@ public sealed partial class BatchPlotControl : UserControl
             {
                 return;
             }
+            using var readProgress = InlineReadProgress.Start(_readProgressPanel, _readProgressBar, _readProgressText);
+
 
             List<PlotJob> scannedJobs;
             if (prompt.Scope is { } scope)
@@ -401,20 +434,18 @@ public sealed partial class BatchPlotControl : UserControl
                     library,
                     selectedIds,
                     _settings.PaperMatchToleranceMm);
-                if (scannedJobs.Count == 0)
-                {
-                    System.Windows.MessageBox.Show("选中对象中未识别到任何图框。", "批量打印", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return;
-                }
             }
             else
             {
                 return;
             }
 
+            if (scannedJobs.Count == 0) { noResults = true; return; }
+
             // 累加模式保留多文件批打加入的源文件顺序，避免已有多文件分组排序被打乱。
             TransformScannedJobsToDcs(scannedJobs);
             var addedCount = CountNewPlotJobs(_jobs, scannedJobs);
+            duplicatesOnly = addedCount == 0;
             var mergedJobs = MergePlotJobs(_jobs, scannedJobs);
             SortAndRefreshOutputPaths(mergedJobs);
             ScheduleSequenceOverlayForCurrentJobs();
@@ -424,15 +455,19 @@ public sealed partial class BatchPlotControl : UserControl
                     ? $"范围扫描累加完成，新增 {addedCount} 张，合计 {_jobs.Count} 张。"
                     : $"框选扫描累加完成，新增 {addedCount} 张，合计 {_jobs.Count} 张。");
 
+        }, afterRestore: () =>
+        {
+            if (noResults) ShowNoScanResults("框选/范围扫描");
+            else if (duplicatesOnly) MessageBox.Show(Window.GetWindow(this), "扫描完成，识别的图框均已在当前清单中，没有重复添加。", "框选扫描", MessageBoxButton.OK, MessageBoxImage.Information);
         });
     }
 
     /// <summary>扫描得到的 Job 坐标是 WCS，转换为 DCS 后打印（和通用型批量打印同理）。</summary>
-    private void TransformScannedJobsToDcs(List<PlotJob> jobs)
+    private void TransformScannedJobsToDcs(List<PlotJob> jobs, Document? sourceDocument = null)
     {
         try
         {
-            var wcsToDcs = BatchPlotCommands.BuildWcsToDcsMatrix(_currentDocument.Editor);
+            var wcsToDcs = BatchPlotCommands.BuildWcsToDcsMatrix((sourceDocument ?? _currentDocument).Editor);
             foreach (var job in jobs)
             {
                 if (job.UsesUserCoordinateSystem)
@@ -494,6 +529,7 @@ public sealed partial class BatchPlotControl : UserControl
 
     private void AddDwgFiles()
     {
+        if (!TryGetScanLibrary(out _)) return;
         var dialog = new Microsoft.Win32.OpenFileDialog
         {
             Filter = "DWG 文件 (*.dwg)|*.dwg",
@@ -516,6 +552,7 @@ public sealed partial class BatchPlotControl : UserControl
     /// <summary>选择文件夹，收集其中（含子文件夹）全部 DWG，后续流程与多文件批打相同。</summary>
     private void AddDwgFolder()
     {
+        if (!TryGetScanLibrary(out _)) return;
         using var dialog = new System.Windows.Forms.FolderBrowserDialog
         {
             Description = "选择包含 DWG 的文件夹（将包含子文件夹内的文件）",
@@ -575,10 +612,13 @@ public sealed partial class BatchPlotControl : UserControl
     /// <summary>多文件批打核心：枚举空间 → 勾选 → 扫描入清单（文件选择与文件夹选择共用）。</summary>
     private void BeginMultiFileBatch(IReadOnlyList<string> files)
     {
+        using var readProgress = InlineReadProgress.Start(_readProgressPanel, _readProgressBar, _readProgressText);
         if (files == null || files.Count == 0)
         {
             return;
         }
+
+        if (!TryGetScanLibrary(out var library)) return;
 
         var catalogErrors = new List<string>();
         var spaces = DwgSpaceCatalog.ListSpaces(files, catalogErrors);
@@ -627,14 +667,15 @@ public sealed partial class BatchPlotControl : UserControl
             }
         }
 
-        var library = TitleBlockLibraryStore.Load();
         var added = new List<PlotJob>();
         var rescannedSpaceKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var errors = new List<string>();
+        var errors = new List<string>(catalogErrors);
+        var unmatchedFiles = new List<string>();
 
         foreach (var fileGroup in selected.GroupBy(s => s.FilePath, StringComparer.OrdinalIgnoreCase))
         {
             var file = fileGroup.Key;
+            InlineReadProgress.Report("正在读取：" + Path.GetFileName(file));
             var allowed = new HashSet<string>(
                 fileGroup.Select(s => s.LayoutName),
                 StringComparer.OrdinalIgnoreCase);
@@ -648,6 +689,7 @@ public sealed partial class BatchPlotControl : UserControl
                 }
 
                 added.AddRange(scanned);
+                if (scanned.Count == 0) unmatchedFiles.Add(Path.GetFileName(file));
                 // 仅扫描成功的文件参与替换；失败文件保留清单中的旧结果。
                 foreach (var layoutName in allowed)
                 {
@@ -673,14 +715,16 @@ public sealed partial class BatchPlotControl : UserControl
         _suppressSequenceOverlayFromMultiFile = true;
         ClearSequenceOverlay();
 
-        if (errors.Count > 0)
-        {
-            System.Windows.MessageBox.Show(
-                "部分 DWG 扫描失败:\n" + string.Join("\n", errors),
-                "批量打印",
-                MessageBoxButton.OK,
-                MessageBoxImage.Warning);
-        }
+        var scannedFileCount = selected.Select(space => space.FilePath).Distinct(StringComparer.OrdinalIgnoreCase).Count();
+        var summary = $"多文件扫描完成：共 {scannedFileCount} 个文件，本次识别 {added.Count} 张，当前清单共 {_jobs.Count} 张。";
+        if (unmatchedFiles.Count > 0)
+            summary += "\n\n以下文件未识别到匹配图框：\n" + string.Join("\n", unmatchedFiles.Take(10))
+                + (unmatchedFiles.Count > 10 ? $"\n另有 {unmatchedFiles.Count - 10} 个，详见日志。" : "")
+                + "\n请检查勾选的模型/布局、图框块名/动态可见性是否与图框库匹配，并确认图框设置已保存。";
+        if (errors.Count > 0) summary += "\n\n扫描失败：\n" + string.Join("\n", errors.Take(10)) + (errors.Count > 10 ? "\n更多失败项见日志。" : "");
+        _statusLabel.Text = $"多文件扫描完成：本次 {added.Count} 张，未匹配 {unmatchedFiles.Count} 个文件，失败 {errors.Count} 个文件。";
+        AppendLog(errors.Count > 0 ? "WARN" : "INFO", summary);
+        MessageBox.Show(Window.GetWindow(this), summary, "多文件扫描", MessageBoxButton.OK, errors.Count > 0 ? MessageBoxImage.Warning : MessageBoxImage.Information);
     }
 
     private List<PlotJob> ScanExternalFile(
@@ -925,8 +969,21 @@ public sealed partial class BatchPlotControl : UserControl
         }
     }
 
+    private readonly Dictionary<string, long> _groupMovePriorities = new(StringComparer.OrdinalIgnoreCase);
+    private void MarkHighlightedPrint_Click(object sender, RoutedEventArgs e)
+    {
+        foreach (var job in GetHighlightedJobs()) job.Selected = true;
+        _grid.Items.Refresh(); RefreshStatus(); RefreshSelectedOverlay();
+    }
     private void MoveCurrentJobToFirst()
     {
+        var source = SourceFileGrouping.SelectedSource(_grid);
+        if (source != null)
+        {
+            _groupMovePriorities[GetSourceGroupKey(source)] = ++_nextSortPriority;
+            SortAndRefreshOutputPaths();
+            return;
+        }
         if (_settings.TitleBlockBatchSortMode == TitleBlockSortMode.Spatial)
         {
             return;
@@ -949,10 +1006,10 @@ public sealed partial class BatchPlotControl : UserControl
 
     private void Grid_ContextMenuOpening(object sender, ContextMenuEventArgs e)
     {
-        var enabled = _grid.CurrentItem is PlotJob;
+        var enabled = GetHighlightedJobs().Count > 0;
         // 纯位置模式不允许任何手工优先级介入，菜单直接禁用，避免点击后看似成功但顺序不变。
         _moveToFirstItem.IsEnabled = enabled
-                                     && _settings.TitleBlockBatchSortMode != TitleBlockSortMode.Spatial;
+                                     && (SourceFileGrouping.SelectedSource(_grid) != null || _settings.TitleBlockBatchSortMode != TitleBlockSortMode.Spatial);
         _markNotPrintItem.IsEnabled = enabled;
         _deleteItem.IsEnabled = enabled;
         if (!enabled)
@@ -974,8 +1031,9 @@ public sealed partial class BatchPlotControl : UserControl
             job.Selected = false;
         }
 
-        // 右键“不打印”与取消勾选行为一致：直接从清单移除并重新编号。
-        RemoveUnselectedJobs();
+        _grid.Items.Refresh();
+        RefreshStatus();
+        RefreshSelectedOverlay();
     }
 
     private List<PlotJob> GetHighlightedJobs()
@@ -1022,37 +1080,8 @@ public sealed partial class BatchPlotControl : UserControl
         }
 
         ApplyPrintSelectionToHighlightedRows(changedJob);
-        if (!changedJob.Selected)
-        {
-            RemoveUnselectedJobs();
-            return;
-        }
-
         RefreshStatus();
         RefreshSelectedOverlay();
-    }
-
-    // 图框块界面取消“打印”即表示从当前清单移除，避免列表编号和 CAD 红框编号不一致（与通用型批量打印同理）。
-    private void RemoveUnselectedJobs()
-    {
-        var removed = _jobs.Where(job => !job.Selected).ToList();
-        if (removed.Count == 0)
-        {
-            _grid.Items.Refresh();
-            return;
-        }
-
-        foreach (var job in removed)
-        {
-            if (ReferenceEquals(_highlightedJob, job))
-            {
-                _highlightedJob = null;
-            }
-            _jobs.Remove(job);
-        }
-
-        // 移除后重新排序、编号并刷新覆盖层，保持表格与 CAD 红框一致。
-        SortAndRefreshOutputPaths();
     }
 
     private void ApplyPrintSelectionToHighlightedRows(PlotJob changedJob)
@@ -1091,6 +1120,7 @@ public sealed partial class BatchPlotControl : UserControl
 
     private void Grid_BeginningEdit(object? sender, DataGridBeginningEditEventArgs e)
     {
+        if (_printCts != null) { e.Cancel = true; return; }
         // 图号、图名只能由双击显式进入编辑；单击只负责选中/高亮，避免误触后直接改字。
         if (IsDrawingIdentityColumn(e.Column) && !_allowDoubleClickTextEdit)
         {
@@ -1119,47 +1149,57 @@ public sealed partial class BatchPlotControl : UserControl
         }
     }
 
+    private readonly Dictionary<PlotJob, (bool Title, bool Number)> _pendingIdentityEdits = new();
+    private bool _identityEditRefreshQueued;
+
     private void Grid_CellEditEnding(object? sender, DataGridCellEditEndingEventArgs e)
     {
-        if (e.Row?.Item is not PlotJob job)
-        {
-            return;
-        }
+        if (e.EditAction != DataGridEditAction.Commit || e.Row?.Item is not PlotJob job || !IsDrawingIdentityColumn(e.Column)) return;
+        _pendingIdentityEdits.TryGetValue(job, out var pending);
+        _pendingIdentityEdits[job] = (pending.Title || e.Column == _titleColumn, pending.Number || e.Column == _drawingNumberColumn);
+        if (_identityEditRefreshQueued) return;
+        _identityEditRefreshQueued = true;
+        // CellEditEnding尚在DataGrid提交栈中：此处禁止刷新Items或重排绑定列表。
+        Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(FlushIdentityEdits));
+    }
 
-        var titleChanged = e.Column == _titleColumn && !string.Equals(job.Title, job.CadTitle, StringComparison.Ordinal);
-        var numberChanged = e.Column == _drawingNumberColumn && !string.Equals(job.DrawingNumber, job.CadDrawingNumber, StringComparison.Ordinal);
-        if (!titleChanged && !numberChanged)
+    private void FlushIdentityEdits()
+    {
+        try
         {
-            return;
-        }
-
-        var ok = CadTextUpdater.TryUpdateOpenDocument(
-            job,
-            titleChanged ? job.Title : null,
-            numberChanged ? job.DrawingNumber : null,
-            _currentDocument,
-            out var message);
-
-        if (ok)
-        {
-            if (titleChanged)
+            if (_closed) { _pendingIdentityEdits.Clear(); return; }
+            if (_pendingIdentityEdits.Count == 0) return;
+            // 先退出单元格/行编辑；过程中产生的事件合并进同一批，不递归重排。
+            if (!_grid.CommitEdit(DataGridEditingUnit.Cell, true) || !_grid.CommitEdit(DataGridEditingUnit.Row, true)) return;
+            var pending = _pendingIdentityEdits.ToArray();
+            _pendingIdentityEdits.Clear();
+            bool changed = false;
+            foreach (var edit in pending)
             {
-                job.CadTitle = job.Title;
+                var job = edit.Key;
+                if (!_jobs.Contains(job)) continue;
+                var titleChanged = edit.Value.Title && !string.Equals(job.Title, job.CadTitle, StringComparison.Ordinal);
+                var numberChanged = edit.Value.Number && !string.Equals(job.DrawingNumber, job.CadDrawingNumber, StringComparison.Ordinal);
+                if (!titleChanged && !numberChanged) continue;
+                changed = true;
+                var ok = CadTextUpdater.TryUpdateOpenDocument(job, titleChanged ? job.Title : null,
+                    numberChanged ? job.DrawingNumber : null, _currentDocument, out var message);
+                if (ok)
+                {
+                    if (titleChanged) job.CadTitle = job.Title;
+                    if (numberChanged) job.CadDrawingNumber = job.DrawingNumber;
+                }
+                AppendLog(ok ? "INFO" : "WARN", message);
+                if (numberChanged) job.SortPriority = 0;
             }
-
-            if (numberChanged)
-            {
-                job.CadDrawingNumber = job.DrawingNumber;
-            }
+            if (changed) SortAndRefreshOutputPaths();
         }
-
-        AppendLog(ok ? "INFO" : "WARN", message);
-        if (numberChanged)
+        catch (Exception ex)
         {
-            // 手工修改图号后，列表编号、实际打印顺序和 CAD 红框顺序都要按新图号刷新。
-            job.SortPriority = 0;
+            AppendLog("ERROR", "更新列表编辑失败：" + ex);
+            _statusLabel.Text = "列表编辑刷新失败，请查看设置 > 日志：" + ex.Message;
         }
-        SortAndRefreshOutputPaths();
+        finally { _identityEditRefreshQueued = false; }
     }
 
     private bool IsDrawingIdentityColumn(DataGridColumn? column)
@@ -1347,7 +1387,7 @@ public sealed partial class BatchPlotControl : UserControl
 
     private void RenumberDrawingNumbers()
     {
-        if (_jobs.Count == 0) return;
+        if (_jobs.Count == 0) { MessageBox.Show("当前没有可重排图号的图框，请先扫描图纸。", "图号重排", MessageBoxButton.OK, MessageBoxImage.Information); return; }
         if (_renumberDialog != null)
         {
             _renumberDialog.Activate();
@@ -1534,7 +1574,8 @@ public sealed partial class BatchPlotControl : UserControl
         }
 
         var sorted = jobs
-            .OrderByDescending(x => x.SortPriority)
+            .OrderByDescending(x => _groupMovePriorities.TryGetValue(GetSourceGroupKey(x.SourceFile), out var priority) ? priority : 0)
+            .ThenByDescending(x => x.SortPriority)
             .ThenBy(x => x.DrawingNumber, NaturalStringComparer.Instance)
             .ThenBy(x => x.Title, StringComparer.CurrentCultureIgnoreCase)
             .ToList();
@@ -1585,7 +1626,8 @@ public sealed partial class BatchPlotControl : UserControl
         var result = new List<PlotJob>(jobs.Count);
         var sourceGroups = jobs
             .GroupBy(job => GetSourceGroupKey(job.SourceFile), StringComparer.OrdinalIgnoreCase)
-            .OrderBy(group => GetSourceGroupOrder(group.Key))
+            .OrderByDescending(group => _groupMovePriorities.TryGetValue(group.Key, out var priority) ? priority : 0)
+            .ThenBy(group => GetSourceGroupOrder(group.Key))
             .ThenBy(group => group.Key, StringComparer.OrdinalIgnoreCase);
 
         foreach (var sourceGroup in sourceGroups)
@@ -1649,6 +1691,7 @@ public sealed partial class BatchPlotControl : UserControl
         _grid.CommitEdit(DataGridEditingUnit.Row, true);
         if (_jobs.Count == 0)
         {
+            _statusLabel.Text = "当前清单已为空，无需清空。";
             return;
         }
 
@@ -2058,6 +2101,12 @@ public sealed partial class BatchPlotControl : UserControl
             return;
         }
 
+        if (_withSignatureCheckBox.IsChecked == true)
+        {
+            try { TitleAttributeBatch.Core.SignatureRuntime.Run(() => { CadSignature.Commands.ValidatePlotSigning(); return ""; }); }
+            catch (Exception ex) { MessageBox.Show(ex.Message, "带签名打印", MessageBoxButton.OK, MessageBoxImage.Warning); return; }
+        }
+        foreach (var job in selected) job.SignBeforePlot = _withSignatureCheckBox.IsChecked == true;
         SaveCurrentSettings();
         SortAndRefreshOutputPaths();
         // 保存策略已经决定每张图的最终目录；合并 PDF 直接放到同一目录，
@@ -2085,6 +2134,7 @@ public sealed partial class BatchPlotControl : UserControl
             return;
         }
 
+        if (_pendingIdentityEdits.Count > 0) FlushIdentityEdits();
         if (IsDwgOutput)
         {
             SplitSelectedDwgs();
@@ -2236,6 +2286,7 @@ public sealed partial class BatchPlotControl : UserControl
         _styleSettingsButton.IsEnabled = plotOutput && _styleCombo.SelectedIndex >= 0;
         _mergePdfCheckBox.IsEnabled = IsPdfOutput;
         // PNG/JPG 先出 PDF 再转图，留白与 PDF 相同；DWG 拆图仍禁用留白。
+        _withSignatureCheckBox.IsEnabled = plotOutput;
         _leaveMarginCheckBox.IsEnabled = SupportsLeaveMargin;
         _marginInput.IsEnabled = SupportsLeaveMargin && _leaveMarginCheckBox.IsChecked == true;
 
@@ -2263,6 +2314,7 @@ public sealed partial class BatchPlotControl : UserControl
 
         // 红框/序号在不打印层，打印管道会自动跳过，不必重建或清除覆盖层。
         // 切换按钮为"停止"状态
+        _withSignatureCheckBox.IsEnabled = false;
         _printCts = new CancellationTokenSource();
         _printButton.Content = "停止";
         _printButton.Background = new SolidColorBrush(Color.FromRgb(200, 40, 40));
@@ -2463,6 +2515,8 @@ public sealed partial class BatchPlotControl : UserControl
                 TryDeleteDirectory(temporaryDirectory);
             }
 
+            foreach (var job in selected) job.SignBeforePlot = false;
+            _withSignatureCheckBox.IsEnabled = !IsDwgOutput;
             // 恢复按钮
             _printCts?.Dispose();
             _printCts = null;
@@ -2770,6 +2824,7 @@ public sealed partial class BatchPlotControl : UserControl
         _settings.LastPlotDevice = device;
         _settings.LastStyleSheet = styleSheet;
         _settings.MergePdf = mergePdf;
+        _settings.TitleBlockPrintWithSignature = _withSignatureCheckBox.IsChecked == true;
         _settings.LeavePaperMargin = leaveMargin;
         _settings.PaperMarginMm = marginMm;
         _settings.LastOutputFormat = SelectedOutputFormat;
@@ -2780,6 +2835,56 @@ public sealed partial class BatchPlotControl : UserControl
     }
 
     // ── UI 事件处理器 ──
+
+    private void ScanOpenDrawings_Click(object sender, RoutedEventArgs e)
+    {
+        using var readProgress = InlineReadProgress.Start(_readProgressPanel, _readProgressBar, _readProgressText);
+        if (_printCts != null) return;
+        if (!TryGetScanLibrary(out var library)) return;
+        var scope = GetSelectedScanScope();
+        var errors = new List<string>();
+        var keys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var added = new List<PlotJob>();
+        int scanned = 0;
+        var documents = CadApp.DocumentManager.Cast<Document>().ToArray();
+        foreach (var document in documents)
+        {
+            InlineReadProgress.Report("正在读取已打开图纸：" + document.Name);
+            try
+            {
+                using (document.LockDocument())
+                {
+                    var spaces = OpenDrawingScanSpaces.Keys(document, scope);
+                    var jobs = TitleBlockScanner.Scan(document, library, scope, _settings.PaperMatchToleranceMm);
+                    TransformScannedJobsToDcs(jobs, document);
+                    foreach (var job in jobs) job.StyleSheet = _styleCombo.SelectedItem?.ToString() ?? "";
+                    added.AddRange(jobs);
+                    keys.UnionWith(spaces);
+                    scanned++;
+                }
+            }
+            catch (Exception ex)
+            {
+                errors.Add(document.Name + ": " + ex.Message);
+                CadPickDiagnostics.Log("scan-open-drawings", document.Name + ": " + ex);
+            }
+        }
+        _lastScanScope = null;
+        _lastSelectedIds = null;
+        foreach (var job in added)
+            if (!_selectedDwgFiles.Any(file => AreSamePath(file, job.SourceFile))) _selectedDwgFiles.Add(job.SourceFile);
+        _suppressSequenceOverlayFromMultiFile = true;
+        ClearSequenceOverlay();
+        SortAndRefreshOutputPaths(MultiFileJobMerge.ReplaceRescannedSpaces(_jobs, added, keys, job => job));
+        _statusLabel.Text = $"已扫描 {scanned} 个已打开图纸，识别 {added.Count} 张。";
+        AppendLog("INFO", _statusLabel.Text);
+        if (added.Count == 0 || errors.Count > 0)
+            MessageBox.Show(Window.GetWindow(this), $"已扫描 {scanned} 个已打开图纸，识别 {added.Count} 张。"
+                + (added.Count == 0 ? "\n请检查扫描范围和图框设置。" : "")
+                + (errors.Count > 0 ? "\n部分图纸扫描失败：\n" + string.Join("\n", errors) : ""),
+                "扫描已打开图纸", MessageBoxButton.OK,
+                errors.Count > 0 ? MessageBoxImage.Warning : MessageBoxImage.Information);
+    }
 
     private void ScanCurrentDrawing_Click(object sender, RoutedEventArgs e) => ScanCurrentDrawing();
 
@@ -2792,12 +2897,15 @@ public sealed partial class BatchPlotControl : UserControl
 
     private void RenumberDrawingNumbers_Click(object sender, RoutedEventArgs e) => RenumberDrawingNumbers();
 
+#if !CLEAN_EDITION
     private void ExportHpDirectory_Click(object sender, RoutedEventArgs e)
     {
         _grid.CommitEdit(DataGridEditingUnit.Cell, true);
         _grid.CommitEdit(DataGridEditingUnit.Row, true);
         HpDirectoryExportUi.Run(Window.GetWindow(this), _currentDocument, _jobs.ToList());
     }
+
+#endif
 
     private void GenerateDrawingDirectory_Click(object sender, RoutedEventArgs e) => GenerateDrawingDirectory();
 

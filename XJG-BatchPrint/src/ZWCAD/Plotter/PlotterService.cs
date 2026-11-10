@@ -102,6 +102,7 @@ public static partial class PlotterService
                 }
                 catch (Exception ex)
                 {
+                    if (ex is SignedPlotRestoreException) throw;
                     foreach (var job in groupJobs.Where(job => !results.Any(x => ReferenceEquals(x.Job, job))))
                     {
                         results.Add(new PlotJobResult { Job = job, Error = ex });
@@ -217,6 +218,7 @@ public static partial class PlotterService
         List<PlotJobResult> results,
         CancellationToken cancellationToken)
     {
+        using var signing = TemporarySignedPlotScope.Begin(currentDocument, jobs);
         string? lastSpaceKey = null;
         foreach (var job in jobs)
         {

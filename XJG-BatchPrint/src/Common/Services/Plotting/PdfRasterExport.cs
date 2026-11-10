@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -234,7 +234,7 @@ public static class PdfRasterExport
                 return;
             }
 
-            var pluginDirectory = Path.GetDirectoryName(typeof(PdfRasterExport).Assembly.Location) ?? "";
+            var pluginDirectory = PluginRuntimePaths.BaseDirectory ?? "";
             var candidates = new[]
             {
                 Path.Combine(pluginDirectory, "pdfium.dll"),

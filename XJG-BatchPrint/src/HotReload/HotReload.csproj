@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <CadVariant Condition="'$(CadVariant)' == ''">Acad</CadVariant>
+    <TargetFramework>net48</TargetFramework>
+    <TargetFramework Condition="'$(CadVariant)' == 'Core'">net8.0-windows</TargetFramework>
+    <AssemblyName>AcadBatchPlot.Loader</AssemblyName>
+    <AssemblyName Condition="'$(CadVariant)' == 'Core'">AcadBatchPlot.Core.Loader</AssemblyName>
+    <AssemblyName Condition="'$(CadVariant)' == 'Zwcad'">BatchPlotter.Loader</AssemblyName>
+    <DefineConstants Condition="'$(CadVariant)' == 'Acad'">$(DefineConstants);AUTOCAD</DefineConstants>
+    <DefineConstants Condition="'$(CadVariant)' == 'Core'">$(DefineConstants);AUTOCAD;ACAD_CORE</DefineConstants>
+    <DefineConstants Condition="'$(CadVariant)' == 'Zwcad'">$(DefineConstants);ZWCAD</DefineConstants>
+    <LangVersion>latest</LangVersion><Nullable>enable</Nullable><PlatformTarget>x64</PlatformTarget>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(CadVariant)' == 'Acad'">
+    <PackageReference Include="AutoCAD.NET" Version="20.0.1" ExcludeAssets="runtime" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(CadVariant)' == 'Core'">
+    <PackageReference Include="AutoCAD.NET.Core" Version="25.0.0" ExcludeAssets="runtime" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(CadVariant)' == 'Zwcad'">
+    <PackageReference Include="ZWCad.Net.2025" Version="1.0.0" ExcludeAssets="runtime" />
+  </ItemGroup>
+</Project>

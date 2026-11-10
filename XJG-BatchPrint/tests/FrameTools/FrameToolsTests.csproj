@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+<PropertyGroup>
+<TargetFramework>net48</TargetFramework><OutputType>Exe</OutputType><LangVersion>latest</LangVersion>
+<EnableDefaultCompileItems>false</EnableDefaultCompileItems><TestSuite Condition="'$(TestSuite)' == ''">Package</TestSuite>
+<StartupObject Condition="'$(TestSuite)' == 'Package'">PkgTest.Program</StartupObject>
+<StartupObject Condition="'$(TestSuite)' == 'Cover'">CoverCalibrationTests</StartupObject>
+<StartupObject Condition="'$(TestSuite)' == 'Save'">SafeDwgSaveTests</StartupObject>
+<AssemblyName>FrameToolsTests.$(TestSuite)</AssemblyName>
+</PropertyGroup>
+<ItemGroup>
+<Compile Include="SignaturePackageTests.cs"/><Compile Include="CoverCalibrationTests.cs"/><Compile Include="SafeDwgSaveTests.cs"/>
+<Compile Include="../../src/Common/FrameTools/Signature/PeopleConfig.cs"/>
+<Compile Include="../../src/Common/FrameTools/Signature/FrameOffsetConfig.cs"/>
+<Compile Include="../../src/Common/FrameTools/Signature/SettingsPackage.cs"/>
+<Compile Include="../../src/Common/FrameTools/Signature/SignatureVault.cs"/>
+<Compile Include="../../src/Common/FrameTools/SafeDwgSave.cs"/>
+<Compile Include="../../src/Common/FrameTools/TempBackupStore.cs"/>
+</ItemGroup>
+</Project>

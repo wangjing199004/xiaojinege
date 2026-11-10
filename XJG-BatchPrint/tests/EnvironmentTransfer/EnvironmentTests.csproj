@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><TargetFramework>net8.0</TargetFramework><OutputType>Exe</OutputType><Nullable>enable</Nullable><EnableDefaultCompileItems>false</EnableDefaultCompileItems></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="../../src/Common/Infrastructure/EnvironmentPackage.cs" />
+    <Compile Include="../../src/Common/Infrastructure/EnvironmentTransfer.cs" />
+    <Compile Include="../../src/Common/FrameTools/Signature/GreenStore.cs" />
+    <Compile Include="../../src/Common/FrameTools/Signature/GreenArchive.cs" />
+    <Compile Include="../../src/Common/FrameTools/Signature/PeopleConfig.cs" />
+    <Compile Include="../../src/Common/FrameTools/Signature/FrameOffsetConfig.cs" />
+    <Compile Include="../../src/Common/FrameTools/Signature/SignatureVault.cs" />
+    <Compile Include="../../src/Common/FrameTools/Signature/SettingsPackage.cs" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+</Project>

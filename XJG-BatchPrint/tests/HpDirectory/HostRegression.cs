@@ -15,7 +15,7 @@ public class HpDirectoryHostRegression {
  if(string.IsNullOrWhiteSpace(root))root=@"F:\Codedemo\XJG批量打印_fix";
  var report=new StringBuilder();
  try {
- var assembly=Assembly.LoadFrom(Path.Combine(root,"bin-update-v18","AutoCAD2015-2024","AcadBatchPlot.dll"));
+ var assembly=Assembly.Load(File.ReadAllBytes(Path.Combine(root,"local-artifacts","installer-v30","HP","AutoCAD2015-2024","AcadBatchPlot.Runtime.dll")));
  var type=assembly.GetType("ZwcadBatchPlot.PlotJob",true);
  var insert=assembly.GetType("ZwcadBatchPlot.HpDirectoryExporter",true).GetMethod("Insert",BindingFlags.Public|BindingFlags.Static);
  foreach(var count in new[]{1,27,28,59,60,86,118,119}) {
@@ -65,8 +65,9 @@ public class HpDirectoryHostRegression {
  var local=text.AlignmentPoint.TransformBy(br.BlockTransform.Inverse());var right=capacity==59&&slot>32;
  if(right!=(local.X>21000))throw new System.Exception("Column placement failed");
  if(Math.Abs(local.Y-(25900-((slot-1)%(capacity==59?32:27))*800))>2)throw new System.Exception("Row placement failed");
- var title=texts.Single(t=>Math.Abs(t.AlignmentPoint.Y-text.AlignmentPoint.Y)<1&&Math.Abs(t.AlignmentPoint.X-(text.AlignmentPoint.X+6550))<1);
- if(title.GeometricExtents.MaxPoint.X-title.GeometricExtents.MinPoint.X>10902)throw new System.Exception("Single-line title overflow");
+ var title=texts.Single(t=>Math.Abs(t.AlignmentPoint.Y-text.AlignmentPoint.Y)<1&&Math.Abs(t.AlignmentPoint.X-(text.AlignmentPoint.X+1000+t.Height))<1);
+ if(title.Justify!=AttachmentPoint.MiddleLeft)throw new System.Exception("Title must be middle-left");
+ if(title.GeometricExtents.MaxPoint.X-title.GeometricExtents.MinPoint.X>11102-2*title.Height)throw new System.Exception("Single-line title overflow");
  }
  }
  if(count>=2&&!texts.Any(t=>t.TextString=="图名{特殊}\\路径"))throw new System.Exception("Literal text changed");

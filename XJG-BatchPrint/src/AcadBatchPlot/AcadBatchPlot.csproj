@@ -71,7 +71,7 @@
     <PropertyGroup>
       <_PdfiumSrc>$(NuGetPackageRoot)docnet.core\2.6.0\runtimes\win-x64\native\pdfium.dll</_PdfiumSrc>
     </PropertyGroup>
-    <Copy SourceFiles="$(_PdfiumSrc)" DestinationFiles="$(OutputPath)pdfium.dll" SkipUnchangedFiles="true" Condition="Exists('$(_PdfiumSrc)')" />
+    <Copy SourceFiles="$(_PdfiumSrc)" DestinationFiles="$(OutputPath)/pdfium.dll" SkipUnchangedFiles="true" Condition="Exists('$(_PdfiumSrc)')" />
   </Target>
   <ItemGroup>
     <EmbeddedResource Include="$(RepoRoot)resources\hp-directory\std-a0.enc">
@@ -96,4 +96,13 @@
       <LogicalName>ZwcadBatchPlot.Private.Hp.b</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="$(RepoRoot)resources\frame-tools-factory\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </None>
+  </ItemGroup>
+  <PropertyGroup Condition="'$(HotReloadBuildId)' != ''">
+    <AssemblyName>AcadBatchPlot.Runtime.$(HotReloadBuildId)</AssemblyName>
+  </PropertyGroup>
 </Project>

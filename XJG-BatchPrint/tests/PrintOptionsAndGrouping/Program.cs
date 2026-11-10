@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Markup;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ZwcadBatchPlot;
@@ -78,6 +79,63 @@ internal static class Program
         Check(view.Groups.Count == 3, "新增扫描结果应刷新分组");
         rows.RemoveAt(3);
         Check(view.Groups.Count == 2, "删除任务后不保留空组");
+        var host = new Window { Content = grid, Width = 680, Height = 400, Left = -10000, Top = -10000, ShowInTaskbar = false }; host.Show();
+        grid.Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.Loaded);
+        grid.Measure(new Size(660, 360)); grid.Arrange(new Rect(0, 0, 660, 360)); grid.UpdateLayout();
+        var headers = Descendants(grid).OfType<GroupItem>().ToList();
+        Check(headers.Count == 2, "actual group containers missing");
+        var header = Descendants(headers[0]).OfType<TextBlock>().First(t => t.Text == "建筑.dwg");
+        header.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left) { RoutedEvent = Mouse.PreviewMouseDownEvent });
+        Check(grid.SelectedItems.Count == 2 && grid.SelectedItems.Contains(rows[0]) && grid.SelectedItems.Contains(rows[1]),
+            "collapsed group click must select all of its rows only");
+        Check(SourceFileGrouping.SelectedSource(grid) == rows[0].SourceFile, "selected group identity missing");
+        foreach (TestRow row in grid.SelectedItems) row.Selected = false;
+        Check(rows.Count == 3 && !rows[0].Selected && !rows[1].Selected && rows[2].Selected,
+            "not-print group must retain every list row");
+        var toggle = Descendants(headers[0]).OfType<ToggleButton>().First();
+        toggle.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left) { RoutedEvent = Mouse.PreviewMouseDownEvent });
+        Check(grid.SelectedItems.Count == 2, "expand button changed selection");
+        var secondHeader = Descendants(headers[1]).OfType<TextBlock>().First(t => t.Text == "建筑.dwg");
+        secondHeader.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Right) { RoutedEvent = Mouse.PreviewMouseDownEvent });
+        Check(grid.SelectedItems.Count == 1 && grid.SelectedItems.Contains(rows[2]), "right-click group must target the new group");
+        var beforeDouble = (bool)state.GetType().GetProperty("IsExpanded")!.GetValue(state)!;
+        var doubleClick = new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left) { RoutedEvent = Mouse.PreviewMouseDownEvent };
+        typeof(MouseButtonEventArgs).GetProperty("ClickCount")!.SetValue(doubleClick, 2);
+        header.RaiseEvent(doubleClick);
+        Check((bool)state.GetType().GetProperty("IsExpanded")!.GetValue(state)! != beforeDouble,
+            "double-click must toggle expansion");
+        var doubleAgain = new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left) { RoutedEvent = Mouse.PreviewMouseDownEvent };
+        typeof(MouseButtonEventArgs).GetProperty("ClickCount")!.SetValue(doubleAgain, 2);
+        header.RaiseEvent(doubleAgain);
+        Check((bool)state.GetType().GetProperty("IsExpanded")!.GetValue(state)! == beforeDouble,
+            "second double-click must toggle back");
+        var panel = new StackPanel(); var progressBar = new ProgressBar(); var progressText = new TextBlock();
+        using (InlineReadProgress.Start(panel, progressBar, progressText))
+        {
+            Check(panel.Visibility == Visibility.Visible && progressBar.IsIndeterminate, "start progress missing");
+            InlineReadProgress.Report("智能识别 5/5", 5, 5);
+            Check(progressBar.Value == 100 && !progressBar.IsIndeterminate && progressText.Text == "智能识别 5/5", "counted progress missing");
+            using (InlineReadProgress.Start(panel, progressBar, progressText)) InlineReadProgress.Report("nested 1/1", 1, 1);
+            Check(panel.Visibility == Visibility.Visible, "nested progress hid outer operation");
+        }
+        Check(panel.Visibility == Visibility.Collapsed, "progress not cleaned up");
+        Console.WriteLine("PASS: double-click expands/collapses; indeterminate/counted progress and nested cleanup");
+        int bindingEvents = 0, cadRereads = 0;
+        var paperCombo = new ComboBox();
+        paperCombo.SelectionChanged += (_, e) => { bindingEvents++; if (PaperSelectionChange.IsUserSelection(paperCombo, e)) cadRereads++; };
+        for (int i = 0; i < 100; i++)
+        {
+            paperCombo.ItemsSource = new[] { "A3 1:100", "A4 1:100" };
+            paperCombo.SelectedIndex = -1; paperCombo.SelectedIndex = 0;
+        }
+        Check(bindingEvents >= 100 && cadRereads == 0, $"binding/row recycling triggered CAD re-reading: events={bindingEvents}, reads={cadRereads}");
+        var comboHost = new Window { Content = paperCombo, Width = 200, Height = 80, Left = -10000, Top = -10000, ShowInTaskbar = false };
+        comboHost.Show(); paperCombo.IsDropDownOpen = true; paperCombo.SelectedIndex = 1;
+        Check(cadRereads == 1, "actual dropdown change was blocked or duplicated");
+        paperCombo.IsDropDownOpen = false; comboHost.Close();
+        Console.WriteLine($"PASS: {bindingEvents} binding/recycling events cause zero CAD rereads; explicit dropdown change causes one");
+        host.Close();
+        Console.WriteLine("PASS: collapsed group click selects all rows, group not-print retains rows, +/- preserves selection, right-click retargets group");
         // 不打开窗口，仅布局并渲染实际分组模板，检查 +/- 与折叠内容。
         var preview = new StackPanel { Background = Brushes.White, Width = 660, Height = 360 };
         var groupStyle = (GroupStyle)grid.FindResource("SourceFileGroupStyle");
@@ -124,6 +182,7 @@ namespace ZwcadBatchPlot
         public string LastPlotDevice {get;set;} = "";
         public string LastStyleSheet {get;set;} = "";
         public bool MergePdf {get;set;}
+        public bool TitleBlockPrintWithSignature {get;set;}
         public bool LeavePaperMargin {get;set;}
         public double PaperMarginMm {get;set;} = 1;
         public int ScanScope {get;set;}

@@ -1,0 +1,6 @@
+PASS HP AutoCAD2015-2024: actual package has no personal profile/vault/cache, factory names active, CAD uninstall routing and marker rejection
+PASS HP AutoCAD2025-2027: actual package has no personal profile/vault/cache, factory names active, CAD uninstall routing and marker rejection
+PASS HP ZWCAD2025: actual package has no personal profile/vault/cache, factory names active, CAD uninstall routing and marker rejection
+PASS 纯净 AutoCAD2015-2024: actual package has no personal profile/vault/cache, factory names active, CAD uninstall routing and marker rejection
+PASS 纯净 AutoCAD2025-2027: actual package has no personal profile/vault/cache, factory names active, CAD uninstall routing and marker rejection
+PASS 纯净 ZWCAD2025: actual package has no personal profile/vault/cache, factory names active, CAD uninstall routing and marker rejection

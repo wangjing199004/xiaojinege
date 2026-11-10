@@ -59,9 +59,9 @@ public sealed partial class TitleBlockLibraryControl : UserControl
     }
 
     /// <summary>主面板关闭时调用：有未保存修改时提示保存。</summary>
-    public void Shutdown()
+    public void Shutdown(bool persistChanges = true)
     {
-        OnFormClosing(this, new CancelEventArgs());
+        if (persistChanges) OnFormClosing(this, new CancelEventArgs());
     }
 
     private void AddColumns()
@@ -195,6 +195,7 @@ public sealed partial class TitleBlockLibraryControl : UserControl
     {
         if (_grid.SelectedItems.Count == 0)
         {
+            MessageBox.Show("请先在图框库列表中选择需要删除的图框。", "删除图框", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 
@@ -732,6 +733,8 @@ public sealed partial class TitleBlockLibraryControl : UserControl
 
     private void OnDeleteClick(object sender, RoutedEventArgs e) => DeleteSelected();
 
+    internal void RefreshAfterEnvironmentImport() => LoadRows(notifyLibraryChanged: true);
+
     private void OnReloadClick(object sender, RoutedEventArgs e) => LoadRows(notifyLibraryChanged: true);
 
     private void OnRecognizeModesClick(object sender, RoutedEventArgs e)
@@ -779,6 +782,7 @@ public sealed partial class TitleBlockLibraryControl : UserControl
         });
     }
 
+#if !CLEAN_EDITION
     private void OnInsertStandardFrameClick(object sender, RoutedEventArgs e)
     {
         var document = CadApp.DocumentManager.MdiActiveDocument;
@@ -818,6 +822,8 @@ public sealed partial class TitleBlockLibraryControl : UserControl
             _status.Text = failure != null ? "插入标准图框失败。" : inserted ? "已插入标准图框：" + selected.Name : "已取消插入标准图框。";
         });
     }
+
+#endif
 
     private void OnCloseClick(object sender, RoutedEventArgs e) => Window.GetWindow(this)?.Close();
 

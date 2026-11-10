@@ -1,0 +1,482 @@
+[
+  {
+    "Path": "local-artifacts/hot-build",
+    "Bytes": 5306834526.0,
+    "Files": 9075,
+    "Reason": "scripts/build-hot-update.ps1 disposable timestamp build staging; latest installers retained"
+  },
+  {
+    "Path": "安装包-v29",
+    "Bytes": 38205643.0,
+    "Files": 4,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "安装包-v30",
+    "Bytes": 38233420.0,
+    "Files": 4,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "安装包-v31",
+    "Bytes": 38291928.0,
+    "Files": 4,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "bin-acad-tabs6.7z",
+    "Bytes": 3021956.0,
+    "Files": 1,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "bin-update-v23",
+    "Bytes": 77175809.0,
+    "Files": 99,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "bin-update-v24",
+    "Bytes": 33447027.0,
+    "Files": 130,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "bin-update-v25",
+    "Bytes": 33432621.0,
+    "Files": 129,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "bin-update-v26",
+    "Bytes": 33938457.0,
+    "Files": 129,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "bin-update-v27",
+    "Bytes": 34629201.0,
+    "Files": 129,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "bin-update-v28",
+    "Bytes": 34633246.0,
+    "Files": 129,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-about-纯净",
+    "Bytes": 25050660.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-about-HP",
+    "Bytes": 30090779.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-buttons-纯净",
+    "Bytes": 25051684.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-buttons-HP",
+    "Bytes": 30091291.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-compat2016-纯净",
+    "Bytes": 25091108.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-compat2016-HP",
+    "Bytes": 30130715.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-countersign-纯净-20261110102420",
+    "Bytes": 25105956.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-countersign-HP-20261110102420",
+    "Bytes": 30146075.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-cover-directory-纯净-20261110104925",
+    "Bytes": 25108004.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-cover-directory-HP-20261110104925",
+    "Bytes": 30147611.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-cover-height-纯净-20261110105955",
+    "Bytes": 25108004.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-cover-height-HP-20261110105955",
+    "Bytes": 30148123.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-edit-completion-纯净",
+    "Bytes": 25091108.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-edit-completion-HP",
+    "Bytes": 30130715.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-final-纯净",
+    "Bytes": 25053732.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-final-HP",
+    "Bytes": 30093851.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-final2-纯净",
+    "Bytes": 25047588.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-final2-HP",
+    "Bytes": 30087707.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-group-actions-纯净-20261110113340",
+    "Bytes": 25123364.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-group-actions-HP-20261110113340",
+    "Bytes": 30162971.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-headers-纯净",
+    "Bytes": 25051172.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-headers-HP",
+    "Bytes": 30091291.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-list-flow-纯净-20261110143347",
+    "Bytes": 25140260.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-list-flow-HP-20261110143347",
+    "Bytes": 30179867.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-matched-identity-纯净-20261110141616",
+    "Bytes": 25137188.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-matched-identity-HP-20261110141616",
+    "Bytes": 30176795.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-open-drawings-纯净-20261110111353",
+    "Bytes": 25117732.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-open-drawings-HP-20261110111353",
+    "Bytes": 30158363.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-read-progress-纯净-20261110115221",
+    "Bytes": 25132580.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-read-progress-HP-20261110115221",
+    "Bytes": 30172699.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-rectangle-纯净",
+    "Bytes": 25051172.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-rectangle-HP",
+    "Bytes": 30091291.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-reset-delete-title-纯净",
+    "Bytes": 25079844.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-reset-delete-title-HP",
+    "Bytes": 30119963.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-scan-feedback-纯净",
+    "Bytes": 25088036.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-scan-feedback-HP",
+    "Bytes": 30127643.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-selection-focus-纯净",
+    "Bytes": 25069092.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-selection-focus-HP",
+    "Bytes": 30109211.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-signed-final-纯净",
+    "Bytes": 25068580.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-signed-final-HP",
+    "Bytes": 30108187.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-smart-opt-纯净-20261110115956",
+    "Bytes": 25140260.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts\\installer-v32\\verify-smart-opt-HP-20261110115956",
+    "Bytes": 30179867.0,
+    "Files": 82,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "src\\AcadBatchPlot.Core\\obj",
+    "Bytes": 2264396.0,
+    "Files": 70,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "src\\AcadBatchPlot\\obj",
+    "Bytes": 2026260.0,
+    "Files": 70,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "src\\BatchPlotter\\obj",
+    "Bytes": 1827450.0,
+    "Files": 59,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "src\\HotReload\\obj",
+    "Bytes": 135454.0,
+    "Files": 16,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "src\\PianNoCN\\obj",
+    "Bytes": 221746.0,
+    "Files": 22,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "tests\\EnvironmentTransfer\\bin",
+    "Bytes": 947352.0,
+    "Files": 6,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "tests\\EnvironmentTransfer\\obj",
+    "Bytes": 270186.0,
+    "Files": 20,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "tests\\FrameTools\\obj",
+    "Bytes": 93042.0,
+    "Files": 18,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "tests\\GridHeaders\\bin",
+    "Bytes": 179811.0,
+    "Files": 5,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "tests\\GridHeaders\\obj",
+    "Bytes": 203335.0,
+    "Files": 18,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "tests\\HpTemplateProtection\\bin",
+    "Bytes": 1833408.0,
+    "Files": 5,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "tests\\HpTemplateProtection\\obj",
+    "Bytes": 1855681.0,
+    "Files": 18,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "tests\\IdentityEdit\\bin",
+    "Bytes": 181726.0,
+    "Files": 5,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "tests\\IdentityEdit\\obj",
+    "Bytes": 210125.0,
+    "Files": 19,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "tests\\Installer\\bin",
+    "Bytes": 172637.0,
+    "Files": 5,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "tests\\Installer\\obj",
+    "Bytes": 236224.0,
+    "Files": 35,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "tests\\LibraryInputRouting\\bin",
+    "Bytes": 198265.0,
+    "Files": 5,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "tests\\LibraryInputRouting\\obj",
+    "Bytes": 227647.0,
+    "Files": 18,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "tests\\PrintOptionsAndGrouping\\bin",
+    "Bytes": 209953.0,
+    "Files": 7,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "tests\\PrintOptionsAndGrouping\\obj",
+    "Bytes": 230254.0,
+    "Files": 18,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "tests\\SignedPlotBackup\\bin",
+    "Bytes": 171760.0,
+    "Files": 5,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "tests\\SignedPlotBackup\\obj",
+    "Bytes": 192773.0,
+    "Files": 18,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "tests\\WpfGridHeaders\\bin",
+    "Bytes": 181880.0,
+    "Files": 5,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "tests\\WpfGridHeaders\\obj",
+    "Bytes": 208379.0,
+    "Files": 18,
+    "Reason": "Old intermediate build (unique configs preserved), verified package extraction, or MSBuild cache"
+  },
+  {
+    "Path": "local-artifacts/installer-v29",
+    "Bytes": 238023812.0,
+    "Files": 837,
+    "Reason": "Old v29-v31 installer staging; latest v32 retained; unique configuration bytes preserved"
+  },
+  {
+    "Path": "local-artifacts/installer-v30",
+    "Bytes": 170258489.0,
+    "Files": 544,
+    "Reason": "Old v29-v31 installer staging; latest v32 retained; unique configuration bytes preserved"
+  },
+  {
+    "Path": "local-artifacts/installer-v31",
+    "Bytes": 170592708.0,
+    "Files": 557,
+    "Reason": "Old v29-v31 installer staging; latest v32 retained; unique configuration bytes preserved"
+  }
+]

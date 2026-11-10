@@ -68,7 +68,7 @@ public sealed class AppSettings
     /// </summary>
     public bool RecognizeFourLineRectangleFrames { get; set; } = true;
     /// <summary>
-    /// 通用型批打是否按图框库中出现最多的右下角模式识别图名、图号。
+    /// 通用型批打是否只按已匹配图框库的字段区域识别图名、图号（保留旧设置键名）。
     /// 默认关闭；勾选后从下一次扫描生效，不改已经扫进清单的结果。
     /// </summary>
     public bool RecognizeTitleByDominantFrameMode { get; set; }
@@ -118,6 +118,7 @@ public sealed class AppSettings
     public int RasterExportJpegQuality { get; set; } = RasterExportSettings.DefaultJpegQuality;
     public bool AddFileNameSequence { get; set; }
     public bool LeavePaperMargin { get; set; }
+    public bool TitleBlockPrintWithSignature { get; set; }
     public double PaperMarginMm { get; set; } = 1;
     /// <summary>图框块批量打印的主排序依据；通用型批量打印不读取此设置。</summary>
     public TitleBlockSortMode TitleBlockBatchSortMode { get; set; } = TitleBlockSortMode.DrawingNumber;
@@ -261,7 +262,7 @@ public static class AppSettingsStore
         return Normalize(new AppSettings());
     }
 
-    private static AppSettings Normalize(AppSettings settings)
+    internal static AppSettings Normalize(AppSettings settings)
     {
         if (!new[] { "PDF", "PNG", "JPG", "DWF", "DWG" }.Contains(settings.LastOutputFormat))
             settings.LastOutputFormat = "PDF";
@@ -463,7 +464,7 @@ public static class AppSettingsStore
                 Key = fallback.Key,
                 Header = string.IsNullOrWhiteSpace(column.Header) ? fallback.Header : column.Header.Trim(),
                 Enabled = column.Enabled,
-                Centered = column.Centered,
+                Centered = column.Key == "Title" ? false : column.Centered,
                 Width = column.Width > 0 ? column.Width : fallback.Width
             });
         }
@@ -485,7 +486,7 @@ public static class AppSettingsStore
         {
             new() { Key = "Sequence", Header = "序号", Enabled = true, Centered = true, Width = settings.DirectoryIndexWidth },
             new() { Key = "DrawingNumber", Header = "图号", Enabled = true, Centered = true, Width = settings.DirectoryNumberWidth },
-            new() { Key = "Title", Header = "图名", Enabled = true, Centered = true, Width = settings.DirectoryTitleWidth },
+            new() { Key = "Title", Header = "图名", Enabled = true, Centered = false, Width = settings.DirectoryTitleWidth },
             new() { Key = "PaperName", Header = "图幅", Enabled = true, Centered = true, Width = settings.DirectoryPaperWidth },
             new() { Key = "Revision", Header = "版次", Enabled = false, Centered = true, Width = 2800 },
             new() { Key = "Date", Header = "日期", Enabled = false, Centered = true, Width = 2000 },
@@ -509,7 +510,7 @@ public static class AppSettingsStore
             {
                 var column = byKey[key];
                 column.Enabled = enabled.Contains(key);
-                column.Centered = true;
+                column.Centered = column.Key != "Title";
                 return column;
             })
             .ToList();

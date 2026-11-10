@@ -1,0 +1,6 @@
+﻿PASS first business runtime initialized: AcadBatchPlot.Runtime.r20261023075450556
+PASS attribute write: case-insensitive selected tags, unselected values preserved, locked frame skipped
+PASS second business runtime initialized: AcadBatchPlot.Runtime.r20261023074231769
+PASS attribute write: case-insensitive selected tags, unselected values preserved, locked frame skipped
+PASS: invalid update keeps running version; unchanged file preserves business instance
+PASS: byte-loaded business DLL is replaceable; busy operation blocks reload; distinct runtime identities; tag-based attribute writes work after reload

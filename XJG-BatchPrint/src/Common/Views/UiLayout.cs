@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -105,6 +105,34 @@ public static class UiLayout
     public static decimal Clamp(NumericUpDown input, double value)
     {
         return (decimal)Math.Max((double)input.Minimum, Math.Min((double)input.Maximum, value));
+    }
+
+    // 属性页沿用扫描列表的配色和粗体表头；按实际字体/DPI测量，避免默认23px表头裁字。
+    public static void StyleFrameToolsGrid(DataGridView grid, Font font)
+    {
+        StyleGrid(grid, font);
+        grid.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.False;
+        grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+        grid.ColumnAdded += (_, _) => FitFrameToolsHeaders(grid);
+        grid.FontChanged += (_, _) => FitFrameToolsHeaders(grid);
+        grid.HandleCreated += (_, _) => FitFrameToolsHeaders(grid);
+        grid.DpiChangedAfterParent += (_, _) => FitFrameToolsHeaders(grid);
+        FitFrameToolsHeaders(grid);
+    }
+
+    private static void FitFrameToolsHeaders(DataGridView grid)
+    {
+        using var graphics = grid.CreateGraphics();
+        var headerFont = grid.ColumnHeadersDefaultCellStyle.Font ?? grid.Font;
+        var padding = Math.Max(4, (int)Math.Ceiling(8 * graphics.DpiX / 96F));
+        foreach (DataGridViewColumn column in grid.Columns)
+        {
+            var text = TextRenderer.MeasureText(graphics, column.HeaderText, headerFont,
+                Size.Empty, TextFormatFlags.SingleLine);
+            var sortSpace = column.SortMode == DataGridViewColumnSortMode.NotSortable ? 0 : padding * 2;
+            column.MinimumWidth = Math.Max(2, text.Width + padding * 2 + sortSpace);
+        }
+        grid.AutoResizeColumnHeadersHeight();
     }
 
     public static void StyleGrid(DataGridView grid, Font font)

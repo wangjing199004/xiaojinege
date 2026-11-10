@@ -1,0 +1,4 @@
+PASS 50,000 cached texts / 300 queries: exact output parity with original extraction, including rotation, mirror, alignment, bounds, priority and text order
+Original queries ms=1179; indexed queries including index build ms=43
+PASS matched-library mode: registered frames only, configured field regions honored, inner/unmatched rectangles skipped
+PASS geometry-only scan: same corners as full scan for 8 rotated/scaled frames; subsequent full scan still reads TITLE correctly

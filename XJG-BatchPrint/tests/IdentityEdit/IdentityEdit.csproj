@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+ <PropertyGroup><TargetFramework>net8.0-windows</TargetFramework><OutputType>Exe</OutputType><UseWPF>true</UseWPF><Nullable>enable</Nullable></PropertyGroup>
+ <ItemGroup><Compile Include="$(IntermediateOutputPath)ActualHandlers.g.cs" /></ItemGroup>
+ <Target Name="ExtractActualEditHandlers" BeforeTargets="CoreCompile"><Exec Command="pwsh -NoProfile -File &quot;$(MSBuildProjectDirectory)/generate.ps1&quot; &quot;$(IntermediateOutputPath).&quot;" /></Target>
+</Project>
+
+

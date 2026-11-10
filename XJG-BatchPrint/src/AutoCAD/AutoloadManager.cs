@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,7 +29,7 @@ public static class AutoloadManager
 #endif
 
     /// <summary>当前 DLL 的完整路径</summary>
-    public static string CurrentDllPath => Assembly.GetExecutingAssembly().Location;
+    public static string CurrentDllPath => PluginRuntimePaths.EntryPath;
 
     /// <summary>
     /// 安装自动加载：仅对当前正在运行的 AutoCAD 写入 LOADER / LOADCTRLS / MANAGED。
@@ -234,7 +234,7 @@ public static class AutoloadManager
         return @"***MENUGROUP=ACADBATCHPLOT
 ***POP1
 **LA_BATCH_PLOT
-ID_LA_BATCH_PLOT [XJG批量打印]
+ID_LA_BATCH_PLOT [出图中心]
 ID_ZBP_ADD_TITLE_BLOCK [新增图框]ZBP_ADD_TITLE_BLOCK
 ID_ZBP_MANAGE_LIBRARY [图框库管理]ZBP_MANAGE_LIBRARY
 ID_ZBP_SHOW_PANEL [批量打印(选图框块)]ZBP_SHOW_PANEL
@@ -242,7 +242,7 @@ ID_ZBP_RECTANGLE_BATCH_PLOT [通用型批量打印]ZBP_RECTANGLE_BATCH_PLOT
 ID_ZBP_SINGLE_PLOT [单张打印]ZBP_SINGLE_PLOT
 [--]
 ID_ZBP_SETTINGS [设置]ZBP_SETTINGS
-ID_ZBP_UNINSTALL_AUTOLOAD [卸载自动加载]ZBP_UNINSTALL_AUTOLOAD
+ID_ZBP_UNINSTALL_AUTOLOAD [卸载]ZBP_UNINSTALL_AUTOLOAD
 ID_ZBP_OPEN_CONFIG [打开配置目录]ZBP_OPEN_CONFIG
 ID_ZBP_RELOAD_MENU [刷新菜单]ZBP_RELOAD_MENU
 ";

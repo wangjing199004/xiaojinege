@@ -52,11 +52,17 @@ public sealed partial class RectangleBatchPlotControl : UserControl
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public PlotJob Job { get; set; } = new();
-        public IReadOnlyList<PaperDetection> Options { get; set; } = new PaperDetection[0];
+        private IReadOnlyList<PaperDetection> _options = new PaperDetection[0];
+        private IReadOnlyList<string>? _paperOptions;
+        public IReadOnlyList<PaperDetection> Options
+        {
+            get => _options;
+            set { _options = value; _paperOptions = null; }
+        }
 
         /// <summary>纸张下拉候选（原 DataGridViewComboBoxCell.DataSource 语义）。</summary>
         public IReadOnlyList<string> PaperOptions =>
-            Options.Select(PaperSizeDetector.FormatOption).ToList();
+            _paperOptions ??= Options.Select(PaperSizeDetector.FormatOption).ToArray();
 
         public bool Selected
         {
@@ -179,9 +185,11 @@ public sealed partial class RectangleBatchPlotControl : UserControl
     }
 
     /// <summary>主面板关闭时调用：取消打印、清理临时红框/序号。</summary>
-    public void Shutdown()
+    internal bool IsBusy => _printCts != null;
+
+    public void Shutdown(bool persistSettings = true)
     {
-        SaveCurrentPlotOptions();
+        if (persistSettings) SaveCurrentPlotOptions();
         _printCts?.Cancel();
         _overlayScheduleGeneration++;
         _overlay.Dispose();
@@ -191,6 +199,54 @@ public sealed partial class RectangleBatchPlotControl : UserControl
     public void Dispose() => Shutdown();
 
     // ── 事件处理（XAML 绑定） ──
+
+    private void ScanOpenDrawings_Click(object sender, RoutedEventArgs e)
+    {
+        using var readProgress = InlineReadProgress.Start(_readProgressPanel, _readProgressBar, _readProgressText);
+        if (_printCts != null) return;
+        var scope = GetSelectedScanScope();
+        var errors = new List<string>();
+        var keys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var added = new List<RectangleFrameScanner.Result>();
+        int scanned = 0;
+        var documents = CadApp.DocumentManager.Cast<Document>().ToArray();
+        foreach (var document in documents)
+        {
+            InlineReadProgress.Report("正在读取已打开图纸：" + document.Name);
+            try
+            {
+                using (document.LockDocument())
+                {
+                    var spaces = OpenDrawingScanSpaces.Keys(document, scope);
+                    var results = RectangleFrameScanner.ScanScope(document, scope,
+                        _settings.PaperMatchToleranceMm, _settings.RecognizeFourLineRectangleFrames,
+                        progress: null, cancellationToken: default,
+                        recognizeTitleByDominantFrameMode: _settings.RecognizeTitleByDominantFrameMode);
+                    TransformResultsToDcs(results, document);
+                    foreach (var result in results) result.Job.StyleSheet = SelectedStyle();
+                    added.AddRange(results);
+                    keys.UnionWith(spaces);
+                    scanned++;
+                }
+            }
+            catch (Exception ex)
+            {
+                errors.Add(document.Name + ": " + ex.Message);
+                CadPickDiagnostics.Log("scan-open-drawings", document.Name + ": " + ex);
+            }
+        }
+        _lastScanScope = null;
+        _scanSelectionIds = null;
+        _suppressSequenceOverlayFromMultiFile = true;
+        ClearSequenceOverlay();
+        MergeRescannedSpaceRows(added, keys);
+        if (added.Count == 0 || errors.Count > 0)
+            MessageBox.Show(Window.GetWindow(this), $"已扫描 {scanned} 个已打开图纸，识别 {added.Count} 张。"
+                + (added.Count == 0 ? "\n请检查扫描范围和图框设置。" : "")
+                + (errors.Count > 0 ? "\n部分图纸扫描失败：\n" + string.Join("\n", errors) : ""),
+                "扫描已打开图纸", MessageBoxButton.OK,
+                errors.Count > 0 ? MessageBoxImage.Warning : MessageBoxImage.Information);
+    }
 
     private void ScanCurrentDrawing_Click(object sender, RoutedEventArgs e) => ScanCurrentDrawing();
 
@@ -302,12 +358,15 @@ public sealed partial class RectangleBatchPlotControl : UserControl
     private void GeneralSettings_Click(object sender, RoutedEventArgs e) => ShowSettingsAtTab(0);
 
     /// <summary>按「目录设置」生成图纸目录表并插入到当前 CAD（直线表格）。</summary>
+#if !CLEAN_EDITION
     private void ExportHpDirectory_Click(object sender, RoutedEventArgs e)
     {
         _grid.CommitEdit(DataGridEditingUnit.Cell, true);
         _grid.CommitEdit(DataGridEditingUnit.Row, true);
         HpDirectoryExportUi.Run(Window.GetWindow(this), _document, _rows.Select(row => row.Job).ToList());
     }
+
+#endif
 
     private void GenerateDirectory_Click(object sender, RoutedEventArgs e)
     {
@@ -373,24 +432,9 @@ public sealed partial class RectangleBatchPlotControl : UserControl
 
         private void Grid_Sorting(object sender, DataGridSortingEventArgs e)
     {
-        // 原列头点击排序（Programmatic SortMode）。模板列在部分宿主下不触发本事件，见 PreviewMouse 兜底。
+        // 使用DataGrid原生列头点击事件；模板列已指定SortMemberPath，避免按下时提前排序打断拖动。
         e.Handled = true;
         ApplyHeaderSort(e.Column);
-    }
-
-    /// <summary>
-    /// 模板列表头点击兜底：WPF DataGridTemplateColumn 有时不触发 Sorting，点「纸张尺寸 / 比例」会无反应。
-    /// </summary>
-    private bool TryHandleColumnHeaderSortClick(DependencyObject? source)
-    {
-        var header = FindAncestor<DataGridColumnHeader>(source);
-        if (header?.Column == null)
-        {
-            return false;
-        }
-
-        ApplyHeaderSort(header.Column);
-        return true;
     }
 
     private void ApplyHeaderSort(DataGridColumn column)
@@ -475,12 +519,6 @@ public sealed partial class RectangleBatchPlotControl : UserControl
         // 列头两侧的拉伸手柄是 Thumb：按下时不能吞掉事件，否则列无法像图框块打印那样拖动调整宽度。
         if (FindAncestor<Thumb>(e.OriginalSource as DependencyObject) != null)
         {
-            return;
-        }
-
-        if (TryHandleColumnHeaderSortClick(e.OriginalSource as DependencyObject))
-        {
-            e.Handled = true;
             return;
         }
 
@@ -594,7 +632,6 @@ public sealed partial class RectangleBatchPlotControl : UserControl
 
         // 对应原 GridCellValueChanged 的 Selected 分支。
         ApplyPrintSelectionToHighlightedRows(row);
-        RemoveUnselectedRows();
         RefreshFileNames();
         RefreshOutputPaths();
         UpdateVisuals();
@@ -607,16 +644,18 @@ public sealed partial class RectangleBatchPlotControl : UserControl
             return;
         }
 
-        if (((ComboBox)sender).DataContext is not Row row)
-        {
-            return;
-        }
+        var combo = (ComboBox)sender;
+        if (!PaperSelectionChange.IsUserSelection(combo, e) || combo.DataContext is not Row row) return;
 
-        // 对应原 GridCellValueChanged 的 PaperChoice 分支。
-        var value = row.PaperChoice;
+        // Template creation/recycling also raises SelectionChanged. Never re-read DWGs for binding initialization.
+        var value = combo.SelectedItem?.ToString() ?? "";
         var option = row.Options.FirstOrDefault(candidate => string.Equals(PaperSizeDetector.FormatOption(candidate), value, StringComparison.Ordinal));
         if (option != null)
         {
+            if (row.Job.PaperName == option.PaperName && row.Job.ScaleText == option.ScaleText
+                && Math.Abs(row.Job.PaperWidthMm - option.PaperWidthMm) < 1e-7
+                && Math.Abs(row.Job.PaperHeightMm - option.PaperHeightMm) < 1e-7
+                && row.Job.DetectedRequiresCustomPaperRegistration == option.RequiresCustomPaper) return;
             ApplyPaper(row.Job, option);
             row.RefreshFromJob();
             RerecognizeIdentitiesAfterPaperChange(new[] { row });
@@ -751,6 +790,9 @@ public sealed partial class RectangleBatchPlotControl : UserControl
     /// <summary>把最终行集合绑定到清单：重算属性命名模式、列可见性，并按位置排序和命名。</summary>
     private void ApplyLoadedRows(List<Row> rows)
     {
+        using var readProgress = InlineReadProgress.Start(_readProgressPanel, _readProgressBar, _readProgressText);
+        var timer = Stopwatch.StartNew();
+        InlineReadProgress.Report($"整理识别结果：{rows.Count} 张…");
         _hasAttributeIdentity = rows.Any(row =>
             !string.IsNullOrWhiteSpace(row.Job.CadDrawingNumber)
             || !string.IsNullOrWhiteSpace(row.Job.CadTitle));
@@ -764,11 +806,21 @@ public sealed partial class RectangleBatchPlotControl : UserControl
             }
         }
 
-        UpdateAttributeIdentityColumns();
-        ReplaceBindingListContents(_rows, rows);
         _viewSortedByHeader = false;
         _sortMemberPath = "";
-        SortRows();
+        InlineReadProgress.Report($"正在排序：{rows.Count} 张…", 1, 1);
+        var sortedRows = SortRectangleRows(rows);
+        long sortMs = timer.ElapsedMilliseconds;
+        ReplaceBindingListContents(_rows, sortedRows);
+        InlineReadProgress.Report("正在计算输出文件名…", 1, 1);
+        RefreshFileNames();
+        long namesMs = timer.ElapsedMilliseconds - sortMs;
+        InlineReadProgress.Report("正在生成分组清单…", 1, 1);
+        UpdateAttributeIdentityColumns();
+        RefreshDisplayRows();
+        UpdateVisuals();
+        InlineReadProgress.Report($"清单已生成：{rows.Count} 张", rows.Count, Math.Max(1, rows.Count));
+        CadPickDiagnostics.Log("rectangle-list-load", $"rows={rows.Count}; sortMs={sortMs}; namesMs={namesMs}; bindMs={timer.ElapsedMilliseconds - sortMs - namesMs}");
     }
 
     private static string PlotJobIdentityKey(PlotJob job) => MultiFileJobMerge.IdentityKey(job);
@@ -953,6 +1005,7 @@ public sealed partial class RectangleBatchPlotControl : UserControl
 
     private void ReloadFrames()
     {
+        using var readProgress = InlineReadProgress.Start(_readProgressPanel, _readProgressBar, _readProgressText);
         _suppressSequenceOverlayFromMultiFile = false;
         try
         {
@@ -1173,6 +1226,7 @@ public sealed partial class RectangleBatchPlotControl : UserControl
     /// <summary>多文件批打核心：枚举空间 → 勾选 → 扫描入清单（文件选择与文件夹选择共用）。</summary>
     private void BeginMultiFileBatch(IReadOnlyList<string> files)
     {
+        using var readProgress = InlineReadProgress.Start(_readProgressPanel, _readProgressBar, _readProgressText);
         if (files == null || files.Count == 0)
         {
             return;
@@ -1236,6 +1290,7 @@ public sealed partial class RectangleBatchPlotControl : UserControl
         foreach (var fileGroup in selected.GroupBy(s => s.FilePath, StringComparer.OrdinalIgnoreCase))
         {
             var file = fileGroup.Key;
+            InlineReadProgress.Report("正在读取：" + Path.GetFileName(file));
             var allowed = new HashSet<string>(
                 fileGroup.Select(s => s.LayoutName),
                 StringComparer.OrdinalIgnoreCase);
@@ -1468,6 +1523,7 @@ public sealed partial class RectangleBatchPlotControl : UserControl
     /// <summary>带进度窗执行范围扫描；用户取消时抛出 <see cref="OperationCanceledException"/>。</summary>
     private List<RectangleFrameScanner.Result> ScanScopeWithProgress(TitleBlockScanScope scope)
     {
+        using var readProgress = InlineReadProgress.Start(_readProgressPanel, _readProgressBar, _readProgressText);
         using var session = RectangleScanProgressSession.Start(Window.GetWindow(this));
         return RectangleFrameScanner.ScanScope(
             _document,
@@ -1482,6 +1538,7 @@ public sealed partial class RectangleBatchPlotControl : UserControl
     /// <summary>带进度窗执行对象选择扫描。</summary>
     private List<RectangleFrameScanner.Result> ScanSelectionWithProgress(IEnumerable<ObjectId> selectedIds)
     {
+        using var readProgress = InlineReadProgress.Start(_readProgressPanel, _readProgressBar, _readProgressText);
         using var session = RectangleScanProgressSession.Start(Window.GetWindow(this));
         return RectangleFrameScanner.ScanSelection(
             _document,
@@ -1493,11 +1550,11 @@ public sealed partial class RectangleBatchPlotControl : UserControl
             _settings.RecognizeTitleByDominantFrameMode);
     }
 
-    private void TransformResultsToDcs(List<RectangleFrameScanner.Result> results)
+    private void TransformResultsToDcs(List<RectangleFrameScanner.Result> results, Document? sourceDocument = null)
     {
         try
         {
-            var wcsToDcs = BatchPlotCommands.BuildWcsToDcsMatrix(_document.Editor);
+            var wcsToDcs = BatchPlotCommands.BuildWcsToDcsMatrix((sourceDocument ?? _document).Editor);
             foreach (var result in results)
             {
                 var job = result.Job;
@@ -1580,7 +1637,8 @@ public sealed partial class RectangleBatchPlotControl : UserControl
         var sourceGroups = rows
             .Select((row, index) => new { Row = row, Index = index })
             .GroupBy(item => GetSourceGroupKey(item.Row.Job.SourceFile), StringComparer.OrdinalIgnoreCase)
-            .OrderBy(group => GetSourceFileSortName(group.Key), NaturalStringComparer.Instance)
+            .OrderByDescending(group => _groupMovePriorities.TryGetValue(group.Key, out var priority) ? priority : 0)
+            .ThenBy(group => GetSourceFileSortName(group.Key), NaturalStringComparer.Instance)
             .ThenBy(group => group.Key, StringComparer.OrdinalIgnoreCase)
             .ThenBy(group => group.Min(item => item.Index));
 
@@ -1791,13 +1849,34 @@ public sealed partial class RectangleBatchPlotControl : UserControl
         return rows;
     }
 
+    private readonly Dictionary<string, long> _groupMovePriorities = new(StringComparer.OrdinalIgnoreCase);
+    private long _nextGroupMovePriority;
+    private void MarkHighlightedPrint_Click(object sender, RoutedEventArgs e)
+    {
+        foreach (var row in HighlightedRows()) row.Selected = true;
+        RefreshFileNames(); RefreshOutputPaths(); UpdateVisuals();
+    }
+    private void MoveToFirst_Click(object sender, RoutedEventArgs e)
+    {
+        var source = SourceFileGrouping.SelectedSource(_grid);
+        if (source != null)
+        {
+            _groupMovePriorities[GetSourceGroupKey(source)] = ++_nextGroupMovePriority;
+            SortRows();
+            return;
+        }
+        var selected = HighlightedRows();
+        var reordered = selected.Concat(_rows.Where(row => !selected.Contains(row))).ToList();
+        ReplaceBindingListContents(_rows, reordered);
+        RefreshDisplayRows(); RefreshFileNames(); RefreshOutputPaths(); UpdateVisuals();
+    }
+
     private void MarkHighlightedNotPrint()
     {
         foreach (var row in HighlightedRows())
         {
             row.Selected = false;
         }
-        RemoveUnselectedRows();
         RefreshFileNames();
         UpdateVisuals();
     }
@@ -2130,22 +2209,6 @@ public sealed partial class RectangleBatchPlotControl : UserControl
         RefreshDisplayRows();
         RefreshFileNames();
         UpdateVisuals();
-    }
-
-    private void RemoveUnselectedRows()
-    {
-        var removed = false;
-        foreach (var row in _rows.Where(row => !row.Selected).ToList())
-        {
-            // 矩形框界面取消“打印”即表示从当前清单移除，避免列表编号和 CAD 红框编号不一致。
-            _rows.Remove(row);
-            removed = true;
-        }
-
-        if (removed)
-        {
-            RefreshDisplayRows();
-        }
     }
 
     private void PrintOrStop()

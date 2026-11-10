@@ -1,0 +1,1 @@
+PASS live document scope keys: model/paper/current/all; unsaved in-memory rectangle detected without disk read or document switching

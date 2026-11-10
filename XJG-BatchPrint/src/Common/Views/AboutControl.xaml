@@ -1,4 +1,4 @@
-<UserControl x:Class="ZwcadBatchPlot.AboutControl"
+﻿<UserControl x:Class="ZwcadBatchPlot.AboutControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              FontFamily="Microsoft YaHei UI" FontSize="11">
@@ -20,7 +20,7 @@
 
         <!-- 标题：字号与主打印页一致，仅加粗区分产品名 -->
         <StackPanel Grid.Row="0" HorizontalAlignment="Center" Margin="0,0,0,10">
-            <TextBlock Text="XJG 批量打印" FontWeight="Bold"
+            <TextBlock Text="XJG出图中心" FontWeight="Bold"
                        Foreground="#FF1A73E8" HorizontalAlignment="Center"/>
             <TextBlock Text="{Binding VersionText}"
                        Foreground="DimGray" HorizontalAlignment="Center" Margin="0,4,0,0"/>

@@ -1,0 +1,8 @@
+﻿PASS updated encrypted template a0-plus: blank title, title assignment, same tag only
+PASS updated encrypted template a1-plus: blank title, title assignment, same tag only
+PASS updated encrypted template a2-plus: blank title, title assignment, same tag only
+PASS: DBText/MText/attribute read; literals and line breaks; only title changed; missing tag rejected; locked duplicate prevents partial changes
+PASS existing definition a0-plus: title-definition synchronized, stable name
+PASS existing definition a1-plus: title-definition synchronized, stable name
+PASS existing definition a2-plus: title-definition synchronized, stable name
+PASS shortcut command TKATITLE present

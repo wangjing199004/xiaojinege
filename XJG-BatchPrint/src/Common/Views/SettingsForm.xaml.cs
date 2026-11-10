@@ -369,6 +369,7 @@ public sealed partial class SettingsControl : UserControl
     private readonly ObservableCollection<DirectoryColumnRow> _directoryRows = new();
     private readonly ShortcutSettingsControl _shortcut;
     private readonly OperationLogControl _logs;
+    private readonly EnvironmentConfigurationControl _environment;
 
     public SettingsControl()
     {
@@ -404,6 +405,10 @@ public sealed partial class SettingsControl : UserControl
         _tabs.Items.Add(new TabItem { Header = "快捷键", Content = _shortcut });
         _logs = new OperationLogControl();
         _tabs.Items.Add(new TabItem { Header = "日志", Content = _logs });
+        _environment = new EnvironmentConfigurationControl();
+        _environment.ExportRequested += () => OnExportEnvironmentClick(this, new RoutedEventArgs());
+        _environment.ImportRequested += () => OnImportEnvironmentClick(this, new RoutedEventArgs());
+        _tabs.Items.Add(new TabItem { Header = "配置管理", Content = _environment });
 
         UpdateFooterHint();
     }
@@ -494,6 +499,7 @@ public sealed partial class SettingsControl : UserControl
             3 => "图框块录入后自动支持任意比例；比例列表只控制通用型批量打印的识别范围。",
             4 => "为常用命令设置简化命令（快捷键）；保存后写入 PGP 文件，需 REINIT 或重启 CAD 生效。",
             5 => "查看操作、框选和预览日志；选中文件后可导出完整日志用于检修。",
+            6 => "按类型导出或导入配置，未勾选的类型不会覆盖；兼容旧配置包。",
             _ => ""
         };
     }
@@ -503,6 +509,52 @@ public sealed partial class SettingsControl : UserControl
     private void OnSaveClick(object sender, RoutedEventArgs e)
     {
         SaveSettings();
+    }
+
+    internal event Action? EnvironmentImported;
+    private bool CanTransferEnvironment()
+    {
+        if (BatchPlotCommands.CanReload) return true;
+        MessageBox.Show("请先完成打印、预览、签名或图纸选择，再导入/导出环境配置。", "环境配置");
+        return false;
+    }
+    private void OnExportEnvironmentClick(object sender, RoutedEventArgs e)
+    {
+        if (!CanTransferEnvironment()) return;
+        var components = _environment.Selected;
+        if (components == EnvironmentComponents.None) { MessageBox.Show("请至少勾选一种配置。", "配置管理"); return; }
+        var settings = AppSettingsStore.Load();
+        if (components.HasFlag(EnvironmentComponents.Settings))
+        {
+            if (!TryReadSettingsFromControls(out settings) || !_shortcut.TryReadAliases(out var aliases)) return;
+            settings.CommandAliases = CommandAliasManager.NormalizeAliases(aliases);
+        }
+        var dialog = new Microsoft.Win32.SaveFileDialog { Filter = "出图中心环境配置 (*.dcenv)|*.dcenv", DefaultExt = ".dcenv", FileName = "出图中心环境_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") };
+        if (dialog.ShowDialog(Window.GetWindow(this)) != true) return;
+        try
+        {
+            var missing = EnvironmentTransfer.Export(dialog.FileName, settings, components);
+            MessageBox.Show("已导出勾选的配置类型。" + (missing.Count == 0 ? "" : "\n以下人员未找到笔迹，已保留姓名配置：" + string.Join("、", missing)), "环境配置");
+        }
+        catch (Exception ex) { MessageBox.Show("导出未完成：" + ex.Message, "环境配置", MessageBoxButton.OK, MessageBoxImage.Error); }
+    }
+    private void OnImportEnvironmentClick(object sender, RoutedEventArgs e)
+    {
+        if (!CanTransferEnvironment()) return;
+        var selected = _environment.Selected;
+        if (selected == EnvironmentComponents.None) { MessageBox.Show("请至少勾选一种配置。", "配置管理"); return; }
+        var dialog = new Microsoft.Win32.OpenFileDialog { Filter = "支持的配置 (*.dcenv;*.json;*.cspkg)|*.dcenv;*.json;*.cspkg|环境配置 (*.dcenv)|*.dcenv|旧图框库 (*.json)|*.json|旧人员设置 (*.cspkg)|*.cspkg", CheckFileExists = true };
+        if (dialog.ShowDialog(Window.GetWindow(this)) != true) return;
+        if (MessageBox.Show("仅导入勾选且配置包中包含的类型，其他类型保持不变；并重建面板，清空扫描/待处理文件列表、未保存的属性与图框库编辑。导入前会自动备份，是否继续？", "导入环境配置", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
+        try
+        {
+            var settings = EnvironmentTransfer.Import(dialog.FileName, out var backup, selected);
+            Apply(settings); _shortcut.SetAliases(settings.CommandAliases); SettingsChanged = true;
+            var applied = CommandAliasManager.Apply(settings.CommandAliases, out var aliasMessage);
+            MessageBox.Show("环境配置已导入。\n导入前备份：" + backup + "\n" + aliasMessage, "环境配置", MessageBoxButton.OK, applied ? MessageBoxImage.Information : MessageBoxImage.Warning);
+            EnvironmentImported?.Invoke();
+        }
+        catch (Exception ex) { MessageBox.Show("导入未完成：" + ex.Message, "环境配置", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
     private void OnResetClick(object sender, RoutedEventArgs e)
@@ -1392,7 +1444,18 @@ public sealed partial class SettingsControl : UserControl
 
     private void ResetDefaults()
     {
-        Apply(AppSettingsStore.Default());
+        if (!CanTransferEnvironment()) return;
+        if (MessageBox.Show("恢复到初始安装后的配置状态？\n\n将重置全部设置和快捷键，清空图框库及图幅/封面标定，人员恢复张三、李四、王五等默认名单并清空签名素材。临时扫描列表及未保存的面板编辑也会清空。\n\n恢复前自动备份当前环境；图纸文件、安装注册、检修日志和历史备份保留。", "恢复默认", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
+        try
+        {
+            var settings = EnvironmentTransfer.ResetToFactory(out var backup);
+            Apply(settings); _shortcut.SetAliases(settings.CommandAliases); SettingsChanged = true;
+            var applied = CommandAliasManager.Apply(settings.CommandAliases, out var aliasMessage);
+            MessageBox.Show("已恢复初始配置状态。\n恢复前备份：" + backup + "\n可在配置管理中导入此备份撤销恢复。\n" + aliasMessage,
+                "恢复默认", MessageBoxButton.OK, applied ? MessageBoxImage.Information : MessageBoxImage.Warning);
+            EnvironmentImported?.Invoke();
+        }
+        catch (Exception ex) { MessageBox.Show("恢复默认未完成：" + ex.Message, "恢复默认", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
 }

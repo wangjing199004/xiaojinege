@@ -1,0 +1,3 @@
+PASS 50,000 cached texts / 300 queries: exact output parity with original extraction, including rotation, mirror, alignment, bounds, priority and text order
+Original queries ms=934; indexed queries including index build ms=40
+PASS geometry-only scan: same corners as full scan for 8 rotated/scaled frames; subsequent full scan still reads TITLE correctly

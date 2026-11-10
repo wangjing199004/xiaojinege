@@ -4,7 +4,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 
 namespace ZwcadBatchPlot;
@@ -20,6 +24,31 @@ internal sealed class SourceFileGrouping : IValueConverter
         var view = new ListCollectionView(rows);
         view.GroupDescriptions.Add(new PropertyGroupDescription(sourceProperty, grouping));
         grid.ItemsSource = view;
+        grid.PreviewMouseDown += (_, e) =>
+        {
+            if (e.ChangedButton != MouseButton.Left && e.ChangedButton != MouseButton.Right) return;
+            var node = e.OriginalSource as DependencyObject;
+            while (node != null)
+            {
+                if (node is DataGridRow) { grid.ClearValue(SelectedSourceProperty); return; }
+                if (node is ToggleButton) return; // +/- never changes selection.
+                if (node is GroupItem item && item.DataContext is CollectionViewGroup group)
+                {
+                    if (!grid.CommitEdit(DataGridEditingUnit.Cell, true) || !grid.CommitEdit(DataGridEditingUnit.Row, true)) return;
+                    grid.SelectedItems.Clear();
+                    foreach (var row in group.Items) grid.SelectedItems.Add(row);
+                    if (group.Items.Count > 0) grid.CurrentCell = new DataGridCellInfo(group.Items[0], grid.Columns[0]);
+                    var fileGroup = (FileGroup)group.Name;
+                    grid.SetValue(SelectedSourceProperty, fileGroup.FullPath);
+                    if (e.ChangedButton == MouseButton.Left && e.ClickCount == 2)
+                        fileGroup.IsExpanded = !fileGroup.IsExpanded;
+                    grid.Focus();
+                    e.Handled = e.ChangedButton == MouseButton.Left;
+                    return;
+                }
+                node = node is Visual ? VisualTreeHelper.GetParent(node) : LogicalTreeHelper.GetParent(node);
+            }
+        };
         if (rows is IBindingList bindingList)
         {
             bindingList.ListChanged += (_, e) =>
@@ -32,6 +61,10 @@ internal sealed class SourceFileGrouping : IValueConverter
             };
         }
     }
+
+    private static readonly DependencyProperty SelectedSourceProperty = DependencyProperty.RegisterAttached(
+        "SelectedSource", typeof(string), typeof(SourceFileGrouping), new PropertyMetadata(null));
+    internal static string? SelectedSource(DataGrid grid) => grid.GetValue(SelectedSourceProperty) as string;
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {

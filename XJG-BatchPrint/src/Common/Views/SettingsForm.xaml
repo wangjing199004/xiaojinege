@@ -458,6 +458,7 @@
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Content="恢复默认" MinWidth="96" Margin="0,0,6,0"
+                    ToolTip="恢复初始安装配置：设置、快捷键、图框库、标定、人员及签名素材；恢复前自动备份。"
                     Style="{StaticResource PluginButtonStyle}" Click="OnResetClick" />
             <Button Content="保存" MinWidth="82"
                     Style="{StaticResource PluginButtonStyle}" Click="OnSaveClick" />

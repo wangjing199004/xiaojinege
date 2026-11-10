@@ -49,12 +49,17 @@
                         ToolTip="把当前矩形框清单（图号/图名/图幅/比例/纸张等）导出为 CSV 文件。" />
             </StackPanel>
             <CheckBox x:Name="_recognizeByModeCheck" Grid.Column="2"
-                      Content="按已录入图框最多的模式智能识别图名图号"
+                      Content="按图框库匹配位置识别图名图号"
                       VerticalAlignment="Center"
                       Checked="RecognizeByMode_Changed"
                       Unchecked="RecognizeByMode_Changed"
-                      ToolTip="用图框库里数量最多的那种模式，按本张图的实际比例，把图名、图号矩形放到图纸右下角去取字。字必须和这张图在同一模型空间或同一布局。勾选后从下次扫描生效；勾选期间改纸张会按新图幅短边再取一次图名图号。" />
+                      ToolTip="只读取与图框库已匹配图框对应的图名、图号区域；未匹配的图框跳过取字，保留打印列表，不套用其他图框模式或属性回退。" />
         </Grid>
+
+        <StackPanel x:Name="_readProgressPanel" DockPanel.Dock="Bottom" Visibility="Collapsed" Margin="8,3,8,4">
+            <TextBlock x:Name="_readProgressText" TextTrimming="CharacterEllipsis" Margin="0,0,0,3" />
+            <ProgressBar x:Name="_readProgressBar" Height="8" Minimum="0" Maximum="100" />
+        </StackPanel>
 
         <!-- 顶部操作区：动作行 / 输出行 / 选项行 -->
         <StackPanel DockPanel.Dock="Top" Margin="10,4,10,2">
@@ -68,6 +73,10 @@
                         Style="{StaticResource PluginButtonStyle}" Margin="0,0,3,0"
                         Click="ScanSelectedObjects_Click"
                         ToolTip="回到 CAD 选择对象（可点选或框选）；未拾取时右键可选扫描范围。" />
+                <Button x:Name="_scanOpenDrawingsButton" Content="扫描已打开图纸" MinWidth="132"
+                        Style="{StaticResource PluginButtonStyle}" Margin="0,0,3,0"
+                        Click="ScanOpenDrawings_Click"
+                        ToolTip="按扫描范围读取 CAD 中所有已打开图纸的当前内容，按文件分组加入清单。" />
                 <Button x:Name="_addFilesBtn" Content="多文件批打" MinWidth="108"
                         Style="{StaticResource PluginButtonStyle}" Margin="0,0,3,0"
                         Click="AddDwgFiles_Click"
@@ -198,14 +207,14 @@
                 </Style>
             </DataGrid.RowStyle>
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="编号" Width="52" IsReadOnly="True" SortMemberPath="Number" CanUserSort="True">
+                <DataGridTemplateColumn Header="编号" Width="52" MinWidth="52" IsReadOnly="True" SortMemberPath="Number" CanUserSort="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Number}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="预览" Width="62" SortMemberPath="Number" CanUserSort="True">
+                <DataGridTemplateColumn Header="预览" Width="64" MinWidth="64" SortMemberPath="Number" CanUserSort="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Content="预览" Padding="6,0" MinHeight="20"
@@ -213,7 +222,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="打印" Width="62" SortMemberPath="Selected" CanUserSort="True">
+                <DataGridTemplateColumn Header="打印" Width="58" MinWidth="58" SortMemberPath="Selected" CanUserSort="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -233,9 +242,9 @@
                                     SortMemberPath="Title"
                                     Visibility="Collapsed" />
                 <DataGridTextColumn Header="文件名" Binding="{Binding FileName}"
-                                    Width="*" MinWidth="170" IsReadOnly="True"
+                                    Width="220" MinWidth="170" IsReadOnly="True"
                                     SortMemberPath="FileName" />
-                <DataGridTemplateColumn Header="纸张尺寸 / 比例" Width="*" MinWidth="200" SortMemberPath="PaperChoice" CanUserSort="True">
+                <DataGridTemplateColumn Header="纸张尺寸 / 比例" Width="260" MinWidth="200" SortMemberPath="PaperChoice" CanUserSort="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <ComboBox ItemsSource="{Binding PaperOptions}"
@@ -250,6 +259,8 @@
                 <ContextMenu>
                     <MenuItem x:Name="_changePaperItem" Header="批量修改纸张..." Click="BatchChangePaper_Click" />
                     <Separator />
+                    <MenuItem Header="移到第一个" Click="MoveToFirst_Click" />
+                    <MenuItem Header="打印" Click="MarkHighlightedPrint_Click" />
                     <MenuItem x:Name="_markNotPrintItem" Header="不打印" Click="MarkNotPrint_Click" />
                     <MenuItem x:Name="_deleteItem" Header="删除" Click="DeleteHighlighted_Click" />
                 </ContextMenu>

@@ -1,0 +1,4 @@
+﻿PASS missing personnel configuration rejected before printing
+PASS missing calibration rejected
+PASS selected arbitrary-name frame signed; unselected frame untouched; actual signed PDF engine output inside rollback scope; success and cancellation rollback; original bytes and unsaved edits preserved
+PASS unsupported frame calibration stops file and rolls back partial signatures

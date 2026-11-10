@@ -4,6 +4,8 @@
     <UseWPF>true</UseWPF><Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../../src/Common/Views/PaperSelectionChange.cs" Link="PaperSelectionChange.cs" />
+    <Compile Include="../../src/Common/Infrastructure/InlineReadProgress.cs" Link="InlineReadProgress.cs" />
     <Compile Include="../../src/Common/Views/SourceFileGrouping.cs" Link="SourceFileGrouping.cs" />
     <Compile Include="../../src/Common/Models/SharedPrintOptions.cs" Link="SharedPrintOptions.cs" />
     <None Include="../../src/Common/Views/WpfUi.xaml" Link="WpfUi.xaml" CopyToOutputDirectory="Always" />

@@ -1,0 +1,2 @@
+﻿PASS ordinary native table: title body middle-left, horizontal margin equals text height
+PASS ordinary line/text table: title left aligned, inset equals one text height

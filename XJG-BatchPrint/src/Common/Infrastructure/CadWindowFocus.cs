@@ -1,3 +1,12 @@
+﻿#if AUTOCAD
+#if ACAD_CORE
+using CadApp = Autodesk.AutoCAD.ApplicationServices.Core.Application;
+#else
+using CadApp = Autodesk.AutoCAD.ApplicationServices.Application;
+#endif
+#else
+using CadApp = ZwSoft.ZwCAD.ApplicationServices.Application;
+#endif
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -97,6 +106,18 @@ internal static class CadWindowFocus
         try
         {
             var pid = (uint)Process.GetCurrentProcess().Id;
+            // 优先使用宿主提供的主框架句柄，不能把插件窗或旧文件夹当成取点目标。
+            try
+            {
+                var host = typeof(CadApp).GetProperty("MainWindow")?.GetValue(null, null);
+                var handleValue = host?.GetType().GetProperty("Handle")?.GetValue(host, null);
+                if (handleValue is IntPtr handle && handle != IntPtr.Zero)
+                {
+                    GetWindowThreadProcessId(handle, out var hostPid);
+                    if (hostPid == pid && (IsWindowVisible(handle) || IsIconic(handle))) return handle;
+                }
+            }
+            catch { } // 旧宿主无公开主框架接口时继续按窗口类名查找。
             var anyVisible = IntPtr.Zero;
 
             EnumWindows(

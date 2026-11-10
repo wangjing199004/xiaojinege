@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Windows;
 #if AUTOCAD
 using Autodesk.AutoCAD.ApplicationServices;
@@ -23,6 +23,7 @@ internal static class PendingLibraryInput
         internal Window Window = null!;
         internal Action Action = null!;
         internal Action? AfterRestore;
+        internal Action? OnFinished;
         internal string CommandName = "";
         internal bool Completed;
 
@@ -31,7 +32,8 @@ internal static class PendingLibraryInput
             if (Completed) return;
             Completed = true;
             CadApp.DocumentManager.DocumentToBeDestroyed -= OnDocumentClosing;
-            CadWindowFocus.RestoreDialog(Window);
+            try { CadWindowFocus.RestoreDialog(Window); }
+            finally { OnFinished?.Invoke(); }
         }
 
         internal void OnDocumentClosing(object? sender, DocumentCollectionEventArgs e)
@@ -44,6 +46,8 @@ internal static class PendingLibraryInput
     }
 
     private static Request? _pending;
+    private static bool _executing;
+    internal static bool IsPending => _pending != null || _executing;
 
     internal static void QueuePanel(Window? window, Document document, string operation,
         Action action, Action? afterRestore = null)
@@ -71,7 +75,7 @@ internal static class PendingLibraryInput
     }
 
     internal static void Queue(Window window, Action action, Action? afterRestore = null,
-        Document? expectedDocument = null, string commandName = "ZBP_LIBRARY_INPUT")
+        Document? expectedDocument = null, string commandName = "ZBP_LIBRARY_INPUT", Action? onFinished = null)
     {
         if (_pending != null) throw new InvalidOperationException("已有图框取点请求等待执行。");
         var document = CadApp.DocumentManager.MdiActiveDocument
@@ -79,13 +83,18 @@ internal static class PendingLibraryInput
         if (expectedDocument != null && !ReferenceEquals(document, expectedDocument))
             throw new InvalidOperationException("当前图纸与面板绑定的图纸不同，请切回原图纸后重试。");
         var request = new Request { Document = document, Window = window, Action = action,
-            AfterRestore = afterRestore, CommandName = commandName };
+            AfterRestore = afterRestore, CommandName = commandName, OnFinished = onFinished };
         _pending = request;
         try
         {
             CadApp.DocumentManager.DocumentToBeDestroyed += request.OnDocumentClosing;
             // 不 DoEvents、不在按钮事件内 GetPoint，返回宿主后由正常命令循环接管。
+            // 隐藏面板前后均把前台交给CAD，避免Windows激活上一次的资源管理器窗口。
+            // 不调用DoEvents，取点仍完全由下面投递的原生命令接管。
+            CadWindowFocus.ActivateCadWindow();
             window.Hide();
+            CadWindowFocus.ActivateCadWindow();
+            document.Window.Focus();
             CadPickDiagnostics.Log("command-context", "QUEUE " + commandName + " document=" + document.Name);
             document.SendStringToExecute(commandName + " ", true, false, false);
         }
@@ -103,10 +112,13 @@ internal static class PendingLibraryInput
         if (request == null || request.CommandName != commandName) return;
         _pending = null;
         var succeeded = false;
+        _executing = true;
         try
         {
             if (!ReferenceEquals(CadApp.DocumentManager.MdiActiveDocument, request.Document))
                 throw new InvalidOperationException("当前图纸已改变，请重新发起图框录入。");
+            CadWindowFocus.ActivateCadWindow();
+            request.Document.Window.Focus();
             CadPickDiagnostics.Dump("document-command-enter:" + commandName);
             request.Action();
             succeeded = true;
@@ -119,6 +131,7 @@ internal static class PendingLibraryInput
         finally
         {
             CadPickDiagnostics.Log("command-context", "END " + commandName);
+            _executing = false;
             request.Finish();
         }
         if (succeeded && request.AfterRestore != null)

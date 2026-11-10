@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 #if AUTOCAD
@@ -132,7 +132,7 @@ public static class DirectoryTableGenerator
                     // 1. 通过 \W{factor}; 格式化标签强制应用宽度因子
                     cell.TextString = FormatTextWithWidthFactor(rawText, widthFactor);
                     cell.TextHeight = textHeight;
-                    cell.Alignment = column.Centered ? CellAlignment.MiddleCenter : CellAlignment.MiddleLeft;
+                    cell.Alignment = column.Key == "Title" || !column.Centered ? CellAlignment.MiddleLeft : CellAlignment.MiddleCenter;
                     if (!textStyleId.IsNull)
                     {
                         cell.TextStyleId = textStyleId;
@@ -182,12 +182,24 @@ public static class DirectoryTableGenerator
             catch { }
 #pragma warning restore 0618
 
+            // 旧版整体边距属性会被部分表格样式忽略，对图名正文逐单元格写入。
+            // 保留2015与中望共同提供的API。
+#pragma warning disable 0618
+            for (var row = headerRows; row < totalRows; row++)
+                for (var col = 0; col < totalCols; col++)
+                    if (columns[col].Key == "Title")
+                    {
+                        tb.SetMargin(row, col, CellMargins.Left, textHeight);
+                        tb.SetMargin(row, col, CellMargins.Right, textHeight);
+                    }
+
+#pragma warning restore 0618
             // 左右安全 padding（单元格边距外再保留适度余量，防止贴线）
             double absoluteColPadding = textHeight * 1.5;
 
             for (var c = 0; c < totalCols; c++)
             {
-                double autoFitWidth = maxColWidths[c] + absoluteColPadding;
+                double autoFitWidth = maxColWidths[c] + Math.Max(absoluteColPadding, textHeight * 2);
                 // 若设置中有预设列宽，则取预设值与文字自适应所需宽度的较大者，保证装得下
                 double configuredWidth = columns[c].Width;
                 tb.Columns[c].Width = Math.Max(configuredWidth, autoFitWidth);
@@ -287,7 +299,7 @@ public static class DirectoryTableGenerator
         var absoluteColPadding = textHeight * 1.5;
         for (var c = 0; c < totalCols; c++)
         {
-            colWidths[c] = Math.Max(columns[c].Width, maxColWidths[c] + absoluteColPadding);
+            colWidths[c] = Math.Max(columns[c].Width, maxColWidths[c] + Math.Max(absoluteColPadding, textHeight * 2));
             xs[c + 1] = xs[c] + colWidths[c];
         }
 
@@ -333,11 +345,11 @@ public static class DirectoryTableGenerator
                     TextString = text,
                     Height = textHeight,
                     WidthFactor = widthFactor,
-                    HorizontalMode = columns[c].Centered ? TextHorizontalMode.TextCenter : TextHorizontalMode.TextLeft,
+                    HorizontalMode = (columns[c].Key != "Title" || (settings.DirectoryDrawHeader && r == 0)) && columns[c].Centered ? TextHorizontalMode.TextCenter : TextHorizontalMode.TextLeft,
                     VerticalMode = TextVerticalMode.TextVerticalMid,
-                    AlignmentPoint = columns[c].Centered
+                    AlignmentPoint = (columns[c].Key != "Title" || (settings.DirectoryDrawHeader && r == 0)) && columns[c].Centered
                         ? new Point3d(centerX, centerY, 0)
-                        : new Point3d(cellLeft + textHeight * 0.2, centerY, 0)
+                        : new Point3d(cellLeft + textHeight, centerY, 0)
                 };
                 ApplyDirectoryEntityProps(dbText, color, layerName);
                 if (!textStyleId.IsNull)

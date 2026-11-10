@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Reflection;
 #if ZWCAD
 using CadApp = ZwSoft.ZwCAD.ApplicationServices.Application;
@@ -21,7 +21,7 @@ public static class CadMenuInstaller
     /// 批打印菜单名称。CAD 宿主在同一菜单组中不允许同名弹出菜单，
     /// 链式动态加载或重复 NETLOAD 时直接 Add 同名菜单会触发 COM 异常。
     /// </summary>
-    private const string MenuName = "XJG批量打印";
+    private const string MenuName = "出图中心";
 #if ZWCAD
     private const string PreferredMenuGroupName = "ZWCAD";
 #else
@@ -76,6 +76,13 @@ public static class CadMenuInstaller
                 return;
             }
 
+            // 旧标题可能已保存到 CAD 菜单组，更新时一并移除，避免重复入口。
+            var legacyMenu = TryInvoke(menus, "Item", "XJG批量打印");
+            if (legacyMenu != null)
+            {
+                TryInvoke(legacyMenu, "RemoveFromMenuBar");
+                TryInvoke(legacyMenu, "Delete");
+            }
             var menu = GetOrCreateMenu(menus);
             if (menu == null)
             {
@@ -99,6 +106,9 @@ public static class CadMenuInstaller
                 TryInvoke(first, "Delete");
             }
 
+            AddMenuItem(menu, "属性图框", "TKATTR");
+            AddMenuItem(menu, "图框签名", "TKASIGN");
+            AddSeparator(menu);
             // 打印功能菜单项（与主面板各 Tab 一一对应）
             AddMenuItem(menu, "图框块打印", "ZBP_SHOW_PANEL");
             AddMenuItem(menu, "通用型批量打印", "ZBP_RECTANGLE_BATCH_PLOT");
@@ -106,8 +116,7 @@ public static class CadMenuInstaller
             AddMenuItem(menu, "图框库管理", "ZBP_MANAGE_LIBRARY");
             AddSeparator(menu);
             // 工具类菜单项
-            AddMenuItem(menu, "安装自动加载", "ZBP_INSTALL_AUTOLOAD");
-            AddMenuItem(menu, "卸载自动加载", "ZBP_UNINSTALL_AUTOLOAD");
+            AddMenuItem(menu, "卸载", "ZBP_UNINSTALL_AUTOLOAD");
             //AddMenuItem(menu, "打开配置目录", "ZBP_OPEN_CONFIG");
             AddMenuItem(menu, "关于", "ZBP_ABOUT");
 

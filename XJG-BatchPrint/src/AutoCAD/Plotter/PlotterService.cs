@@ -148,6 +148,7 @@ public static partial class PlotterService
                 }
                 catch (Exception ex)
                 {
+                    if (ex is SignedPlotRestoreException) throw;
                     foreach (var job in groupJobs.Where(job => !results.Any(x => ReferenceEquals(x.Job, job))))
                     {
                         results.Add(new PlotJobResult { Job = job, Error = ex });
@@ -247,6 +248,7 @@ public static partial class PlotterService
         List<PlotJobResult> results,
         CancellationToken cancellationToken)
     {
+        using var signing = TemporarySignedPlotScope.Begin(doc, jobs);
         // 同一模型或同一布局只激活并重生成一次；图框窗口仍用批打已准备好的数据。
         string? lastSpaceKey = null;
         foreach (var job in jobs)

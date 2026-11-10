@@ -1,0 +1,2 @@
+PASS: byte-loaded WPF BAML, nested control and viewmodel use AcadBatchPlot.Runtime.r20261023075450556
+PASS: byte-loaded WPF BAML, nested control and viewmodel use AcadBatchPlot.Runtime.r20261023074231769

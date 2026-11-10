@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+ <PropertyGroup><TargetFramework>net8.0-windows</TargetFramework><EnableDefaultCompileItems>false</EnableDefaultCompileItems><AssemblyName>StartupProbe.Core</AssemblyName></PropertyGroup>
+ <ItemGroup><Compile Include="StartupProbe.cs"/><PackageReference Include="AutoCAD.NET.Core" Version="25.0.0" ExcludeAssets="runtime" PrivateAssets="all"/></ItemGroup>
+</Project>

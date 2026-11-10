@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -78,6 +78,7 @@ public sealed class PlotJob
 {
     public bool Selected { get; set; } = true;
     public bool IsManualWindow { get; set; }
+    public bool SignBeforePlot { get; set; }
     public string SourceFile { get; set; } = "";
     public string OutputFileName => Path.GetFileName(OutputPath);
     /// <summary>

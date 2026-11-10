@@ -1,0 +1,13 @@
+CHECK FrameCalibEditor at 1x
+CHECK PeopleEditor at 1x
+CHECK SignaturePicker at 1x
+CHECK SignaturePanel at 1x
+CHECK FrameCalibEditor at 1.5x
+CHECK PeopleEditor at 1.5x
+CHECK SignaturePicker at 1.5x
+CHECK SignaturePanel at 1.5x
+CHECK FrameCalibEditor at 2x
+CHECK PeopleEditor at 2x
+CHECK SignaturePicker at 2x
+CHECK SignaturePanel at 2x
+PASS all horizontal button rows align

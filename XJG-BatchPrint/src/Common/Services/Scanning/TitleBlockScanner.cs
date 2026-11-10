@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,6 +17,31 @@ namespace ZwcadBatchPlot;
 
 public static class TitleBlockScanner
 {
+    [ThreadStatic] private static bool _identityOnly;
+    internal static List<PlotJob> ScanMatchedIdentities(Database database, TitleBlockLibrary library, ISet<string> allowed)
+    {
+        var previous = _identityOnly;
+        try
+        {
+            _identityOnly = true;
+            return Scan(database, library, database.Filename ?? "", null, TitleBlockScanScope.AllSpaces,
+                null, null, null, allowed);
+        }
+        finally { _identityOnly = previous; }
+    }
+    [ThreadStatic] private static bool _geometryOnly;
+    internal static List<PlotJob> ScanFrameGeometry(Database database, TitleBlockLibrary library, ISet<string> allowed)
+    {
+        var previous = _geometryOnly;
+        try
+        {
+            _geometryOnly = true;
+            return Scan(database, library, database.Filename ?? "", null, TitleBlockScanScope.AllSpaces,
+                null, null, null, allowed);
+        }
+        finally { _geometryOnly = previous; }
+    }
+
     public static List<PlotJob> Scan(Document doc, TitleBlockLibrary library)
     {
         var sourceName = string.IsNullOrWhiteSpace(doc.Database.Filename)
@@ -220,7 +245,8 @@ public static class TitleBlockScanner
             CadTextExtractor.OwnerTextCache? ownerTextCache = null;
             try
             {
-                ownerTextCache = CadTextExtractor.BuildOwnerTextCache(tr, owner, libraryIndex.NameParts);
+                InlineReadProgress.Report("正在建立图框文字缓存：" + spaceName);
+                if (!_geometryOnly) ownerTextCache = CadTextExtractor.BuildOwnerTextCache(tr, owner, libraryIndex.NameParts);
             }
             catch (Exception ex)
             {
@@ -435,6 +461,8 @@ public static class TitleBlockScanner
         // 计算打印区域的 4 个实际 WCS 角点（含 BlockTransform 的缩放和旋转）
         // 不取包围盒，和矩形框扫描的 CornerPoints 同理：4 角 × WCS→DCS 只取一次包围盒
         var wcsCorners = ComputeWcsCorners(coordinateMode, referenceFrame, effectiveBlockTransform);
+        if (_geometryOnly) return new PlotJob { CornerPoints = wcsCorners, SourceFile = sourceName,
+            SpaceName = spaceName, BlockHandle = blockRef.Handle.ToString() };
         var coordinateBounds = layout.ModelType && modelCoordinateContext != null
             ? modelCoordinateContext.TransformWorldPointsToBounds(wcsCorners)
             : null;
@@ -494,15 +522,15 @@ public static class TitleBlockScanner
             var blockTextCache = CadTextExtractor.BuildBlockReferenceTextCache(tr, blockRef);
             title = CadTextExtractor.ExtractRegionText(tr, blockRef, owner, titleRegion, ownerTextCache, blockTextCache);
             number = CadTextExtractor.ExtractRegionText(tr, blockRef, owner, numberRegion, ownerTextCache, blockTextCache);
-            if (dateRegion.HasArea())
+            if (!_identityOnly && dateRegion.HasArea())
                 date = CadTextExtractor.ExtractRegionText(tr, blockRef, owner, dateRegion, ownerTextCache, blockTextCache);
-            if (revisionRegion.HasArea())
+            if (!_identityOnly && revisionRegion.HasArea())
                 revision = CadTextExtractor.ExtractRegionText(tr, blockRef, owner, revisionRegion, ownerTextCache, blockTextCache);
-            if (phaseRegion.HasArea())
+            if (!_identityOnly && phaseRegion.HasArea())
                 phase = CadTextExtractor.ExtractRegionText(tr, blockRef, owner, phaseRegion, ownerTextCache, blockTextCache);
-            if (info1Region.HasArea())
+            if (!_identityOnly && info1Region.HasArea())
                 info1 = CadTextExtractor.ExtractRegionText(tr, blockRef, owner, info1Region, ownerTextCache, blockTextCache);
-            if (info2Region.HasArea())
+            if (!_identityOnly && info2Region.HasArea())
                 info2 = CadTextExtractor.ExtractRegionText(tr, blockRef, owner, info2Region, ownerTextCache, blockTextCache);
         }
         catch (Exception ex)
@@ -719,15 +747,18 @@ public static class TitleBlockScanner
             CadTextExtractor.OwnerTextCache? ownerTextCache = null;
             try
             {
-                ownerTextCache = CadTextExtractor.BuildOwnerTextCache(tr, owner, libraryIndex.NameParts);
+                InlineReadProgress.Report("正在建立图框文字缓存：" + spaceName);
+                if (!_geometryOnly) ownerTextCache = CadTextExtractor.BuildOwnerTextCache(tr, owner, libraryIndex.NameParts);
             }
             catch (Exception ex)
             {
                 warnings.Add($"布局={spaceName} 文字缓存建立失败，将继续逐个扫描图框: {ex.Message}");
             }
 
+            int readIndex = 0;
             foreach (var blockRef in pair.Value)
             {
+                InlineReadProgress.Report($"{spaceName}：正在读取图框 {++readIndex} / {pair.Value.Count}", readIndex, pair.Value.Count);
                 var job = TryCreateJobFromBlockReference(
                     tr,
                     blockRef,

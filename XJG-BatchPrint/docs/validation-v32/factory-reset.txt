@@ -1,0 +1,3 @@
+PASS selective export/import: settings/library/calibration/signatures isolated; unselected values and assets preserved; v30 full package, JSON and CSPKG import supported
+PASS full factory reset: default settings/aliases/personnel, empty library/calibration/signatures, recoverable pre-reset backup
+PASS: full export/import between isolated devices; settings/library/aliases/calibration/signature bytes; absolute signature path portability; encrypted package; original backup; tamper/path/locked-file rejection; no live user files modified

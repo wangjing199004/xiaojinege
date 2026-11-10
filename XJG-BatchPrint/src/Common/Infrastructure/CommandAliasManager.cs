@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,6 +25,7 @@ internal static class CommandAliasManager
     /// <summary>可设置快捷键的命令，与菜单栏主要功能一一对应；顺序即设置界面和 PGP 中的排列顺序。</summary>
     internal static readonly IReadOnlyList<AliasableCommand> AliasableCommands = new[]
     {
+        new AliasableCommand("一键图名", "TKATITLE"),
         new AliasableCommand("新增图框", "ZBP_ADD_TITLE_BLOCK"),
         new AliasableCommand("图框库管理", "ZBP_MANAGE_LIBRARY"),
         new AliasableCommand("图框块打印", "ZBP_SHOW_PANEL"),

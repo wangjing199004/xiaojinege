@@ -1,4 +1,4 @@
-#if ACAD_CORE
+﻿#if ACAD_CORE
 using System;
 using System.IO;
 using System.Reflection;
@@ -36,6 +36,14 @@ internal static class PluginAssemblyResolver
         AppDomain.CurrentDomain.AssemblyResolve += OnAppDomainResolve;
     }
 
+    internal static void Unregister()
+    {
+        if (Interlocked.Exchange(ref _registered, 0) == 0) return;
+        var context = AssemblyLoadContext.GetLoadContext(typeof(PluginAssemblyResolver).Assembly) ?? AssemblyLoadContext.Default;
+        context.Resolving -= OnResolving;
+        AppDomain.CurrentDomain.AssemblyResolve -= OnAppDomainResolve;
+    }
+
     /// <summary>AppDomain 回退解析。</summary>
     private static Assembly? OnAppDomainResolve(object? sender, ResolveEventArgs args)
     {
@@ -66,7 +74,7 @@ internal static class PluginAssemblyResolver
             return null;
         }
 
-        var dir = Path.GetDirectoryName(typeof(PluginAssemblyResolver).Assembly.Location);
+        var dir = PluginRuntimePaths.BaseDirectory;
         if (!string.IsNullOrWhiteSpace(dir))
         {
             var path = Path.Combine(dir, simpleName + ".dll");

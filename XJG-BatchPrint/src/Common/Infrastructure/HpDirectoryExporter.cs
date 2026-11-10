@@ -130,7 +130,7 @@ internal static class HpDirectoryExporter
                     if (row == null) continue;
                     // 本模板五列宽度固定为 2000/2000/11100/2000/2000；以序号列中心校准半单位差异。
                     AddText(tr, db, model, frame.BlockTransform, marker, x + 2000, y, 1800, row.DrawingNumber);
-                    AddText(tr, db, model, frame.BlockTransform, marker, x + 8550, y, 10900, row.Title);
+                    AddText(tr, db, model, frame.BlockTransform, marker, x + 3000 + marker.Height, y, 11100 - 2 * marker.Height, row.Title, leftAligned: true);
                     AddText(tr, db, model, frame.BlockTransform, marker, x + 15100, y, 1800,
                         string.IsNullOrWhiteSpace(row.PaperName) ? row.SizeText : row.PaperName);
                     AddText(tr, db, model, frame.BlockTransform, marker, x + 17100, y, 1800, row.Revision);
@@ -160,7 +160,7 @@ internal static class HpDirectoryExporter
     }
 
     private static void AddText(Transaction tr, Database db, BlockTableRecord model, Matrix3d frameTransform,
-        DBText style, double x, double y, double width, string? value)
+        DBText style, double x, double y, double width, string? value, bool leftAligned = false)
     {
         if (string.IsNullOrWhiteSpace(value)) return;
         var text = new DBText();
@@ -171,7 +171,7 @@ internal static class HpDirectoryExporter
         text.Height = style.Height;
         text.WidthFactor = style.WidthFactor;
         text.TextString = value!.Trim().Replace("\r", " ").Replace("\n", " ");
-        text.Justify = AttachmentPoint.MiddleCenter;
+        text.Justify = leftAligned ? AttachmentPoint.MiddleLeft : AttachmentPoint.MiddleCenter;
         text.AlignmentPoint = new Point3d(x, y, style.Position.Z);
         text.AdjustAlignment(db);
         var extents = text.GeometricExtents;

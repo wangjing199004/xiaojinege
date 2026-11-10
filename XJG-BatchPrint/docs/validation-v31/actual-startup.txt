@@ -1,0 +1,1 @@
+SKIP: CAD was running. Actual startup registry was not modified and user CAD was not closed.

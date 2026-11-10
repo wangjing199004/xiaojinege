@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -20,7 +20,7 @@ public static class AutoloadManager
     private const string AppDescription = "中望CAD批量打印插件";
 
     /// <summary>当前 DLL 的完整路径</summary>
-    public static string CurrentDllPath => Assembly.GetExecutingAssembly().Location;
+    public static string CurrentDllPath => PluginRuntimePaths.EntryPath;
 
     /// <summary>
     /// 安装自动加载：仅对当前正在运行的中望CAD 写入 LOADER / LOADCTRLS / MANAGED。

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -26,6 +26,49 @@ public static class CadTextExtractor
         }
 
         internal IReadOnlyList<TextCandidate> Candidates { get; }
+        private int[]? _pointIndex;
+        private int[]? _complexIndices;
+        // Only simple insertion-point candidates are indexed. Bounding-box/alignment
+        // cases retain the original exhaustive hit test, including rotated bounds.
+        internal IEnumerable<TextCandidate> Nearby(Point3d origin, Vector3d xAxis, Vector3d yAxis, LocalRectangle cell)
+        {
+            if (_pointIndex == null)
+            {
+                _pointIndex = Enumerable.Range(0, Candidates.Count)
+                    .Where(i => Candidates[i].WorldBounds == null && !Candidates[i].AlignmentPoint.HasValue)
+                    .OrderBy(i => Candidates[i].Point.X).ToArray();
+                _complexIndices = Enumerable.Range(0, Candidates.Count)
+                    .Where(i => Candidates[i].WorldBounds != null || Candidates[i].AlignmentPoint.HasValue).ToArray();
+            }
+            const double tolerance = 1e-6;
+            var points = new[] {
+                origin + xAxis * (cell.MinX - tolerance) + yAxis * (cell.MinY - tolerance),
+                origin + xAxis * (cell.MinX - tolerance) + yAxis * (cell.MaxY + tolerance),
+                origin + xAxis * (cell.MaxX + tolerance) + yAxis * (cell.MinY - tolerance),
+                origin + xAxis * (cell.MaxX + tolerance) + yAxis * (cell.MaxY + tolerance) };
+            double pad = points.Max(p => Math.Max(Math.Abs(p.X), Math.Abs(p.Y))) * 1e-12 + 1e-8;
+            double minX = points.Min(p => p.X) - pad, maxX = points.Max(p => p.X) + pad;
+            double minY = points.Min(p => p.Y) - pad, maxY = points.Max(p => p.Y) + pad;
+            if (double.IsNaN(minX) || double.IsInfinity(minX) || double.IsNaN(maxX) || double.IsInfinity(maxX))
+                return Candidates;
+            int low = 0, high = _pointIndex.Length;
+            while (low < high)
+            {
+                int middle = low + (high - low) / 2;
+                if (Candidates[_pointIndex[middle]].Point.X < minX) low = middle + 1;
+                else high = middle;
+            }
+            var found = new List<int>(_complexIndices!);
+            for (int i = low; i < _pointIndex.Length; i++)
+            {
+                var candidate = Candidates[_pointIndex[i]];
+                if (candidate.Point.X > maxX) break;
+                if (candidate.Point.Y >= minY && candidate.Point.Y <= maxY) found.Add(_pointIndex[i]);
+            }
+            found.Sort(); // Preserve original stable order for equal-position text.
+            return found.Select(i => Candidates[i]);
+        }
+
 
         /// <summary>布局内块参照及其包围盒，供字段提取时查找重叠图签，避免每个字段都遍历整张图。</summary>
         internal IReadOnlyList<OverlapBlockRef> OverlapBlocks { get; }
@@ -148,7 +191,7 @@ public static class CadTextExtractor
         }
 
         var btr = (BlockTableRecord)tr.GetObject(definitionId, OpenMode.ForRead);
-        var name = btr.Name;
+        var name = StandardFrameIdentity.GetCanonicalName(btr, tr);
         if (TitleBlockScanCaches.Active)
         {
             TitleBlockScanCaches.BlockNames[definitionId] = name;
@@ -378,8 +421,10 @@ public static class CadTextExtractor
     {
         var values = new List<TextCandidate>();
         var overlapBlocks = new List<OverlapBlockRef>();
+        int readCount = 0;
         foreach (ObjectId id in owner)
         {
+            if ((++readCount % 200) == 0) InlineReadProgress.Report($"正在建立文字缓存：已读取 {readCount} 个对象…");
             if (tr.GetObject(id, OpenMode.ForRead, false) is not Entity entity)
             {
                 continue;
@@ -560,7 +605,7 @@ public static class CadTextExtractor
         }
 
         var values = new List<TextCandidate>();
-        foreach (var candidate in cache.Candidates)
+        foreach (var candidate in cache.Nearby(origin, xAxis, yAxis, cell))
         {
             var alignment = candidate.AlignmentPoint;
             if (RegionTextHitTest.IsTextHit(

@@ -1,0 +1,4 @@
+﻿PASS 1x font-scale: all six headers fit at normal/narrow widths; scan header style matches
+PASS 1.5x font-scale: all six headers fit at normal/narrow widths; scan header style matches
+PASS 2x font-scale: all six headers fit at normal/narrow widths; scan header style matches
+PASS 3x font-scale: all six headers fit at normal/narrow widths; scan header style matches

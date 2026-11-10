@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0-windows</TargetFramework><UseWindowsForms>true</UseWindowsForms><EnableDefaultCompileItems>false</EnableDefaultCompileItems><Nullable>enable</Nullable></PropertyGroup>
+  <ItemGroup><Compile Include="GridHeaders.cs"/><Compile Include="../../src/Common/Views/UiLayout.cs" Link="UiLayout.cs"/></ItemGroup>
+</Project>

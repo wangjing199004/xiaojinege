@@ -1,0 +1,9 @@
+﻿PASS A0+图框 fresh: 11 attributes match original stretch displacements; moved=楼号,项目名称,建设单位,项目编号,日期,比例,版次,专业,设计阶段,图号,图名; title delta=(104000,0,0)
+PASS A0+图框 in old drawing: 11 attributes match original stretch displacements; moved=楼号,项目名称,建设单位,项目编号,日期,比例,版次,专业,设计阶段,图号,图名; title delta=(104000,0,0)
+PASS A0+图框: latest graph in old drawing; cancel cleanup; old content/positions preserved; common library identity; repeated version reuse
+PASS A1+图框 fresh: 11 attributes match original stretch displacements; moved=图号,设计阶段,专业,版次,比例,日期,图名,项目编号,建设单位,项目名称,楼号; title delta=(63100,0,0)
+PASS A1+图框 in old drawing: 11 attributes match original stretch displacements; moved=图号,设计阶段,专业,版次,比例,日期,图名,项目编号,建设单位,项目名称,楼号; title delta=(63100,0,0)
+PASS A1+图框: latest graph in old drawing; cancel cleanup; old content/positions preserved; common library identity; repeated version reuse
+PASS A2+图框 fresh: 11 attributes match original stretch displacements; moved=图号,设计阶段,专业,版次,比例,日期,楼号,项目名称,建设单位,项目编号,图名; title delta=(44600,0,0)
+PASS A2+图框 in old drawing: 11 attributes match original stretch displacements; moved=图号,设计阶段,专业,版次,比例,日期,楼号,项目名称,建设单位,项目编号,图名; title delta=(44600,0,0)
+PASS A2+图框: latest graph in old drawing; cancel cleanup; old content/positions preserved; common library identity; repeated version reuse

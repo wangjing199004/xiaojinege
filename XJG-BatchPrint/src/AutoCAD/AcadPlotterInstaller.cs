@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -1846,7 +1846,7 @@ public static class AcadPlotterInstaller
 
     private static string[] GetCandidateBaseDirectories()
     {
-        var assemblyPath = Assembly.GetExecutingAssembly().Location;
+        var assemblyPath = PluginRuntimePaths.EntryPath;
         var assemblyDirectory = string.IsNullOrWhiteSpace(assemblyPath)
             ? AppDomain.CurrentDomain.BaseDirectory
             : Path.GetDirectoryName(assemblyPath) ?? AppDomain.CurrentDomain.BaseDirectory;

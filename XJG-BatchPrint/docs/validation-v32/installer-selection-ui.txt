@@ -1,0 +1,1 @@
+PASS 2 installed compatible products checked by default, individual uncheck, select-none disables install, select-all restores selection; UI rendered; no installation performed

@@ -1,0 +1,6 @@
+PASS A0+图框.dwg: three text-only names, label centers, nested blocks, rotation/scale, matching height, repeat replaces
+PASS A1+图框.dwg: three text-only names, label centers, nested blocks, rotation/scale, matching height, repeat replaces
+PASS A2+图框.dwg: three text-only names, label centers, nested blocks, rotation/scale, matching height, repeat replaces
+PASS 封面.dwg: three text-only names, label centers, nested blocks, rotation/scale, matching height, repeat replaces
+PASS directory RunSign without signature files: only three upper names, old lower name removed
+PASS 目录签章框.dwg: three text-only names, label centers, nested blocks, rotation/scale, matching height, repeat replaces

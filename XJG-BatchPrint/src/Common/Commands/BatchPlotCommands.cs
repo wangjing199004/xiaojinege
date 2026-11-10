@@ -51,6 +51,27 @@ public sealed partial class BatchPlotCommands : IExtensionApplication
         PluginAssemblyResolver.Register();
 #endif
 
+        // 启动自动加载早于首张图纸就绪；菜单先尝试，绘图器及快捷键在宿主空闲后初始化。
+        CadMenuInstaller.Install();
+        _startupPending = true;
+        CadApp.Idle += OnStartupIdle;
+    }
+
+    private bool _startupPending;
+    private bool _startupMenuAttempted;
+    private void OnStartupIdle(object? sender, EventArgs args)
+    {
+        var document = CadApp.DocumentManager.MdiActiveDocument;
+        if (document == null)
+        {
+            if (!_startupMenuAttempted) { _startupMenuAttempted = true; CadMenuInstaller.Install(); }
+            return;
+        }
+        if (!document.Editor.IsQuiescent) return;
+        CadApp.Idle -= OnStartupIdle;
+        _startupPending = false;
+        try
+        {
         var pdfInstall = AcadPlotterInstaller.InstallBundledPlotter();
         // 新用户首次加载时生成软件自有的栅格绘图器，并按需刷新当前 CAD 会话的设备缓存。
         var pngInstall = AcadPlotterInstaller.InstallPngPlotter();
@@ -60,11 +81,38 @@ public sealed partial class BatchPlotCommands : IExtensionApplication
         CadMenuInstaller.Install();
         // 每次加载时恢复用户设置的简化命令到 PGP 文件（Power 等重置 PGP 后自动修复）。
         CommandAliasManager.Apply(AppSettingsStore.Load().CommandAliases, out _);
+        }
+        catch (System.Exception ex)
+        {
+            CadPickDiagnostics.Log("startup-initialize-failed", ex.ToString());
+            document.Editor.WriteMessage("\n出图中心初始化未完成：{0}", ex.Message);
+        }
     }
 
     public void Terminate()
     {
+        if (_startupPending) { CadApp.Idle -= OnStartupIdle; _startupPending = false; }
+        _mainWindow?.Close();
+        _mainWindow = null;
+        LoadedAssemblyResolver.Unregister();
+#if ACAD_CORE
+        PluginAssemblyResolver.Unregister();
+#endif
     }
+    internal static bool CanReload => _mainWindow?.IsBusy != true && !PendingLibraryInput.IsPending && !PendingPlotPreview.IsPending;
+    internal static void CloseForReload() { _mainWindow?.Close(); _mainWindow = null; }
+
+    [CommandMethod("TKATTR", CommandFlags.Session)]
+    public void ShowFrameTools() => ShowMainWindow(-2);
+    [CommandMethod("TKASIGN", CommandFlags.Session)]
+    public void ShowFrameSignatures() => ShowMainWindow(-1);
+    [CommandMethod("TKATITLE")]
+    public void OneClickTitle() => OneClickDrawingTitle.Run(CadApp.DocumentManager.MdiActiveDocument);
+    [CommandMethod("TKAREAD")]
+    public void ReadFrameTools() { ShowMainWindow(-2); TitleAttributeBatch.Core.Entry.Read(); }
+    [CommandMethod("TKAAPPLY")]
+    public void ApplyFrameTools() { ShowMainWindow(-2); TitleAttributeBatch.Core.Entry.Apply(); }
+
 
     private static bool IsCoreConsole()
     {
@@ -226,21 +274,13 @@ public sealed partial class BatchPlotCommands : IExtensionApplication
     [CommandMethod("ZBP_UNINSTALL_AUTOLOAD")]
     public void UninstallAutoload()
     {
-        try
+        if (!CanReload)
         {
-            var removed = AutoloadManager.Uninstall();
-            MessageBox.Show(
-                removed > 0
-                    ? "已卸载自动加载。\n\n仅取消了当前这套CAD的自动加载。当前已加载的插件会在本次会话继续可用，关闭CAD后不会再自动加载。"
-                    : "没有找到已安装的自动加载项。",
-                "批量打印",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            MessageBox.Show("请先结束打印、预览或图纸选择，再卸载出图中心。", "卸载");
+            return;
         }
-        catch (System.Exception ex)
-        {
-            MessageBox.Show("卸载自动加载失败: " + ex.Message, "批量打印", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+        try { InstalledPluginUninstaller.Start(); }
+        catch (System.Exception ex) { MessageBox.Show("无法启动卸载：" + ex.Message, "卸载", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
     [CommandMethod("_ZBP_INTERNAL_UNINSTALL_AUTOLOAD")]

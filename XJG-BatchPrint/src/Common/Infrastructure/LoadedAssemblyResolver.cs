@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Reflection;
 
 namespace ZwcadBatchPlot;
@@ -23,6 +23,13 @@ internal static class LoadedAssemblyResolver
 
         _registered = true;
         AppDomain.CurrentDomain.AssemblyResolve += OnAssemblyResolve;
+    }
+
+    internal static void Unregister()
+    {
+        if (!_registered) return;
+        AppDomain.CurrentDomain.AssemblyResolve -= OnAssemblyResolve;
+        _registered = false;
     }
 
     private static Assembly? OnAssemblyResolve(object? sender, ResolveEventArgs args)

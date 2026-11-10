@@ -1,0 +1,4 @@
+PASS: actual migrated cache decrypts when the combined DLL is loaded from bytes
+PASS: calibration and encrypted library migrate; operations use an independent folder
+PASS: real people package is readable; every migrated signature decrypts as DWG
+PASS: updated session is encrypted again; source settings remain unchanged

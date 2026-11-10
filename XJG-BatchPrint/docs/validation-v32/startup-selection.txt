@@ -1,0 +1,5 @@
+PASS AutoCAD2015-2024: version/language selection, startup-managed loader registration, rollback, repeat install, uninstall
+PASS AutoCAD2025-2027: version/language selection, startup-managed loader registration, rollback, repeat install, uninstall
+PASS ZWCAD2025: version/language selection, startup-managed loader registration, rollback, repeat install, uninstall
+PASS default-compatible detection, subset/empty/unknown selection, elevation round-trip, selective upgrade removes owned unchecked startup/trust, rollback restores subtree, other loader preserved
+PASS existing trusted paths preserved; no SECURELOAD modifications; all registry writes confined to temporary test branch

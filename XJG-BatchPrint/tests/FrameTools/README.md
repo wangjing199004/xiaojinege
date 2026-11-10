@@ -1,0 +1,10 @@
+﻿# 图框工具与热更新回归
+
+FrameToolsTests.csproj以TestSuite=Package/Cover/Save分别运行配置包、封面标定、文件保存/备份测试。
+SignatureMigrationTests.cs编译成独立.NET Framework测试程序，参数为实际Runtime.dll和不存在的临时工作目录；解密当前真实配置、逐份解密签名、重加密后检查原数据不变。
+WpfReloadTests.cs使用STA线程运行，参数为两个不同构建标识的Runtime.dll，验证字节加载下BAML、嵌套控件与ViewModel属于对应版本。
+HostIntegrationRegression.cs编译引用AutoCAD2024托管API，命令BPI_TEST；临时fixture中先NETLOAD固定加载器，再加载测试DLL。fixture/next.dll为第二个有效构建，测试替换仅发生在fixture内，不改变正式交付文件或用户图纸。
+宿主回归验证属性按TAG大小写不敏感写入、不改未选字段、跳过锁定图框；热更新前后数据库操作；正在执行取点时阻止更新；损坏更新保留当前版本；文件未变化不重建业务实例。
+控制台不支持完整桌面CAD面板，未把完整Tab显示、真实按钮、鼠标框选、签名位置和实际打印列为已通过。
+
+OneClickTitleHostRegression.cs提供TITLE_TEST命令：使用实际v26业务DLL检查单行/多行/属性文字读取，图名写入与其他字段保留、锁定重复属性防止部分写入、三个新模板图名为空并可写入；v25旧定义补齐时保留动态距离和原内容，取消不改旧定义；快捷键包含TKATITLE。不模拟实际鼠标点击。

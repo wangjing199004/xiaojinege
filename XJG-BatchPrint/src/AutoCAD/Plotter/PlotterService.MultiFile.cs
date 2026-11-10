@@ -106,6 +106,7 @@ public static partial class PlotterService
         using var scope = AcquireExternalDocument(sourceFile);
         var doc = scope.Document;
         TryResolveExternalXrefs(doc);
+        using var signing = TemporarySignedPlotScope.Begin(doc, jobs);
 
         string? lastSpaceKey = null;
         foreach (var job in jobs)

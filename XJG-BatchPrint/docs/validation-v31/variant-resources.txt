@@ -1,0 +1,6 @@
+PASS HP AutoCAD2015-2024: embedded resource count and 3 compiled WPF pages
+PASS HP AutoCAD2025-2027: embedded resource count and 3 compiled WPF pages
+PASS HP ZWCAD2025: embedded resource count and 3 compiled WPF pages
+PASS Clean AutoCAD2015-2024: embedded resource count and 3 compiled WPF pages
+PASS Clean AutoCAD2025-2027: embedded resource count and 3 compiled WPF pages
+PASS Clean ZWCAD2025: embedded resource count and 3 compiled WPF pages

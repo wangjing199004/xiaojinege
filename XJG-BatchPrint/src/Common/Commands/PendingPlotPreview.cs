@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Windows.Threading;
 #if AUTOCAD
 using Autodesk.AutoCAD.ApplicationServices;
@@ -28,6 +28,7 @@ internal static class PendingPlotPreview
 {
     private static readonly object Gate = new();
     private static Request? _pending;
+    internal static bool IsPending { get { lock (Gate) return _pending != null; } }
 
     /**
      * @description 一次待执行的打印预览请求。

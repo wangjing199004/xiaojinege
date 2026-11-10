@@ -1,0 +1,14 @@
+﻿<Project>
+  <PropertyGroup Condition="'$(ProductEdition)' == 'Clean'">
+    <DefineConstants>$(DefineConstants);CLEAN_EDITION</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(ProductEdition)' == 'Clean' And ('$(MSBuildProjectName)' == 'AcadBatchPlot' Or '$(MSBuildProjectName)' == 'AcadBatchPlot.Core' Or '$(MSBuildProjectName)' == 'BatchPlotter')">
+    <EmbeddedResource Remove="$(RepoRoot)resources/hp-directory/*.enc" />
+    <Compile Remove="../Common/Infrastructure/Hp*.cs;../Common/Infrastructure/StandardFrameInserter.cs;../Common/Infrastructure/StandardFramePlacementJig.cs;../Common/Views/HpDirectoryExportUi.cs;../Common/Views/StandardFramePickerDialog.cs" />
+    <Page Remove="../Common/Views/BatchPlotForm.xaml;../Common/Views/RectangleBatchPlotForm.xaml;../Common/Views/TitleBlockLibraryManagerForm.xaml" />
+    <Page Include="../CleanViews/*.xaml">
+      <Link>Common/Views/%(Filename)%(Extension)</Link>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+</Project>

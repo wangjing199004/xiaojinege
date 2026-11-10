@@ -1,0 +1,4 @@
+PASS AutoCAD2015-2024: HP install, locked-file preflight, HP-to-Clean replacement, config/signature preservation, staging cleanup, uninstall
+PASS AutoCAD2025-2027: HP install, locked-file preflight, HP-to-Clean replacement, config/signature preservation, staging cleanup, uninstall
+PASS ZWCAD2025: HP install, locked-file preflight, HP-to-Clean replacement, config/signature preservation, staging cleanup, uninstall
+PASS payload path traversal/absolute/ADS rejection; no real CAD or uninstall registry entries changed

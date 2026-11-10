@@ -1,0 +1,3 @@
+PASS 1x layout: empty headers at narrow/wide widths, native template sorting, resize without sorting, width retained after data load
+PASS 1.5x layout: empty headers at narrow/wide widths, native template sorting, resize without sorting, width retained after data load
+PASS 2x layout: empty headers at narrow/wide widths, native template sorting, resize without sorting, width retained after data load
